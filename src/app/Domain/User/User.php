@@ -12,6 +12,8 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
+use App\Domain\User\Department;
+
 /**
  * Class User
  * @package App\Domain\User
@@ -25,6 +27,8 @@ class User implements
     use Notifiable;
 
     public $id;
+    private $name;
+    private $department;
     private $email;
     private $password;
     private $role;
@@ -33,6 +37,8 @@ class User implements
     /**
      * User constructor.
      * @param int|null $id
+     * @param string $name
+     * @param Department $department
      * @param string $email
      * @param string $password
      * @param int    $role
@@ -40,12 +46,16 @@ class User implements
      */
     public function __construct(
         ?int $id,
+        string $name,
+        Department $department,
         string $email,
         string $password,
         int    $role,
         string $activationToken
     ) {
         $this->id = $id;
+        $this->name = $name;
+        $this->department = $department;
         $this->email = $email;
         $this->password = $password;
         $this->role = $role;
@@ -58,6 +68,22 @@ class User implements
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return Department
+     */
+    public function getDepartment(): Department
+    {
+        return $this->department;
     }
 
     /**
@@ -121,6 +147,8 @@ class User implements
         $id = $this->getId() ? $this->getId() : "";
         return [
             'id' => $id,
+            'name' => $this->name,
+            'department' => $this->department->toArray(),
             'email' => $this->getEmail(),
             'canRegisterProjects' => $this->can('register-projects'),
         ];

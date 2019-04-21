@@ -16,6 +16,8 @@ class UserTableSeeder extends Seeder
 
         $user1 = [
             'id' => 1,
+            'name' => 'name1',
+            'depId' => 1,
             'email' => 'test1@example.com',
             'password' => bcrypt('test1'),
             'role' => 1,
@@ -25,6 +27,8 @@ class UserTableSeeder extends Seeder
         ];
         $user2 = [
             'id' => 2,
+            'name' => 'name2',
+            'depId' => 2,
             'email' => 'test2@example.com',
             'password' => bcrypt('test2'),
             'role' => 10,

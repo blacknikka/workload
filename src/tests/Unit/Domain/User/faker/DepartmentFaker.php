@@ -24,9 +24,7 @@ class DepartmentFaker
                 $faker->unique()->randomNumber() + 1,
                 $faker->word(),
                 $faker->word(),
-                $faker->sentence(),
-                $now,
-                $now
+                $faker->sentence()
             );
         });
         return $data->all();
@@ -50,9 +48,7 @@ class DepartmentFaker
                 null,
                 $faker->word(),
                 $faker->word(),
-                $faker->sentence(),
-                $now,
-                $now
+                $faker->sentence()
             );
         });
         return $data->all();

@@ -12,7 +12,7 @@ jobs:
       - run: git submodule update
       - run: git submodule foreach git pull origin master
       - run: cat ./laradock/env-example ./etc/laradock.env-example > ./laradock/.env
-      - run: cp etc/laravel.env.example src/.env
+      - run: cp etc/laravel.env.sample src/.env
     #   - run: cp etc/createdb.sql laradock/mysql/docker-entrypoint-initdb.d
       - run: ls laradock
 

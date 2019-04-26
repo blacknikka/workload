@@ -1,19 +1,18 @@
 <?php
 
-namespace Tests\Unit\Domain\User\faker;
+namespace Tests\Unit\Domain\Workload\faker;
 
 use Faker\Generator as Faker;
-use App\Domain\User\User;
+use App\Domain\Workload\Project;
 use Carbon\Carbon;
-use Tests\Unit\Domain\User\faker\DepartmentFaker;
 
-class UserFaker
+class ProjectFaker
 {
     /**
-     * Userのデータを作る
+     * Projectのデータを作る
      *
      * @param number $number
-     * @return User[]
+     * @return Project[]
      */
     public static function create($number) : array
     {
@@ -21,24 +20,20 @@ class UserFaker
 
         $data = collect()::times($number, function ($number) use ($faker) {
             $now = Carbon::now()->format('Y-m-d H:i:s');
-            return new User(
+            return new Project(
                 $faker->unique()->randomNumber() + 1,
-                $faker->name(),
-                DepartmentFaker::create(1)[0],
-                $faker->email(),
-                bcrypt($faker->word()),
-                1,
-                ''
+                $faker->word(),
+                $faker->sentence()
             );
         });
         return $data->all();
     }
 
     /**
-     * UserのデータをIDをnullで作る
+     * ProjectFakerのデータをIDをnullで作る
      *
      * @param [type] $number
-     * @return User[]
+     * @return Project[]
      */
     public static function createWithNullId($number) : array
     {
@@ -48,14 +43,10 @@ class UserFaker
         $data = collect()::times($number, function ($number) use ($faker) {
             $now = Carbon::now()->format('Y-m-d H:i:s');
             $faker->unique();
-            return new User(
+            return new Project(
                 null,
-                $faker->name(),
-                DepartmentFaker::create(1)[0],
-                $faker->email(),
-                bcrypt($faker->word()),
-                1,
-                ''
+                $faker->word(),
+                $faker->sentence()
             );
         });
         return $data->all();

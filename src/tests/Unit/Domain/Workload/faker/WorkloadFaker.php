@@ -1,19 +1,20 @@
 <?php
 
-namespace Tests\Unit\Domain\User\faker;
+namespace Tests\Unit\Domain\Workload\faker;
 
 use Faker\Generator as Faker;
-use App\Domain\User\User;
+use App\Domain\Workload\Workload;
 use Carbon\Carbon;
-use Tests\Unit\Domain\User\faker\DepartmentFaker;
+use Tests\Unit\Domain\Workload\faker\ProjectFaker;
+use Tests\Unit\Domain\Workload\faker\CategoryFaker;
 
-class UserFaker
+class WorkloadFaker
 {
     /**
-     * Userのデータを作る
+     * Workloadのデータを作る
      *
      * @param number $number
-     * @return User[]
+     * @return Workload[]
      */
     public static function create($number) : array
     {
@@ -21,24 +22,22 @@ class UserFaker
 
         $data = collect()::times($number, function ($number) use ($faker) {
             $now = Carbon::now()->format('Y-m-d H:i:s');
-            return new User(
+            return new Workload(
                 $faker->unique()->randomNumber() + 1,
-                $faker->name(),
-                DepartmentFaker::create(1)[0],
-                $faker->email(),
-                bcrypt($faker->word()),
-                1,
-                ''
+                ProjectFaker::create(1)[0],
+                CategoryFaker::create(1)[0],
+                $faker->randomFloat(),
+                Carbon::now()
             );
         });
         return $data->all();
     }
 
     /**
-     * UserのデータをIDをnullで作る
+     * WorkloadFakerのデータをIDをnullで作る
      *
      * @param [type] $number
-     * @return User[]
+     * @return Workload[]
      */
     public static function createWithNullId($number) : array
     {
@@ -48,14 +47,12 @@ class UserFaker
         $data = collect()::times($number, function ($number) use ($faker) {
             $now = Carbon::now()->format('Y-m-d H:i:s');
             $faker->unique();
-            return new User(
+            return new Workload(
                 null,
-                $faker->name(),
-                DepartmentFaker::create(1)[0],
-                $faker->email(),
-                bcrypt($faker->word()),
-                1,
-                ''
+                ProjectFaker::create(1)[0],
+                CategoryFaker::create(1)[0],
+                $faker->randomFloat(),
+                Carbon::now()
             );
         });
         return $data->all();

@@ -57,6 +57,10 @@
             "@php artisan ide-helper:generate",
             "@php ./vendor/bin/phpstan analyze"
         ],
+        "initialize": [
+            "@composer run post-create-project-cmd",
+            "@php artisan migrate"
+        ],
         "ci": [
             "@composer dump-autoload",
             "@composer run test"

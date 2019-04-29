@@ -103,7 +103,7 @@ jobs:
           working_directory: ./laradock
       - run:
           name: PHP CI (waiting for the invocation of mysqld)
-          command: docker-compose exec workspace  /root/etc/wait-for-it.sh mysql:3306 -- composer run ci
+          command: docker-compose exec workspace bash /root/etc/wait-for-it.sh mysql:3306 -- composer run ci
           working_directory: ./laradock
 
 

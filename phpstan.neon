@@ -1,0 +1,18 @@
+parameters:
+    level: max
+    paths:
+        - app
+    autoload_files:
+        - _ide_helper.php
+    excludes_analyse:
+    ignoreErrors:
+        # DB::table('hoge')->first() return object -- not stdClass.
+        - '#expects stdClass, object given.#'
+        # response()->json()
+        - '#Call to an undefined method Illuminate\\Contracts\\Routing\\ResponseFactory|Illuminate\\Http\\Response::json()#'
+        # redirect()->withErrors()
+        - '#Call to an undefined method Illuminate\\Http\\RedirectResponse|Illuminate\\Routing\\Redirector::withErrors()#'  
+        # url() helper
+        - '#expects string, Illuminate\\Contracts\\Routing\\UrlGenerator|string given.#'
+        # maybe IDE-helper glitch on JWT Auth
+        - '#expects Request, Illuminate\\Http\\Request given.#'

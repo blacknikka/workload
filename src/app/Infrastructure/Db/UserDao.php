@@ -25,7 +25,7 @@ class UserDao
     {
         $queryResult = Db::table(self::USER_TABLE_NAME)
             ->select()
-            ->join('department', self::USER_TABLE_NAME . '.depId', '=', self::DEP_TABLE_NAME . '.id')
+            ->join(self::DEP_TABLE_NAME, self::USER_TABLE_NAME . '.depId', '=', self::DEP_TABLE_NAME . '.id')
             ->where(self::USER_TABLE_NAME . '.id', $userId)
             ->select([
                 self::USER_TABLE_NAME . '.id as userId',
@@ -44,7 +44,7 @@ class UserDao
         return is_null($queryResult) ? null : $this->newFromQueryResult($queryResult);
     }
 
-        /**
+    /**
      * @param \stdClass $queryResult
      * @return User
      */

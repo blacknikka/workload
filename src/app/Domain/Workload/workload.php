@@ -14,7 +14,7 @@ class Workload
     private $id;
     private $project;
     private $category;
-    private $count;
+    private $amount;
     private $date;
 
     /**
@@ -22,20 +22,20 @@ class Workload
      * @param int|null $id
      * @param Project $project
      * @param Category $category
-     * @param float $count
+     * @param float $amount
      * @param Carbon $date
      */
     public function __construct(
         ?int $id,
         Project $project,
         Category $category,
-        float $count,
+        float $amount,
         Carbon $date
     ) {
         $this->id = $id;
         $this->project = $project;
         $this->category = $category;
-        $this->count = $count;
+        $this->amount = $amount;
         $this->date = $date;
     }
 
@@ -66,9 +66,9 @@ class Workload
     /**
      * @return float
      */
-    public function getCount(): float
+    public function getAmount(): float
     {
-        return $this->count;
+        return $this->amount;
     }
 
     /**
@@ -85,10 +85,10 @@ class Workload
     public function toArray() : array
     {
         return [
-            'id' => $id,
+            'id' => $this->id,
             'project' => $this->project,
             'category' => $this->category,
-            'count' => $this->count,
+            'amount' => $this->amount,
             'date' => $this->date,
         ];
     }

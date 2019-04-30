@@ -17,7 +17,7 @@ class CreateWorkloadTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('category_id');
-            $table->float('amount', 2, 2)->comment('the value of workload.');
+            $table->decimal('amount', 4, 2)->comment('the value of workload.');
             $table->date('date');
             $table->timestamps();
         });

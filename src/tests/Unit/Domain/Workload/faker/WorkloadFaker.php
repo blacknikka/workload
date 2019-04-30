@@ -26,8 +26,8 @@ class WorkloadFaker
                 $faker->unique()->randomNumber() + 1,
                 ProjectFaker::create(1)[0],
                 CategoryFaker::create(1)[0],
-                $faker->randomFloat(),
-                Carbon::now()
+                $faker->randomFloat(2, 0, 24),
+                Carbon::today()
             );
         });
         return $data->all();
@@ -51,8 +51,8 @@ class WorkloadFaker
                 null,
                 ProjectFaker::create(1)[0],
                 CategoryFaker::create(1)[0],
-                $faker->randomFloat(),
-                Carbon::now()
+                $faker->randomFloat(2, 0, 24),
+                Carbon::today()
             );
         });
         return $data->all();

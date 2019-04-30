@@ -23,21 +23,21 @@ class WorkloadTest extends TestCase
         $id = $create[0]->getId();
         $project = $create[0]->getProject();
         $category = $create[0]->getCategory();
-        $count = $create[0]->getCount();
+        $amount = $create[0]->getAmount();
         $date = $create[0]->getDate();
 
         $workload = new Workload(
             $id,
             $project,
             $category,
-            $count,
+            $amount,
             $date
         );
 
         $this->assertSame($workload->getId(), $id);
         $this->assertSame($workload->getProject(), $project);
         $this->assertSame($workload->getCategory(), $category);
-        $this->assertSame($workload->getCount(), $count);
+        $this->assertSame($workload->getAmount(), $amount);
         $this->assertSame($workload->getDate(), $date);
     }
 }

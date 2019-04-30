@@ -34,4 +34,31 @@ class ProjectTest extends TestCase
         $this->assertSame($proj->getName(), $name);
         $this->assertSame($proj->getComment(), $comment);
     }
+
+    /** @test */
+    public function ProjectToArray()
+    {
+        $faker = app()->make(Faker::class);
+
+        $project = ProjectFaker::create(1);
+
+        $id = $project[0]->getId();
+        $name = $project[0]->getName();
+        $comment = $project[0]->getComment();
+
+        $proj = new Project(
+            $id,
+            $name,
+            $comment
+        );
+
+        $this->assertSame(
+            $proj->toArray(),
+            [
+                'id' => $id,
+                'name' => $name,
+                'comment' => $comment,
+            ]
+        );
+    }
 }

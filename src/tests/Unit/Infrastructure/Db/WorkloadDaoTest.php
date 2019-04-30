@@ -12,6 +12,7 @@ use App\Domain\Workload\Project;
 use App\Infrastructure\Db\WorkloadDao;
 use Illuminate\Support\Collection;
 use Tests\Unit\Domain\Workload\faker\WorkloadFaker;
+use Faker\Generator as Faker;
 
 class WorkloadDaoTest extends TestCase
 {
@@ -41,8 +42,8 @@ class WorkloadDaoTest extends TestCase
     {
         $workloadArrayForSave = [
             'id'    => $workload->getId(),
-            'project_id' => $workload->getProject()->getId(),
-            'category_id' => $workload->getCategory()->getId(),
+            'project_id' => $workload->getProjectId(),
+            'category_id' => $workload->getCategoryId(),
             'amount' => $workload->getAmount(),
             'date' => $workload->getDate(),
         ];
@@ -50,19 +51,21 @@ class WorkloadDaoTest extends TestCase
         $id = DB::table(self::WORKLOAD_TABLE_NAME)
             ->insertGetId($workloadArrayForSave);
 
+        $faker = app()->make(Faker::class);
+
         $projectArrayForSave = [
-            'id'    => $workload->getProject()->getId(),
-            'name' => $workload->getProject()->getName(),
-            'comment' => $workload->getProject()->getComment(),
+            'id'    => $workload->getProjectId(),
+            'name' => $faker->word(),
+            'comment' => $faker->sentence(),
         ];
 
         DB::table(self::PROJECT_TABLE_NAME)
             ->insertGetId($projectArrayForSave);
 
         $categoryArrayForSave = [
-            'id'    => $workload->getCategory()->getId(),
-            'name' => $workload->getCategory()->getName(),
-            'comment' => $workload->getCategory()->getComment(),
+            'id'    => $workload->getCategoryId(),
+            'name' => $faker->word(),
+            'comment' => $faker->sentence(),
         ];
 
         DB::table(self::CATEGORY_TABLE_NAME)
@@ -82,8 +85,8 @@ class WorkloadDaoTest extends TestCase
         // 検証
         $this->assertNotNull($result);
         $this->assertNotNull($result->getId());
-        $this->assertEquals($result->getProject(), $data->getProject());
-        $this->assertEquals($result->getCategory(), $data->getCategory());
+        $this->assertEquals($result->getProjectId(), $data->getProjectId());
+        $this->assertEquals($result->getCategoryId(), $data->getCategoryId());
         $this->assertEquals($result->getAmount(), $data->getAmount());
         $this->assertEquals($result->getDate(), $data->getDate());
     }
@@ -104,8 +107,8 @@ class WorkloadDaoTest extends TestCase
         // 検証
         $this->assertNotNull($readData);
         $this->assertNotNull($readData->getId());
-        $this->assertEquals($readData->getProject(), $data->getProject());
-        $this->assertEquals($readData->getCategory(), $data->getCategory());
+        $this->assertEquals($readData->getProjectId(), $data->getProjectId());
+        $this->assertEquals($readData->getCategoryId(), $data->getCategoryId());
         $this->assertEquals($readData->getAmount(), $data->getAmount());
         $this->assertEquals($readData->getDate(), $data->getDate());
     }

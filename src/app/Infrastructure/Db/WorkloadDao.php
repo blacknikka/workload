@@ -22,27 +22,11 @@ class WorkloadDao
     public function find(int $wId) : ?Workload
     {
         $queryResult = Db::table(self::WORKLOAD_TABLE_NAME)
-            ->join(
-                self::PROJECT_TABLE_NAME,
-                self::WORKLOAD_TABLE_NAME . '.project_id',
-                '=',
-                self::PROJECT_TABLE_NAME . '.id'
-            )
-            ->join(
-                self::CATEGORY_TABLE_NAME,
-                self::WORKLOAD_TABLE_NAME . '.category_id',
-                '=',
-                self::CATEGORY_TABLE_NAME . '.id'
-            )
             ->where(self::WORKLOAD_TABLE_NAME . '.id', $wId)
             ->select([
                 self::WORKLOAD_TABLE_NAME . '.id as workloadId',
-                self::PROJECT_TABLE_NAME . '.id as projId',
-                self::PROJECT_TABLE_NAME . '.name as projName',
-                self::PROJECT_TABLE_NAME . '.comment as projComment',
-                self::CATEGORY_TABLE_NAME . '.id as catId',
-                self::CATEGORY_TABLE_NAME . '.name as catName',
-                self::CATEGORY_TABLE_NAME . '.comment as catComment',
+                self::WORKLOAD_TABLE_NAME . '.project_id as projId',
+                self::WORKLOAD_TABLE_NAME . '.category_id as catId',
                 'amount',
                 'date'
             ])
@@ -61,8 +45,8 @@ class WorkloadDao
 
         $workloadArrayForSave = [
             'id'    => $workload->getId(),
-            'project_id' => $workload->getProject()->getId(),
-            'category_id' => $workload->getCategory()->getId(),
+            'project_id' => $workload->getProjectId(),
+            'category_id' => $workload->getCategoryId(),
             'amount' => $workload->getAmount(),
             'date' => $workload->getDate(),
         ];
@@ -91,16 +75,8 @@ class WorkloadDao
     {
         return new Workload(
             $queryResult->workloadId,
-            new Project(
-                $queryResult->projId,
-                $queryResult->projName,
-                $queryResult->projComment
-            ),
-            new Category(
-                $queryResult->catId,
-                $queryResult->catName,
-                $queryResult->catComment
-            ),
+            $queryResult->projId,
+            $queryResult->catId,
             (float)$queryResult->amount,
             new Carbon($queryResult->date)
         );

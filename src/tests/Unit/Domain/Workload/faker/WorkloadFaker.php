@@ -5,8 +5,6 @@ namespace Tests\Unit\Domain\Workload\faker;
 use Faker\Generator as Faker;
 use App\Domain\Workload\Workload;
 use Carbon\Carbon;
-use Tests\Unit\Domain\Workload\faker\ProjectFaker;
-use Tests\Unit\Domain\Workload\faker\CategoryFaker;
 
 class WorkloadFaker
 {
@@ -24,8 +22,8 @@ class WorkloadFaker
             $now = Carbon::now()->format('Y-m-d H:i:s');
             return new Workload(
                 $faker->unique()->randomNumber() + 1,
-                ProjectFaker::create(1)[0],
-                CategoryFaker::create(1)[0],
+                $faker->unique()->randomNumber(),
+                $faker->unique()->randomNumber(),
                 $faker->randomFloat(2, 0, 24),
                 Carbon::today()
             );
@@ -49,8 +47,8 @@ class WorkloadFaker
             $faker->unique();
             return new Workload(
                 null,
-                ProjectFaker::create(1)[0],
-                CategoryFaker::create(1)[0],
+                $faker->unique()->randomNumber(),
+                $faker->unique()->randomNumber(),
                 $faker->randomFloat(2, 0, 24),
                 Carbon::today()
             );

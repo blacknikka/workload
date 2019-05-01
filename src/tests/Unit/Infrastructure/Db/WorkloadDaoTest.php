@@ -51,27 +51,47 @@ class WorkloadDaoTest extends TestCase
         $id = DB::table(self::WORKLOAD_TABLE_NAME)
             ->insertGetId($workloadArrayForSave);
 
-        $faker = app()->make(Faker::class);
-
-        $projectArrayForSave = [
-            'id'    => $workload->getProjectId(),
-            'name' => $faker->word(),
-            'comment' => $faker->sentence(),
-        ];
-
-        DB::table(self::PROJECT_TABLE_NAME)
-            ->insertGetId($projectArrayForSave);
-
-        $categoryArrayForSave = [
-            'id'    => $workload->getCategoryId(),
-            'name' => $faker->word(),
-            'comment' => $faker->sentence(),
-        ];
-
-        DB::table(self::CATEGORY_TABLE_NAME)
-            ->insertGetId($categoryArrayForSave);
+        // ProjectとCategoryの登録
+        $this->saveToProject($workload->getProjectId());
+        $this->saveToCategory($workload->getCategoryId());
 
         return $id;
+    }
+
+    /**
+     * Projectの登録
+     *
+     * @param integer $projectId
+     * @return void
+     */
+    private function saveToProject(int $projectId) : void
+    {
+        $faker = app()->make(Faker::class);
+
+        DB::table(self::PROJECT_TABLE_NAME)
+            ->insert([
+                'id' => $projectId,
+                'name' => $faker->word(),
+                'comment' => $faker->sentence(),
+            ]);
+    }
+
+    /**
+     * Categoryの登録
+     *
+     * @param integer $categoryId
+     * @return void
+     */
+    private function saveToCategory(int $categoryId) : void
+    {
+        $faker = app()->make(Faker::class);
+
+        DB::table(self::CATEGORY_TABLE_NAME)
+            ->insert([
+                'id' => $categoryId,
+                'name' => $faker->word(),
+                'comment' => $faker->sentence(),
+            ]);
     }
 
     /** @test */
@@ -98,6 +118,9 @@ class WorkloadDaoTest extends TestCase
         $data = WorkloadFaker::createWithNullId(1)[0];
         $this->assertNull($data->getId());
 
+        $this->saveToProject($data->getProjectId());
+        $this->saveToCategory($data->getCategoryId());
+
         // データをDBに保存
         $sutResult = $this->sut->save($data);
 
@@ -111,5 +134,37 @@ class WorkloadDaoTest extends TestCase
         $this->assertEquals($readData->getCategoryId(), $data->getCategoryId());
         $this->assertEquals($readData->getAmount(), $data->getAmount());
         $this->assertEquals($readData->getDate(), $data->getDate());
+    }
+
+    /** @test */
+    public function save_異常系_projectなし()
+    {
+        $data = WorkloadFaker::createWithNullId(1)[0];
+        $this->assertNull($data->getId());
+
+        // categoryのみ登録
+        // $this->saveToProject($data->getProjectId());
+        $this->saveToCategory($data->getCategoryId());
+
+        // DBに登録する
+        $sutResult = $this->sut->save($data);
+
+        $this->assertSame($sutResult, -1);
+    }
+
+    /** @test */
+    public function save_異常系_categoryなし()
+    {
+        $data = WorkloadFaker::createWithNullId(1)[0];
+        $this->assertNull($data->getId());
+
+        // projectのみ登録
+        $this->saveToProject($data->getProjectId());
+        // $this->saveToCategory($data->getCategoryId());
+
+        // DBに登録する
+        $sutResult = $this->sut->save($data);
+
+        $this->assertSame($sutResult, -1);
     }
 }

@@ -51,17 +51,25 @@ class WorkloadDao
             'date' => $workload->getDate(),
         ];
 
-        //TODO: transaction
         // workloadに登録
-        if ($workload->getId() === null) {
-            $workloadArrayForSave['created_at'] = $now;
-            $id = DB::table(self::WORKLOAD_TABLE_NAME)
-                ->insertGetId($workloadArrayForSave);
-        } else {
-            $id = $workload->getId();
-            DB::table(self::WORKLOAD_TABLE_NAME)
-                ->where('id', $id)
-                ->update($workloadArrayForSave);
+        $project = DB::table(self::PROJECT_TABLE_NAME)
+            ->exists('id', $workload->getProjectId());
+
+        $category = DB::table(self::CATEGORY_TABLE_NAME)
+            ->exists('id', $workload->getCategoryId());
+
+        $id = -1;
+        if ($project === true && $category === true) {
+            if ($workload->getId() === null) {
+                $workloadArrayForSave['created_at'] = $now;
+                $id = DB::table(self::WORKLOAD_TABLE_NAME)
+                    ->insertGetId($workloadArrayForSave);
+            } else {
+                $id = $workload->getId();
+                DB::table(self::WORKLOAD_TABLE_NAME)
+                    ->where('id', $id)
+                    ->update($workloadArrayForSave);
+            }
         }
 
         return $id;

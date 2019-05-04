@@ -21,4 +21,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'workload'], function () {
     Route::get('get/id/{id}', 'WorkloadController@getWorkloadById');
     Route::get('get/user_id/{id}', 'WorkloadController@getWorkloadByUserId');
+
+    Route::post('set/user_id', 'WorkloadController@setWorkloadByUserId');
 });

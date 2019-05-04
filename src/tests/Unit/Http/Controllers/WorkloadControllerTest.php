@@ -130,4 +130,57 @@ class WorkloadControllerTest extends TestCase
                 'date' => $workload->getDate()->toIso8601String(),
             ]);
     }
+
+    /** @test */
+    public function setWorkloadByUserId_WorkloadDaoのsaveがNGのケース()
+    {
+        $this->workloadDaoMock
+            ->shouldReceive('save')
+            ->andReturn(-1);
+
+        $response = $this->postJson(
+            'api/workload/set/user_id',
+            [
+                'user_id' => 1,
+                'project_id' => 1,
+                'category_id' => 1,
+                'amount' => 1,
+                'date' => '2018-05-01',
+            ]
+        );
+        $response
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertExactJson([
+                'result' => 'error',
+                'message' => 'save error',
+            ]);
+
+        $this->workloadDaoMock->shouldHaveReceived('save');
+    }
+
+    /** @test */
+    public function setWorkloadByUserId_saveの結果がOKのケース()
+    {
+        $this->workloadDaoMock
+            ->shouldReceive('save')
+            ->andReturn(1);
+
+        $response = $this->postJson(
+            'api/workload/set/user_id',
+            [
+                'user_id' => 1,
+                'project_id' => 1,
+                'category_id' => 1,
+                'amount' => 1,
+                'date' => '2018-05-01',
+            ]
+        );
+
+        $response
+            ->assertStatus(Response::HTTP_OK)
+            ->assertExactJson([
+                'result' => 'done',
+                'message' => 'no error',
+            ]);
+    }
 }

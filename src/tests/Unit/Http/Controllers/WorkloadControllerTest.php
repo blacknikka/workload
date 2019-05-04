@@ -83,4 +83,51 @@ class WorkloadControllerTest extends TestCase
                 'date' => $workload->getDate()->toIso8601String(),
             ]);
     }
+
+    /** @test */
+    public function getWorkloadByUserId_WorkloadDaoのfindByUserIdが呼ばれている()
+    {
+        $this->workloadDaoMock
+            ->shouldReceive('findByUserId')
+            ->andReturn(null);
+
+        $response = $this->getJson('api/workload/get/user_id/1');
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+
+        $this->workloadDaoMock->shouldHaveReceived('findByUserId', [1]);
+    }
+
+    /** @test */
+    public function getWorkloadByUserId_findByUserIdの結果がnullのケース()
+    {
+        $this->workloadDaoMock
+            ->shouldReceive('findByUserId')
+            ->andReturn(null);
+
+        $response = $this->getJson('api/workload/get/user_id/1');
+        $response
+            ->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertExactJson([]);
+    }
+
+    /** @test */
+    public function getWorkloadByUserId_findByUserIdの結果が存在するケース()
+    {
+        $workload = WorkloadFaker::create(1)[0];
+
+        $this->workloadDaoMock
+            ->shouldReceive('findByUserId')
+            ->andReturn($workload);
+
+        $response = $this->getJson('api/workload/get/user_id/1');
+        $response
+            ->assertStatus(Response::HTTP_OK)
+            ->assertExactJson([
+                'id' => $workload->getId(),
+                'project_id' => $workload->getProjectId(),
+                'category_id' => $workload->getCategoryId(),
+                'amount' => $workload->getAmount(),
+                'date' => $workload->getDate()->toIso8601String(),
+            ]);
+    }
 }

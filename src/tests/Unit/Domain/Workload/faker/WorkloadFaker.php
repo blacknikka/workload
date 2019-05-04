@@ -24,6 +24,7 @@ class WorkloadFaker
                 $faker->unique()->randomNumber() + 1,
                 $faker->unique()->randomNumber(),
                 $faker->unique()->randomNumber(),
+                $faker->unique()->randomNumber(),
                 $faker->randomFloat(2, 0, 24),
                 Carbon::today()
             );
@@ -47,6 +48,7 @@ class WorkloadFaker
             $faker->unique();
             return new Workload(
                 null,
+                $faker->unique()->randomNumber(),
                 $faker->unique()->randomNumber(),
                 $faker->unique()->randomNumber(),
                 $faker->randomFloat(2, 0, 24),

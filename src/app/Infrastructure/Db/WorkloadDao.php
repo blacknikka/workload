@@ -25,6 +25,7 @@ class WorkloadDao
             ->where(self::WORKLOAD_TABLE_NAME . '.id', $wId)
             ->select([
                 self::WORKLOAD_TABLE_NAME . '.id as workloadId',
+                self::WORKLOAD_TABLE_NAME . '.user_id as userId',
                 self::WORKLOAD_TABLE_NAME . '.project_id as projId',
                 self::WORKLOAD_TABLE_NAME . '.category_id as catId',
                 'amount',
@@ -45,6 +46,7 @@ class WorkloadDao
 
         $workloadArrayForSave = [
             'id'    => $workload->getId(),
+            'user_id' => $workload->getUserId(),
             'project_id' => $workload->getProjectId(),
             'category_id' => $workload->getCategoryId(),
             'amount' => $workload->getAmount(),
@@ -83,6 +85,7 @@ class WorkloadDao
     {
         return new Workload(
             $queryResult->workloadId,
+            $queryResult->userId,
             $queryResult->projId,
             $queryResult->catId,
             (float)$queryResult->amount,

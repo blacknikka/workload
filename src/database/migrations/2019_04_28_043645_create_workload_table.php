@@ -15,6 +15,7 @@ class CreateWorkloadTable extends Migration
     {
         Schema::create('workload', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('user_id');
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('category_id');
             $table->decimal('amount', 4, 2)->comment('the value of workload.');

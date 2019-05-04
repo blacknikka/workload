@@ -7,7 +7,6 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Domain\Workload\Workload;
 use Tests\Unit\Domain\Workload\faker\WorkloadFaker;
-use Faker\Generator as Faker;
 
 class WorkloadTest extends TestCase
 {
@@ -16,11 +15,10 @@ class WorkloadTest extends TestCase
      */
     public function Workloadインスタンス()
     {
-        $faker = app()->make(Faker::class);
-
         $create = WorkloadFaker::create(1);
 
         $id = $create[0]->getId();
+        $userId = $create[0]->getUserId();
         $projectId = $create[0]->getProjectId();
         $categoryId = $create[0]->getCategoryId();
         $amount = $create[0]->getAmount();
@@ -28,6 +26,7 @@ class WorkloadTest extends TestCase
 
         $workload = new Workload(
             $id,
+            $userId,
             $projectId,
             $categoryId,
             $amount,
@@ -35,6 +34,7 @@ class WorkloadTest extends TestCase
         );
 
         $this->assertSame($workload->getId(), $id);
+        $this->assertSame($workload->getUserId(), $userId);
         $this->assertSame($workload->getProjectId(), $projectId);
         $this->assertSame($workload->getCategoryId(), $categoryId);
         $this->assertSame($workload->getAmount(), $amount);

@@ -12,6 +12,7 @@ use Carbon\Carbon;
 class Workload
 {
     private $id;
+    private $user_id;
     private $project_id;
     private $category_id;
     private $amount;
@@ -20,6 +21,7 @@ class Workload
     /**
      * Workload constructor.
      * @param int|null $id
+     * @param int $user_id
      * @param int $project_id
      * @param int $category_id
      * @param float $amount
@@ -27,12 +29,14 @@ class Workload
      */
     public function __construct(
         ?int $id,
+        int $user_id,
         int $project_id,
         int $category_id,
         float $amount,
         Carbon $date
     ) {
         $this->id = $id;
+        $this->user_id = $user_id;
         $this->project_id = $project_id;
         $this->category_id = $category_id;
         $this->amount = $amount;
@@ -45,6 +49,16 @@ class Workload
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * User ID
+     *
+     * @return integer
+     */
+    public function getUserId() : int
+    {
+        return $this->user_id;
     }
 
     /**
@@ -93,3 +107,4 @@ class Workload
         ];
     }
 }
+

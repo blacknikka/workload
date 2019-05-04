@@ -103,8 +103,7 @@ class Workload
             'project_id' => $this->project_id,
             'category_id' => $this->category_id,
             'amount' => $this->amount,
-            'date' => $this->date,
+            'date' => $this->date->toIso8601String(),
         ];
     }
 }
-

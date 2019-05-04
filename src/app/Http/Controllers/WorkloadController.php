@@ -51,8 +51,24 @@ class WorkloadController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function getWorkloadByUserId(GetWorkloadRequest $request) : JsonResponse
+    public function getWorkloadByUserId(GetWorkloadRequest $request, int $userId) : JsonResponse
     {
-        $result = $this->workloadDao->find($id);
+        $result = $this->workloadDao->findByUserId($userId);
+
+        if (is_null($result)) {
+            return response()->json(
+                [],
+                Response::HTTP_NOT_FOUND,
+                [],
+                JSON_UNESCAPED_UNICODE
+            );
+        } else {
+            return response()->json(
+                $result->toArray(),
+                Response::HTTP_OK,
+                [],
+                JSON_UNESCAPED_UNICODE
+            );
+        }
     }
 }

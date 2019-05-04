@@ -114,6 +114,48 @@ class WorkloadDaoTest extends TestCase
     }
 
     /** @test */
+    public function find_異常系()
+    {
+        $data = WorkloadFaker::createWithNullId(1)[0];
+        $id = $this->insertWorkloadData($data);
+
+        $result = $this->sut->find($id + 1);
+
+        // 検証
+        $this->assertNull($result);
+    }
+
+    /** @test */
+    public function findByUserId_正常系()
+    {
+        $data = WorkloadFaker::createWithNullId(1)[0];
+        $id = $this->insertWorkloadData($data);
+
+        $result = $this->sut->findByUserId($data->getUserId());
+
+        // 検証
+        $this->assertNotNull($result);
+        $this->assertNotNull($result->getId());
+        $this->assertEquals($result->getUserId(), $data->getUserId());
+        $this->assertEquals($result->getProjectId(), $data->getProjectId());
+        $this->assertEquals($result->getCategoryId(), $data->getCategoryId());
+        $this->assertEquals($result->getAmount(), $data->getAmount());
+        $this->assertEquals($result->getDate(), $data->getDate());
+    }
+
+    /** @test */
+    public function findByUserId_異常系()
+    {
+        $data = WorkloadFaker::createWithNullId(1)[0];
+        $id = $this->insertWorkloadData($data);
+
+        $result = $this->sut->findByUserId($data->getUserId() + 1);
+
+        // 検証
+        $this->assertNull($result);
+    }
+
+    /** @test */
     public function save_正常系_nullID()
     {
         // テスト用のデータを作成

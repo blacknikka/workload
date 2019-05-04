@@ -37,6 +37,29 @@ class WorkloadDao
     }
 
     /**
+     * UserIdにより検索
+     *
+     * @param integer $userId
+     * @return Workload|null
+     */
+    public function findByUserId(int $userId) : ?Workload
+    {
+        $queryResult = Db::table(self::WORKLOAD_TABLE_NAME)
+            ->where(self::WORKLOAD_TABLE_NAME . '.user_id', $userId)
+            ->select([
+                self::WORKLOAD_TABLE_NAME . '.id as workloadId',
+                self::WORKLOAD_TABLE_NAME . '.user_id as userId',
+                self::WORKLOAD_TABLE_NAME . '.project_id as projId',
+                self::WORKLOAD_TABLE_NAME . '.category_id as catId',
+                'amount',
+                'date'
+            ])
+            ->first();
+
+        return is_null($queryResult) ? null : $this->newFromQueryResult($queryResult);
+    }
+
+    /**
      * @param Workload $workload
      * @return int ID
      */

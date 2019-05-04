@@ -76,7 +76,7 @@ class WorkloadDao
             'date' => $workload->getDate(),
         ];
 
-        // workloadに登録
+        // 登録の確認
         $project = DB::table(self::PROJECT_TABLE_NAME)
             ->exists('id', $workload->getProjectId());
 

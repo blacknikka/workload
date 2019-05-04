@@ -45,5 +45,4 @@ class GetWorkloadRequestTest extends TestCase
                 => [null, false],
         ];
     }
-
 }

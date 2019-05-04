@@ -42,6 +42,7 @@ class WorkloadDaoTest extends TestCase
     {
         $workloadArrayForSave = [
             'id'    => $workload->getId(),
+            'user_id' => $workload->getUserId(),
             'project_id' => $workload->getProjectId(),
             'category_id' => $workload->getCategoryId(),
             'amount' => $workload->getAmount(),
@@ -105,6 +106,7 @@ class WorkloadDaoTest extends TestCase
         // 検証
         $this->assertNotNull($result);
         $this->assertNotNull($result->getId());
+        $this->assertEquals($result->getUserId(), $data->getUserId());
         $this->assertEquals($result->getProjectId(), $data->getProjectId());
         $this->assertEquals($result->getCategoryId(), $data->getCategoryId());
         $this->assertEquals($result->getAmount(), $data->getAmount());
@@ -130,6 +132,7 @@ class WorkloadDaoTest extends TestCase
         // 検証
         $this->assertNotNull($readData);
         $this->assertNotNull($readData->getId());
+        $this->assertEquals($readData->getUserId(), $data->getUserId());
         $this->assertEquals($readData->getProjectId(), $data->getProjectId());
         $this->assertEquals($readData->getCategoryId(), $data->getCategoryId());
         $this->assertEquals($readData->getAmount(), $data->getAmount());

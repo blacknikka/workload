@@ -66,8 +66,12 @@ class WorkloadController extends Controller
                 JSON_UNESCAPED_UNICODE
             );
         } else {
+            $array = collect($result)->map(function ($f) {
+                return $f->toArray();
+            });
+
             return response()->json(
-                $result->toArray(),
+                $array,
                 Response::HTTP_OK,
                 [],
                 JSON_UNESCAPED_UNICODE

@@ -89,10 +89,10 @@ class WorkloadControllerTest extends TestCase
     {
         $this->workloadDaoMock
             ->shouldReceive('findByUserId')
-            ->andReturn(null);
+            ->andReturn(collect());
 
         $response = $this->getJson('api/workload/get/user_id/1');
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
+        $response->assertStatus(Response::HTTP_OK);
 
         $this->workloadDaoMock->shouldHaveReceived('findByUserId', [1]);
     }
@@ -102,32 +102,36 @@ class WorkloadControllerTest extends TestCase
     {
         $this->workloadDaoMock
             ->shouldReceive('findByUserId')
-            ->andReturn(null);
+            ->andReturn(collect());
 
         $response = $this->getJson('api/workload/get/user_id/1');
         $response
-            ->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertStatus(Response::HTTP_OK)
             ->assertExactJson([]);
     }
 
     /** @test */
     public function getWorkloadByUserId_findByUserIdの結果が存在するケース()
     {
-        $workload = WorkloadFaker::create(1)[0];
+        $workload = WorkloadFaker::create(1);
 
         $this->workloadDaoMock
             ->shouldReceive('findByUserId')
-            ->andReturn($workload);
+            ->andReturn(collect($workload));
 
+        // 使用するUserIDは適当（MockしているのでなんでもOK）
         $response = $this->getJson('api/workload/get/user_id/1');
+
         $response
             ->assertStatus(Response::HTTP_OK)
             ->assertExactJson([
-                'id' => $workload->getId(),
-                'project_id' => $workload->getProjectId(),
-                'category_id' => $workload->getCategoryId(),
-                'amount' => $workload->getAmount(),
-                'date' => $workload->getDate()->toIso8601String(),
+                [
+                    'id' => $workload[0]->getId(),
+                    'project_id' => $workload[0]->getProjectId(),
+                    'category_id' => $workload[0]->getCategoryId(),
+                    'amount' => $workload[0]->getAmount(),
+                    'date' => $workload[0]->getDate()->toIso8601String(),
+                ],
             ]);
     }
 

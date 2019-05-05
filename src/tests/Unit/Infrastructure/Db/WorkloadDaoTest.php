@@ -132,6 +132,7 @@ class WorkloadDaoTest extends TestCase
         $id = $this->insertWorkloadData($data);
 
         $result = $this->sut->findByUserId($data->getUserId());
+        $result = $result[0];
 
         // 検証
         $this->assertNotNull($result);
@@ -152,7 +153,7 @@ class WorkloadDaoTest extends TestCase
         $result = $this->sut->findByUserId($data->getUserId() + 1);
 
         // 検証
-        $this->assertNull($result);
+        $this->assertSame(count($result), 0);
     }
 
     /** @test */

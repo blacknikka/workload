@@ -1,5 +1,7 @@
 <template>
-  <div @click="toHome">
+  <div
+  class="top-container"
+  @click="toHome">
     top page
   </div>
 </template>
@@ -8,13 +10,15 @@
 export default {
     methods: {
         toHome() {
-            this.$router.replace('home')
+            this.$router.push('home')
         }
     },
 };
 </script>
 
-<style lang="sass" scoped>
-
+<style lang="scss" scoped>
+.top-container {
+    width: 100vw;
+}
 </style>
 

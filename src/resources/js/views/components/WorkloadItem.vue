@@ -40,19 +40,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .workload-container {
     width: 100%;
-}
-.date-container {
-    width: 20%;
-}
-.amount-container {
-    width: 30%;
-}
-.project-id-container {
-    width: 30%;
-}
-.category-id-container {
-    width: 30%;
+    clear: both;
+    display: block;
+
+    p {
+        float: left;
+    }
+
+    .date-container {
+        width: 30%;
+    }
+    .amount-container {
+        width: 30%;
+    }
+    .project-id-container {
+        width: 20%;
+    }
+    .category-id-container {
+        width: 20%;
+    }
 }
 </style>

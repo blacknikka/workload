@@ -13,5 +13,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(WorkloadFKeeder::class);
         $this->call(UserTableSeeder::class);
+        $this->call(WorkloadTableSeeder::class);
     }
 }

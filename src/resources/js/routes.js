@@ -1,11 +1,12 @@
 import VueRouter from 'vue-router';
 import store from './store.js';
 
-import Top from './views/layout/Top.vue';
+import Top from './views/layout/Top';
+import Home from './views/layout/Home';
 
 const routes = [
-    {path: '/', component: Top},
-    {path: '/home', component: Top},
+    {path: '/', component: Top, name: 'top'},
+    {path: '/home', component: Home, name: 'home'},
 ];
 
 const router = new VueRouter({

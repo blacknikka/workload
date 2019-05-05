@@ -1,14 +1,24 @@
 <template>
-  <div>
+  <div
+  class="top-container"
+  @click="toHome">
     top page
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+    methods: {
+        toHome() {
+            this.$router.push('home')
+        }
+    },
+};
 </script>
 
-<style lang="sass" scoped>
-
+<style lang="scss" scoped>
+.top-container {
+    width: 100vw;
+}
 </style>
 

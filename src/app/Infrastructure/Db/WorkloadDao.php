@@ -8,6 +8,7 @@ use App\Domain\Workload\Project;
 use App\Domain\Workload\Category;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Support\Collection;
 
 /**
  * Class WorkloadDao
@@ -40,9 +41,9 @@ class WorkloadDao
      * UserIdにより検索
      *
      * @param integer $userId
-     * @return Workload|null
+     * @return Workload[]
      */
-    public function findByUserId(int $userId) : ?Workload
+    public function findByUserId(int $userId) : Collection
     {
         $queryResult = Db::table(self::WORKLOAD_TABLE_NAME)
             ->where(self::WORKLOAD_TABLE_NAME . '.user_id', $userId)
@@ -54,9 +55,13 @@ class WorkloadDao
                 'amount',
                 'date'
             ])
-            ->first();
+            ->get();
 
-        return is_null($queryResult) ? null : $this->newFromQueryResult($queryResult);
+        $results = collect($queryResult)->map(function ($q) {
+            return $this->newFromQueryResult($q);
+        });
+
+        return $results;
     }
 
     /**

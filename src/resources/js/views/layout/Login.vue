@@ -1,11 +1,11 @@
 <template>
     <div class="login-container">
         <form id="app" @submit="login" method="post">
-            <div class="login-container">
+            <div class="login-input">
                 e-mail: <input v-model="email" type="text" placeholder="e-mail">
             </div>
 
-            <div class="login-container">
+            <div class="login-input">
                 password: <input v-model="password" type="password" placeholder="password">
             </div>
 
@@ -14,6 +14,7 @@
                 value="Login"
             >
         </form>
+        <router-link :to="{name: 'register'}">Register</router-link>
     </div>
 </template>
 
@@ -46,7 +47,7 @@ export default {
     height: 100vh;
     background-color: honeydew;
 
-    .login-container {
+    .login-input {
         text-align: center;
         width: 80%;
         height: 10%;

@@ -1,7 +1,7 @@
 <template>
   <div class="home-container">
     <div>
-        <router-link to="/">go to Top</router-link>
+        <router-link :to="{name: 'top'}">Go to Top</router-link>
     </div>
     <workload-item
         v-for="(item, index) in getWorkload" :key="index"

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="top-container">
-            <router-link to="/home">Go to home</router-link>
+            <router-link :to="{name: 'home'}">Go to home</router-link>
         </div>
 
         <calendar></calendar>

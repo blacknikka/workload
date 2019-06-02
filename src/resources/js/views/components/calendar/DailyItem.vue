@@ -10,8 +10,7 @@ import moment from 'moment';
 export default {
     props : {
         date: {
-            // ??
-            type: Date,
+            type: Object,
             required: true,
         },
     },
@@ -21,21 +20,20 @@ export default {
         }
     },
     created() {
-        this.moment = moment(this.data);
     },
     computed: {
         isSaturday() {
-            return this.moment.day() === 6;
+            return this.date.day() === 6;
         },
         isSunday() {
-            return this.moment.day() === 0;
+            return this.date.day() === 0;
         },
         isNormalDay() {
-            const day = this.moment.day();
+            const day = this.date.day();
             return day !== 0 && day !== 6;
         },
         today() {
-            return this.moment.date();
+            return this.date.date();
         },
     },
 }

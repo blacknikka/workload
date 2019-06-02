@@ -16,7 +16,7 @@ import Calendar from '../components/calendar/Calendar';
 export default {
     methods: {
         toHome() {
-            this.$router.push('home')
+            this.$router.push({name: 'home'});
         }
     },
     components: {

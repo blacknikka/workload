@@ -17,10 +17,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// 案件
+// workload
 Route::group(['prefix' => 'workload'], function () {
+    // get workload
     Route::get('get/id/{id}', 'WorkloadController@getWorkloadById');
     Route::get('get/user_id/{id}', 'WorkloadController@getWorkloadByUserId');
 
+    // set workload to data store.
     Route::post('set/user_id', 'WorkloadController@setWorkloadByUserId');
 });

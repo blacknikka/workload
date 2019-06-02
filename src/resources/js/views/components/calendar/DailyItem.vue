@@ -1,11 +1,14 @@
 <template>
-    <div :class="{'saturday-style': isSaturday, 'sunday-style': isSunday, 'normal-day-style': isNormalDay}">
+    <div :class="{'saturday-style': isSaturday, 'sunday-style': isSunday, 'normal-day-style': isNormalDay}"
+        @click="clicked"
+    >
         {{today}}
     </div>
 </template>
 
 <script>
 import moment from 'moment';
+import axios from '../../../Util/axios/axios';
 
 export default {
     props : {
@@ -19,7 +22,19 @@ export default {
             moment : null,
         }
     },
-    created() {
+    methods: {
+        async clicked() {
+            const result = await axios.post(
+                'api/workload/set/user_id',
+                {
+                    user_id: 1,
+                    project_id: 1,
+                    category_id: 1,
+                    amount: 2.5,
+                    date: this.date,
+                });
+            console.log(result);
+        },
     },
     computed: {
         isSaturday() {

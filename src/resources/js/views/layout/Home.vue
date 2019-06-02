@@ -1,6 +1,8 @@
 <template>
   <div class="home-container">
-    home.
+    <div @click="clicked">
+        home.
+    </div>
     <workload-item
         v-for="(item, index) in getWorkload" :key="index"
         :date="item.date"
@@ -39,6 +41,11 @@ export default {
         getWorkload() {
             return this.$store.getters.workload;
         }
+    },
+    methods: {
+        clicked() {
+            this.$router.push({name: 'top'});
+        },
     },
 };
 </script>

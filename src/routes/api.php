@@ -26,3 +26,6 @@ Route::group(['prefix' => 'workload'], function () {
     // set workload to data store.
     Route::post('set/user_id', 'WorkloadController@setWorkloadByUserId');
 });
+
+// auth
+Route::post('/register', 'Auth\RegisterController@register')->name('register');

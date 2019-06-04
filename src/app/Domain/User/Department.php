@@ -71,7 +71,7 @@ class Department
     public function toArray() : array
     {
         return [
-            'id' => $id,
+            'id' => $this->id,
             'name' => $this->name,
             'sectionName' => $this->sectionName,
             'comment' => $this->name,

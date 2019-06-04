@@ -24,16 +24,14 @@ class UserDao
     public function find(int $userId) : ?User
     {
         $queryResult = Db::table(self::USER_TABLE_NAME)
-            ->select()
-            ->join(self::DEP_TABLE_NAME, self::USER_TABLE_NAME . '.depId', '=', self::DEP_TABLE_NAME . '.id')
             ->where(self::USER_TABLE_NAME . '.id', $userId)
+            ->join(self::DEP_TABLE_NAME, self::USER_TABLE_NAME . '.depId', '=', self::DEP_TABLE_NAME . '.id')
             ->select([
                 self::USER_TABLE_NAME . '.id as userId',
                 self::USER_TABLE_NAME . '.name as userName',
                 'email',
                 'password',
                 'role',
-                'activation_token',
                 self::DEP_TABLE_NAME . '.id as depId',
                 self::DEP_TABLE_NAME . '.name as depName',
                 self::DEP_TABLE_NAME . '.section_name as depSecName',
@@ -42,6 +40,30 @@ class UserDao
             ->first();
 
         return is_null($queryResult) ? null : $this->newFromQueryResult($queryResult);
+    }
+
+    /**
+     * save to DB
+     *
+     * @param User $user
+     * @return int
+     */
+    public function save(User $user) : int
+    {
+        $now = Carbon::now();
+        $queryResult = DB::table(self::USER_TABLE_NAME)
+            ->insertGetId([
+                'id' => null,
+                'name' => $user->getName(),
+                'email' => $user->getEmail(),
+                'password' => $user->getPassword(),
+                'role' => $user->getRole(),
+                'depId' => $user->getDepartment()->getId(),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+
+        return $queryResult;
     }
 
     /**
@@ -61,8 +83,7 @@ class UserDao
             ),
             $queryResult->email,
             $queryResult->password,
-            $queryResult->role,
-            $queryResult->activation_token
+            $queryResult->role
         );
     }
 }

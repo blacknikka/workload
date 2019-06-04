@@ -83,7 +83,7 @@ class DepartmentDaoTest extends TestCase
     /** @test */
     public function save_正常系()
     {
-        // user作成
+        // department作成
         $department = DepartmentFaker::createWithNullId(1)[0];
 
         // save
@@ -96,6 +96,21 @@ class DepartmentDaoTest extends TestCase
         $tmp['id'] = $result;
 
         $this->assertEquals($sutResult->toArray(), $tmp);
+    }
+
+    /** @test */
+    public function save_Idあり()
+    {
+        // department作成
+        $department = DepartmentFaker::create(1)[0];
+
+        // save
+        $result = $this->sut->save($department);
+        $this->assertSame($result, $department->getId());
+
+        // 検証
+        $sutResult = $this->sut->find($result);
+        $this->assertEquals($sutResult, $department);
     }
 
     /**

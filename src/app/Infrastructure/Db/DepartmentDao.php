@@ -47,7 +47,7 @@ class DepartmentDao
         $now = Carbon::now();
         $queryResult = DB::table(self::DEP_TABLE_NAME)
             ->insertGetId([
-                'id' => null,
+                'id' => $department->getId() !== null ? $department->getId() : null,
                 'name' => $department->getName(),
                 'section_name' => $department->getSectionName(),
                 'comment' => $department->getComment(),

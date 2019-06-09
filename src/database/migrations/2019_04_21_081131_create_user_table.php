@@ -20,7 +20,7 @@ class CreateUserTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->unsignedTinyInteger('role')->default(10)->comment('一般ユーザーor管理ユーザー');
-            $table->string('activation_token', 64)->unique();
+            $table->string('remember_token')->default('');
             $table->timestamps();
         });
     }

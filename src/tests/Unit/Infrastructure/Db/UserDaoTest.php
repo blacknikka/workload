@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\DB;
 use App\Domain\User\User;
 use App\Domain\User\Department;
 use App\Infrastructure\Db\UserDao;
+use App\Infrastructure\Db\DepartmentDao;
 use Illuminate\Support\Collection;
+use Tests\Unit\Domain\User\faker\UserFaker;
 
 class UserDaoTest extends TestCase
 {
@@ -42,7 +44,6 @@ class UserDaoTest extends TestCase
         $userId = 1;
 
         $queryResults = Db::table(self::USER_TABLE_NAME)
-            ->select()
             ->join('department', self::USER_TABLE_NAME . '.depId', '=', self::DEP_TABLE_NAME . '.id')
             ->where(self::USER_TABLE_NAME . '.id', $userId)
             ->select([
@@ -51,7 +52,6 @@ class UserDaoTest extends TestCase
                 'email',
                 'password',
                 'role',
-                'activation_token',
                 self::DEP_TABLE_NAME . '.id as depId',
                 self::DEP_TABLE_NAME . '.name as depName',
                 self::DEP_TABLE_NAME . '.section_name as depSecName',
@@ -88,6 +88,28 @@ class UserDaoTest extends TestCase
         );
     }
 
+    /** @test */
+    public function save_正常系()
+    {
+        // user作成
+        $user = UserFaker::createWithNullId(1)[0];
+
+        $departmentDao = app()->make(DepartmentDao::class);
+        $departmentId = $departmentDao->save($user->getDepartment());
+
+        // save
+        $result = $this->sut->save($user);
+        $this->assertTrue($result > 0);
+
+        // 登録の確認
+        $sutResult = $this->sut->find($result);
+
+        // 検証
+        $tmp = $user->toArray();
+        $tmp['id'] = $result;
+        $this->assertEquals($sutResult->toArray(), $tmp);
+    }
+
     /**
      * @param array $queryResults
      * @return array
@@ -108,8 +130,7 @@ class UserDaoTest extends TestCase
                 ),
                 $queryResult->email,
                 $queryResult->password,
-                $queryResult->role,
-                $queryResult->activation_token
+                $queryResult->role
             );
         }
         return $users;

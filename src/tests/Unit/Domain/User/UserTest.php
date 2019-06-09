@@ -26,7 +26,6 @@ class UserTest extends TestCase
         $email = $users[0]->getEmail();
         $password = $users[0]->getPassword();
         $role = $users[0]->getRole();
-        $activationToken = $users[0]->getActivationToken();
 
         $user = new User(
             $id,
@@ -34,8 +33,7 @@ class UserTest extends TestCase
             $department,
             $email,
             $password,
-            $role,
-            $activationToken
+            $role
         );
 
         $this->assertSame($user->getId(), $id);
@@ -44,7 +42,6 @@ class UserTest extends TestCase
         $this->assertSame($user->getEmail(), $email);
         $this->assertSame($user->getPassword(), $password);
         $this->assertSame($user->getRole(), $role);
-        $this->assertSame($user->getActivationToken(), $activationToken);
         $this->assertSame($user->getJWTIdentifier(), $id);
         $this->assertSame($user->getJWTCustomClaims(), []);
     }

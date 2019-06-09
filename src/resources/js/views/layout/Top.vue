@@ -1,17 +1,18 @@
 <template>
     <div>
-        <div
-        class="top-container"
-        @click="toHome">
-            top page
+        <div class="top-container">
+            <router-link :to="{name: 'home'}">Go to home</router-link>
         </div>
 
         <calendar></calendar>
+
+        <logout></logout>
     </div>
 </template>
 
 <script>
 import Calendar from '../components/calendar/Calendar';
+import Logout from '../components/Logout';
 
 export default {
     methods: {
@@ -21,6 +22,7 @@ export default {
     },
     components: {
         Calendar,
+        Logout,
     },
 };
 </script>

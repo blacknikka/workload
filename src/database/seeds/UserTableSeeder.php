@@ -21,7 +21,7 @@ class UserTableSeeder extends Seeder
             'email' => 'test1@example.com',
             'password' => bcrypt('test1'),
             'role' => 1,
-            'activation_token' => 'testtoken',
+            'remember_token' => str_random(10),
             'created_at' => $now,
             'updated_at' => $now,
         ];
@@ -32,7 +32,7 @@ class UserTableSeeder extends Seeder
             'email' => 'test2@example.com',
             'password' => bcrypt('test2'),
             'role' => 10,
-            'activation_token' => 'testtoken2',
+            'remember_token' => str_random(10),
             'created_at' => $now,
             'updated_at' => $now,
         ];

@@ -32,7 +32,6 @@ class User implements
     private $email;
     private $password;
     private $role;
-    private $activationToken;
 
     /**
      * User constructor.
@@ -42,7 +41,6 @@ class User implements
      * @param string $email
      * @param string $password
      * @param int    $role
-     * @param string $activationToken
      */
     public function __construct(
         ?int $id,
@@ -50,8 +48,7 @@ class User implements
         Department $department,
         string $email,
         string $password,
-        int    $role,
-        string $activationToken
+        int    $role
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -59,7 +56,6 @@ class User implements
         $this->email = $email;
         $this->password = $password;
         $this->role = $role;
-        $this->activationToken = $activationToken;
     }
 
     /**
@@ -111,14 +107,6 @@ class User implements
     }
 
     /**
-     * @return string
-     */
-    public function getActivationToken(): string
-    {
-        return $this->activationToken;
-    }
-
-    /**
      * @return int|null
      */
     public function getJWTIdentifier(): ?int
@@ -152,6 +140,16 @@ class User implements
             'email' => $this->getEmail(),
             'canRegisterProjects' => $this->can('register-projects'),
         ];
+    }
+
+    /**
+     * to string
+     *
+     * @return string
+     */
+    public function __toString() : string
+    {
+        return json_encode($this->toArray());
     }
 
     /**

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Domain\User\User;
+use App\Domain\User\UserRepository;
 use App\Domain\User\Department;
+use App\Domain\User\DepartmentRepository;
 // use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -55,6 +57,7 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'department' => 'required|int|min:1',
         ]);
     }
 
@@ -62,17 +65,47 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return \App\User|null
      */
-    protected function create(array $data)
+    protected function create(array $data) : ?User
     {
-        return new User(
+        $departmentId = $data['department'];
+
+        /**
+         * @var DepartmentRepository $departmentRepository
+         */
+        $departmentRepository = app()->make(DepartmentRepository::class);
+
+        // TODO: Departmentに存在しない場合のエラーの対応を行う
+
+        // confirmation of whether the department exists or not.
+        // if ($departmentRepository->existsById($departmentId) === false)
+        // {
+        //     // If Id doesn't exists.
+        //     // NULL will be returned.
+        //     return null;
+        // }
+
+        $department = $departmentRepository->findById($departmentId);
+        $user = new User(
             null,
             $data['name'],
-            new Department(null, 'namae', 'sectionName', 'comment'),
+            $department,
             $data['email'],
             Hash::make($data['password']),
             1
+        );
+
+        // registration
+        $uid = app()->make(UserRepository::class)->save($user);
+
+        return new User(
+            $uid,
+            $user->getName(),
+            $user->getDepartment(),
+            $user->getEmail(),
+            $user->getPassword(),
+            $user->getRole()
         );
     }
 

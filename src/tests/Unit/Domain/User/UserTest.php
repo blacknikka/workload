@@ -16,8 +16,6 @@ class UserTest extends TestCase
      */
     public function Userインスタンス()
     {
-        $faker = app()->make(Faker::class);
-
         $users = UserFaker::create(1);
 
         $id = $users[0]->getId();

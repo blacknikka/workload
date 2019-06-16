@@ -37,6 +37,29 @@ class DepartmentDao
     }
 
     /**
+     * Find a department by name.
+     *
+     * @param string $name
+     * @return Department|null
+     */
+    public function findByName(string $name) : ?Department
+    {
+        $queryResult = Db::table(self::DEP_TABLE_NAME)
+            ->where(self::DEP_TABLE_NAME . '.name', $name)
+            ->select([
+                'id',
+                'name',
+                'section_name',
+                'comment',
+                'created_at',
+                'updated_at',
+            ])
+            ->first();
+
+        return is_null($queryResult) ? null : $this->newFromQueryResult($queryResult);
+    }
+
+    /**
      * save to DB
      *
      * @param Department $user
@@ -44,18 +67,46 @@ class DepartmentDao
      */
     public function save(Department $department) : int
     {
-        $now = Carbon::now();
-        $queryResult = DB::table(self::DEP_TABLE_NAME)
-            ->insertGetId([
-                'id' => $department->getId() !== null ? $department->getId() : null,
-                'name' => $department->getName(),
-                'section_name' => $department->getSectionName(),
-                'comment' => $department->getComment(),
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+        // check whether it exists or not.
+        if ($this->IsExistByName($department->getName()) === true) {
+            // If the same name exists then it is not able to add a new one.
+            return 0;
+        } else {
+            $now = Carbon::now();
+            $queryResult = DB::table(self::DEP_TABLE_NAME)
+                ->insertGetId([
+                    'id' => $department->getId() !== null ? $department->getId() : null,
+                    'name' => $department->getName(),
+                    'section_name' => $department->getSectionName(),
+                    'comment' => $department->getComment(),
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
 
-        return $queryResult;
+            return $queryResult;
+        }
+    }
+
+    /**
+     * check if it exists.
+     *
+     * @param string $name
+     * @return boolean
+     */
+    public function exists(string $name) : bool
+    {
+        return $this->IsExistByName($name);
+    }
+
+    /**
+     * check if exists by ID.
+     *
+     * @param integer $id
+     * @return boolean
+     */
+    public function existsById(int $id) : bool
+    {
+        return $this->IsExistById($id);
     }
 
     /**
@@ -70,5 +121,31 @@ class DepartmentDao
             $queryResult->section_name,
             $queryResult->comment
         );
+    }
+
+    /**
+     * Check if it exists.
+     *
+     * @param string $name
+     * @return boolean
+     */
+    private function IsExistByName(string $name) : bool
+    {
+        return DB::table(self::DEP_TABLE_NAME)
+            ->where(self::DEP_TABLE_NAME . '.name', $name)
+            ->exists();
+    }
+
+    /**
+     * Check if it exists by ID.
+     *
+     * @param int $id
+     * @return boolean
+     */
+    private function IsExistById(int $id) : bool
+    {
+        return DB::table(self::DEP_TABLE_NAME)
+            ->where(self::DEP_TABLE_NAME . '.id', $id)
+            ->exists();
     }
 }

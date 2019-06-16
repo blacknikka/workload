@@ -57,7 +57,7 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
-            // 'department' => 'required|int|min:1'
+            'department' => 'required|int|min:1',
         ]);
     }
 
@@ -65,11 +65,28 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return \App\User|null
      */
-    protected function create(array $data) : User
+    protected function create(array $data) : ?User
     {
-        $department = new Department(null, 'namae', 'sectionName', 'comment');
+        $departmentId = $data['department'];
+
+        /**
+         * @var DepartmentRepository $departmentRepository
+         */
+        $departmentRepository = app()->make(DepartmentRepository::class);
+
+        // TODO: Departmentに存在しない場合のエラーの対応を行う
+
+        // confirmation of whether the department exists or not.
+        // if ($departmentRepository->existsById($departmentId) === false)
+        // {
+        //     // If Id doesn't exists.
+        //     // NULL will be returned.
+        //     return null;
+        // }
+
+        $department = $departmentRepository->findById($departmentId);
         $user = new User(
             null,
             $data['name'],
@@ -78,12 +95,6 @@ class RegisterController extends Controller
             Hash::make($data['password']),
             1
         );
-
-        // confirmation of whether the department exists or not.
-        $depDepository = app()->make(DepartmentRepository::class);
-        if ($depDepository->exists('namae') === false) {
-            $depDepository->save($department);
-        }
 
         // registration
         $uid = app()->make(UserRepository::class)->save($user);

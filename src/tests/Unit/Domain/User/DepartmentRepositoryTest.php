@@ -41,7 +41,7 @@ class DepartmentRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function find_DepartmentDaoのfindが呼ばれている()
+    public function findById_DepartmentDaoのfindが呼ばれている()
     {
         $this->departmentMock
             ->shouldReceive('find')
@@ -69,7 +69,7 @@ class DepartmentRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function exists_DepartmentDaoのsaveが呼ばれている()
+    public function exists_DepartmentDaoのexistsが呼ばれている()
     {
         $this->departmentMock
             ->shouldReceive('exists')
@@ -79,6 +79,20 @@ class DepartmentRepositoryTest extends TestCase
 
         $this->departmentMock
             ->shouldHaveReceived('exists', ['namae']);
+        $this->assertTrue($result);
+    }
+
+    /** @test */
+    public function existsById_DepartmentDaoのexistsByIdが呼ばれている()
+    {
+        $this->departmentMock
+            ->shouldReceive('existsById')
+            ->andReturn(true);
+
+        $result = $this->sut->existsById(1);
+
+        $this->departmentMock
+            ->shouldHaveReceived('existsById', [1]);
         $this->assertTrue($result);
     }
 }

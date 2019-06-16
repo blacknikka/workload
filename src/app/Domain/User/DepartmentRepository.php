@@ -51,4 +51,15 @@ class DepartmentRepository
     {
         return $this->departmentDao->exists($name);
     }
+
+    /**
+     * if exists (by ID).
+     *
+     * @param integer $id
+     * @return boolean
+     */
+    public function existsById(int $id) : bool
+    {
+        return $this->departmentDao->existsById($id);
+    }
 }

@@ -187,6 +187,31 @@ class DepartmentDaoTest extends TestCase
         $this->assertFalse($exists);
     }
 
+    /** @test */
+    public function existsById_true()
+    {
+        // department作成
+        $department = DepartmentFaker::createWithNullId(1)[0];
+
+        // save
+        $result = $this->sut->save($department);
+        $this->assertTrue($result > 0);
+
+        $exists = $this->sut->existsById($result);
+        $this->assertTrue($exists);
+    }
+
+    /** @test */
+    public function existsById_false()
+    {
+        // department作成
+        $department = DepartmentFaker::createWithNullId(1)[0];
+
+        // saveをせずにexists
+        $exists = $this->sut->existsById(100);
+        $this->assertFalse($exists);
+    }
+
     /**
      * @param array $queryResults
      * @return array

@@ -99,6 +99,17 @@ class DepartmentDao
     }
 
     /**
+     * check if exists by ID.
+     *
+     * @param integer $id
+     * @return boolean
+     */
+    public function existsById(int $id) : bool
+    {
+        return $this->IsExistById($id);
+    }
+
+    /**
      * @param \stdClass $queryResult
      * @return Department
      */
@@ -122,6 +133,19 @@ class DepartmentDao
     {
         return DB::table(self::DEP_TABLE_NAME)
             ->where(self::DEP_TABLE_NAME . '.name', $name)
+            ->exists();
+    }
+
+    /**
+     * Check if it exists by ID.
+     *
+     * @param int $id
+     * @return boolean
+     */
+    private function IsExistById(int $id) : bool
+    {
+        return DB::table(self::DEP_TABLE_NAME)
+            ->where(self::DEP_TABLE_NAME . '.id', $id)
             ->exists();
     }
 }

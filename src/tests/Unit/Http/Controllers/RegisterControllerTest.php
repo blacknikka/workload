@@ -24,7 +24,7 @@ class RegisterControllerTest extends TestCase
         $response = $this->json('POST', route('register'), $data);
 
         // $user = DB::table('user')
-        //     ->where();
+        //     ->where('id', );
 
         $response
             ->assertStatus(200);

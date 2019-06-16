@@ -79,12 +79,12 @@ class RegisterController extends Controller
         // TODO: Departmentに存在しない場合のエラーの対応を行う
 
         // confirmation of whether the department exists or not.
-        // if ($departmentRepository->existsById($departmentId) === false)
-        // {
-        //     // If Id doesn't exists.
-        //     // NULL will be returned.
-        //     return null;
-        // }
+        if ($departmentRepository->existsById($departmentId) === false)
+        {
+            // If Id doesn't exists.
+            // 500 abort.
+            abort('500');
+        }
 
         $department = $departmentRepository->findById($departmentId);
         $user = new User(

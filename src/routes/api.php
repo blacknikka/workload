@@ -28,4 +28,4 @@ Route::group(['prefix' => 'workload'], function () {
 });
 
 // auth
-Route::post('/register', 'Auth\RegisterController@register')->name('register');
+Route::post('/register', 'Auth\AuthController@register')->name('register');

@@ -1,16 +1,14 @@
 <?php
 
-namespace Tests\Unit\Http\Controllers;
+namespace Tests\Unit\Http\Controllers\Auth;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
-
 use DB;
-use App\Http\Controllers\Auth\RegisterController;
 
-class RegisterControllerTest extends TestCase
+class AuthControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -51,15 +49,15 @@ class RegisterControllerTest extends TestCase
 
         $response = $this->json('POST', route('register'), $data);
 
+        $response
+            ->assertStatus(200);
+
         // get content
         $content = json_decode($response->getContent());
 
         $user = DB::table('user')
             ->where('id', $content->id)
             ->first();
-
-        $response
-            ->assertStatus(200);
 
         $this->assertSame($user->id, $content->id);
         $this->assertSame($user->name, $content->name);

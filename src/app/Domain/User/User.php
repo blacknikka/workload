@@ -32,6 +32,7 @@ class User implements
     private $email;
     private $password;
     private $role;
+    private $rememberToken;
 
     /**
      * User constructor.
@@ -41,6 +42,7 @@ class User implements
      * @param string $email
      * @param string $password
      * @param int    $role
+     * @param string $rememberToken
      */
     public function __construct(
         ?int $id,
@@ -48,7 +50,8 @@ class User implements
         Department $department,
         string $email,
         string $password,
-        int    $role
+        int    $role,
+        string $rememberToken
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -56,6 +59,7 @@ class User implements
         $this->email = $email;
         $this->password = $password;
         $this->role = $role;
+        $this->rememberToken = $rememberToken;
     }
 
     /**
@@ -104,6 +108,14 @@ class User implements
     public function getRole(): int
     {
         return $this->role;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRememberToken(): string
+    {
+        return $this->rememberToken;
     }
 
     /**

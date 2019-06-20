@@ -28,7 +28,8 @@ class UserFaker
                 $faker->email(),
                 bcrypt($faker->word()),
                 1,
-                ''
+                '',
+                $faker->password()
             );
         });
         return $data->all();
@@ -55,7 +56,8 @@ class UserFaker
                 $faker->email(),
                 bcrypt($faker->word()),
                 1,
-                ''
+                '',
+                $faker->password()
             );
         });
         return $data->all();

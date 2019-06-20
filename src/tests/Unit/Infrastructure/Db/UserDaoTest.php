@@ -52,6 +52,7 @@ class UserDaoTest extends TestCase
                 'email',
                 'password',
                 'role',
+                'remember_token',
                 self::DEP_TABLE_NAME . '.id as depId',
                 self::DEP_TABLE_NAME . '.name as depName',
                 self::DEP_TABLE_NAME . '.section_name as depSecName',
@@ -130,7 +131,8 @@ class UserDaoTest extends TestCase
                 ),
                 $queryResult->email,
                 $queryResult->password,
-                $queryResult->role
+                $queryResult->role,
+                $queryResult->remember_token
             );
         }
         return $users;

@@ -86,4 +86,31 @@ class AuthControllerTest extends TestCase
         $this->assertSame($user->depId, 1);
         $this->assertSame($user->email, $content->email);
     }
+
+    // /** @test */
+    // public function authenticate_正常系()
+    // {
+    //     // authenticate
+    //     $data = [
+    //         'name' => 'user_name',
+    //         'email' => 'test@example.com',
+    //         'password' => 'password',
+    //         'password_confirmation' => 'password',
+    //         'department' => 1,
+    //     ];
+
+    //     $response = $this->json('POST', route('register'), $data);
+    //     $response
+    //         ->assertStatus(200);
+
+    //     // authenticate
+    //     $authenticate = [
+    //         'email' => 'test@example.com',
+    //         'password' => 'password',
+    //     ];
+    //     $response = $this->json('POST', route('authenticate'), $authenticate);
+    //     $response
+    //         ->assertStatus(200);
+    //     var_dump($response->getContent());
+    // }
 }

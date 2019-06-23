@@ -5,6 +5,7 @@ namespace App\Domain\User;
 
 use Illuminate\Notifications\Notifiable;
 
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -21,7 +22,8 @@ use App\Domain\User\Department;
 class User implements
     AuthenticatableContract,
     AuthorizableContract,
-    CanResetPasswordContract
+    CanResetPasswordContract,
+    JWTSubject
 {
     use Authenticatable, Authorizable, CanResetPassword;
     use Notifiable;

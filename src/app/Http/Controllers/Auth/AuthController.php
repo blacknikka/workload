@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Controllers\Controller;
 use App\Domain\User\User;
 use App\Domain\User\UserRepository;
@@ -52,7 +53,7 @@ class AuthController extends Controller
         {
             // If Id doesn't exists.
             // 422 abort.
-            abort('422');
+            abort('422', "Its department ID doesn't exist.");
         }
 
         $department = $this->departmentRepository->findById($departmentId);
@@ -71,7 +72,7 @@ class AuthController extends Controller
         if ($uid === null) {
             // nullの場合
             // 失敗ということで422
-            abort('422');
+            abort('422', "The email address seems to be duplicated.");
         }
 
         return response()->json((new User(
@@ -88,10 +89,10 @@ class AuthController extends Controller
     /**
      * 認証する（ログイン）
      *
-     * @param Request $request
+     * @param LoginRequest $request
      * @return JsonResponse
      */
-    public function authenticate(Request $request): JsonResponse
+    public function authenticate(LoginRequest $request): JsonResponse
     {
         $credentials = $request->only('email', 'password');
 
@@ -113,22 +114,6 @@ class AuthController extends Controller
 
         /** @var \App\Domain\User\User */
         $user = $this->userRepository->findByEmail($email);
-
-        if ($user->getStatus() === Status::PENDING_ACTIVATION) {
-            return response()-> json([
-                'message' => 'Your account hasn\'t been activated. Please check your email & activate account.'
-            ], 422);
-        }
-        if ($user->getStatus() === Status::BANNED) {
-            return response()->json([
-                'message' => 'Your account is banned. Please contact system administrator.'
-            ], 422);
-        }
-        if ($user->getStatus() !== Status::ACTIVATED) {
-            return response()->json([
-                'message' => 'There is something wrong with your account. Please contact system administrator.'
-            ], 422);
-        }
         return response()->json(['message' => 'You are successfully logged in!','token' => $token]);
     }
 }

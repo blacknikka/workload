@@ -27,5 +27,11 @@ Route::group(['prefix' => 'workload'], function () {
     Route::post('set/user_id', 'WorkloadController@setWorkloadByUserId');
 });
 
-// auth
-Route::post('/register', 'Auth\AuthController@register')->name('register');
+
+Route::group(['prefix' => 'auth'], function () {
+    // register
+    Route::post('/register', 'Auth\AuthController@register')->name('register');
+
+    // authenticate
+    Route::post('/authenticate', 'Auth\AuthController@authenticate')->name('authenticate');
+});

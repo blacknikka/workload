@@ -20,7 +20,7 @@ class AuthControllerTest extends TestCase
     }
 
     /** @test */
-    public function register_department不備_失敗()
+    public function register_異常系_department不備_失敗()
     {
         $data = [
             'name' => 'user_name',
@@ -33,7 +33,29 @@ class AuthControllerTest extends TestCase
         $response = $this->json('POST', route('register'), $data);
 
         $response
-            ->assertStatus(500);
+            ->assertStatus(422);
+    }
+
+    /** @test */
+    public function register_異常系_email重複()
+    {
+        // 登録
+        $data = [
+            'name' => 'user_name',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'department' => 1,
+        ];
+
+        $response = $this->json('POST', route('register'), $data);
+        $response
+            ->assertStatus(200);
+
+        // 再び登録
+        $response = $this->json('POST', route('register'), $data);
+        $response
+            ->assertStatus(422);
     }
 
     /** @test */

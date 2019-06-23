@@ -44,13 +44,51 @@ class UserDao
     }
 
     /**
+     * EmailからUserを検索する
+     *
+     * @param string $email
+     * @return User|null
+     */
+    public function findByEmail(string $email) : ?User
+    {
+        $queryResult = Db::table(self::USER_TABLE_NAME)
+            ->where(self::USER_TABLE_NAME . '.email', $email)
+            ->join(self::DEP_TABLE_NAME, self::USER_TABLE_NAME . '.depId', '=', self::DEP_TABLE_NAME . '.id')
+            ->select([
+                self::USER_TABLE_NAME . '.id as userId',
+                self::USER_TABLE_NAME . '.name as userName',
+                'email',
+                'password',
+                'role',
+                'remember_token',
+                self::DEP_TABLE_NAME . '.id as depId',
+                self::DEP_TABLE_NAME . '.name as depName',
+                self::DEP_TABLE_NAME . '.section_name as depSecName',
+                self::DEP_TABLE_NAME . '.comment as depComment',
+            ])
+            ->first();
+
+        return is_null($queryResult) ? null : $this->newFromQueryResult($queryResult);
+    }
+
+    /**
      * save to DB
      *
      * @param User $user
-     * @return int
+     * @return int|null
      */
-    public function save(User $user) : int
+    public function save(User $user) : ?int
     {
+        // 同じEmailの重複を確認する
+        $exists = Db::table(self::USER_TABLE_NAME)
+            ->where(self::USER_TABLE_NAME . '.email', $user->getEmail())
+            ->exists();
+
+        if ($exists === true) {
+            // if exists, then return null.
+            return null;
+        }
+
         $now = Carbon::now();
         $queryResult = DB::table(self::USER_TABLE_NAME)
             ->insertGetId([

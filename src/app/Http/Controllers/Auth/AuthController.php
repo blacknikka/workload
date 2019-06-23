@@ -51,8 +51,8 @@ class AuthController extends Controller
         if ($this->departmentRepository->existsById($departmentId) === false)
         {
             // If Id doesn't exists.
-            // 500 abort.
-            abort('500');
+            // 422 abort.
+            abort('422');
         }
 
         $department = $this->departmentRepository->findById($departmentId);
@@ -68,6 +68,11 @@ class AuthController extends Controller
 
         // registration
         $uid = app()->make(UserRepository::class)->save($user);
+        if ($uid === null) {
+            // nullの場合
+            // 失敗ということで422
+            abort('422');
+        }
 
         return response()->json((new User(
             $uid,
@@ -78,5 +83,52 @@ class AuthController extends Controller
             $user->getRole(),
             $user->getRememberToken()
         ))->toArray());
+    }
+
+    /**
+     * 認証する（ログイン）
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function authenticate(Request $request): JsonResponse
+    {
+        $credentials = $request->only('email', 'password');
+
+        try {
+            /**
+             * $token false|string
+             */
+            $token = JWTAuth::attempt($credentials);
+
+            if ($token === false) {
+                return response()->json(['message' => 'Invalid Credentials.'], 422);
+            }
+        } catch (JWTException $e) {
+            return response()->json(['message' => 'Server Error.'], 500);
+        }
+
+        // emailで認証できた = emailでuser取得できる(non-null)
+        $email = $request->get('email');
+
+        /** @var \App\Domain\User\User */
+        $user = $this->userRepository->findByEmail($email);
+
+        if ($user->getStatus() === Status::PENDING_ACTIVATION) {
+            return response()-> json([
+                'message' => 'Your account hasn\'t been activated. Please check your email & activate account.'
+            ], 422);
+        }
+        if ($user->getStatus() === Status::BANNED) {
+            return response()->json([
+                'message' => 'Your account is banned. Please contact system administrator.'
+            ], 422);
+        }
+        if ($user->getStatus() !== Status::ACTIVATED) {
+            return response()->json([
+                'message' => 'There is something wrong with your account. Please contact system administrator.'
+            ], 422);
+        }
+        return response()->json(['message' => 'You are successfully logged in!','token' => $token]);
     }
 }

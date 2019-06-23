@@ -90,6 +90,39 @@ class UserDaoTest extends TestCase
     }
 
     /** @test */
+    public function findByEmail_正常系()
+    {
+        $queryResults = Db::table(self::USER_TABLE_NAME)
+            ->join('department', self::USER_TABLE_NAME . '.depId', '=', self::DEP_TABLE_NAME . '.id')
+            ->where(self::USER_TABLE_NAME . '.email', 'test1@example.com')
+            ->select([
+                self::USER_TABLE_NAME . '.id as userId',
+                self::USER_TABLE_NAME . '.name as userName',
+                'email',
+                'password',
+                'role',
+                'remember_token',
+                self::DEP_TABLE_NAME . '.id as depId',
+                self::DEP_TABLE_NAME . '.name as depName',
+                self::DEP_TABLE_NAME . '.section_name as depSecName',
+                self::DEP_TABLE_NAME . '.comment as depComment',
+            ])
+            ->get();
+        $objectResults = $this->newFromQueryResults($queryResults);
+
+        $user = $this->sut->findByEmail('test1@example.com');
+        $this->assertEquals($user, $objectResults[0]);
+        $this->assertCount(1, $objectResults);
+    }
+
+    /** @test */
+    public function findByEmail_異常系_email存在しない()
+    {
+        $user = $this->sut->findByEmail('test100000@example.com');
+        $this->assertNull($user);
+    }
+
+    /** @test */
     public function save_正常系()
     {
         // user作成
@@ -109,6 +142,24 @@ class UserDaoTest extends TestCase
         $tmp = $user->toArray();
         $tmp['id'] = $result;
         $this->assertEquals($sutResult->toArray(), $tmp);
+    }
+
+    /** @test */
+    public function save_異常系_email重複()
+    {
+        // user作成
+        $user = UserFaker::createWithNullId(1)[0];
+
+        $departmentDao = app()->make(DepartmentDao::class);
+        $departmentId = $departmentDao->save($user->getDepartment());
+
+        // save
+        $result = $this->sut->save($user);
+        $this->assertTrue($result > 0);
+
+        // 同じEmailを持ったユーザーを登録
+        $result = $this->sut->save($user);
+        $this->assertNull($result);
     }
 
     /**

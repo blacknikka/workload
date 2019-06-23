@@ -25,9 +25,9 @@ class UserRepository
 
     /**
      * @param User $user
-     * @return int
+     * @return int|null
      */
-    public function save(User $user) : int
+    public function save(User $user) : ?int
     {
         return $this->userDao->save($user);
     }
@@ -39,5 +39,16 @@ class UserRepository
     public function findById(int $id) : ?User
     {
         return $this->userDao->find($id);
+    }
+
+    /**
+     * EmailからUserを検索する
+     *
+     * @param string $email
+     * @return User|null
+     */
+    public function findByEmail(string $email) : ?User
+    {
+        return $this->userDao->findByEmail($email);
     }
 }

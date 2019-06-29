@@ -11,6 +11,8 @@ use App\Infrastructure\Db\UserDao;
 
 class DtoUserProviderTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @var DtoUserProvider */
     private $sut;
 
@@ -24,10 +26,12 @@ class DtoUserProviderTest extends TestCase
         // 依存をモックする
         $this->userDaoMock = Mockery::mock(UserDao::class);
 
-        // 注入
-        app()->instance(UserDao::class, $this->userDaoMock);
+        $this->sut = new DtoUserProvider(
+            $this->userDaoMock
+        );
 
-        $this->sut = app()->make(DtoUserProvider::class);
+        $this->seed('DepartmentTableSeeder');
+        $this->seed('UserTableSeeder');
     }
 
     public function tearDown()
@@ -56,7 +60,7 @@ class DtoUserProviderTest extends TestCase
     public function retrieveByCredentials_UserDaoのfindが呼ばれている()
     {
         $this->userDaoMock
-            ->shouldReceive('find')
+            ->shouldReceive('find', [1])
             ->andReturn(null);
 
         $this->sut
@@ -66,7 +70,7 @@ class DtoUserProviderTest extends TestCase
             ]);
 
         $this->userDaoMock
-            ->shouldHaveReceived('find');
+            ->shouldHaveReceived('find', [1]);
     }
 
 }

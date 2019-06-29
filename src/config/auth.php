@@ -71,8 +71,7 @@ return [
         // ],
 
         'users' => [
-            'driver' => 'database',
-            'table' => 'user',
+            'driver' => 'dto',
         ],
     ],
 

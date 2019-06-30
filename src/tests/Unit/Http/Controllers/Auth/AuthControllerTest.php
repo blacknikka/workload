@@ -125,6 +125,7 @@ class AuthControllerTest extends TestCase
     public function confirm_正常系()
     {
         $user = $this->userDao->find(1);
+        $this->assertNotNull($user);
 
         // jwtを使って確認
         $token = JWTAuth::fromUser($user);
@@ -146,6 +147,7 @@ class AuthControllerTest extends TestCase
     public function confirm_異常系()
     {
         $user = $this->userDao->find(1);
+        $this->assertNotNull($user);
 
         // jwtを使って確認
         $token = JWTAuth::fromUser($user);

@@ -13,6 +13,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Domain\User\DepartmentRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use Exception;
 
 class AuthController extends Controller
 {
@@ -124,9 +125,11 @@ class AuthController extends Controller
         try {
             $loginUser = JWTAuth::parseToken()->toUser();
         } catch (JWTException $e) {
-            return response()->json(['auth' => false]);
+            return response()->json(['auth' => false], 200);
+        } catch (Exception $e) {
+            return response()->json(['auth' => 'error'], 200);
         }
 
-        return response()->json(['auth' => true]);
+        return response()->json(['auth' => true], 200);
     }
 }

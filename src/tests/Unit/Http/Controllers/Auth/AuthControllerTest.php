@@ -129,6 +129,8 @@ class AuthControllerTest extends TestCase
 
         // jwtを使って確認
         $token = JWTAuth::fromUser($user);
+        $this->assertTrue($token !== '');
+
         JWTAuth::setToken($token);
         $headers = ['Accept' => 'application/json'];
         $headers['Authorization'] = 'Bearer '.$token;

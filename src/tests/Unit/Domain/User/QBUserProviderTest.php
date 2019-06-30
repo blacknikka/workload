@@ -9,7 +9,7 @@ use Mockery;
 use App\Domain\User\QBUserProvider;
 use App\Infrastructure\Db\UserDao;
 
-class DtoUserProviderTest extends TestCase
+class QBUserProviderTest extends TestCase
 {
     use RefreshDatabase;
 

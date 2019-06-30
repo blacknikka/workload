@@ -71,7 +71,7 @@ return [
         // ],
 
         'users' => [
-            'driver' => 'dto',
+            'driver' => 'querybuilder',
         ],
     ],
 

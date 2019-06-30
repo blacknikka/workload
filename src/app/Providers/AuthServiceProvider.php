@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use App\Domain\User\DtoUserProvider;
+use App\Domain\User\QBUserProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -27,9 +27,9 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         $this->app->make('auth')->provider(
-            'dto',
+            'querybuilder',
             function ($app) {
-                return $app->make(DtoUserProvider::class);
+                return $app->make(QBUserProvider::class);
             }
         );
     }

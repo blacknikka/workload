@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Domain\User\User;
 use App\Domain\User\UserRepository;
 use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Domain\User\DepartmentRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
@@ -97,9 +98,6 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         try {
-            /**
-             * $token false|string
-             */
             $token = JWTAuth::attempt($credentials);
 
             if ($token === false) {
@@ -109,11 +107,26 @@ class AuthController extends Controller
             return response()->json(['message' => 'Server Error.'], 500);
         }
 
-        // emailで認証できた = emailでuser取得できる(non-null)
         $email = $request->get('email');
 
         /** @var \App\Domain\User\User */
         $user = $this->userRepository->findByEmail($email);
-        return response()->json(['message' => 'You are successfully logged in!','token' => $token]);
+        return response()->json(['message' => 'Login was fine.','token' => $token]);
+    }
+
+    /**
+     * jwtトークンを確認する
+     *
+     * @return JsonResponse
+     */
+    public function confirm(): JsonResponse
+    {
+        try {
+            $loginUser = JWTAuth::parseToken()->toUser();
+        } catch (JWTException $e) {
+            return response()->json(['auth' => false]);
+        }
+
+        return response()->json(['auth' => true]);
     }
 }

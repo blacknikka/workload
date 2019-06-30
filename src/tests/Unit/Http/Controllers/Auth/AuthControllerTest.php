@@ -121,51 +121,51 @@ class AuthControllerTest extends TestCase
             ->assertStatus(200);
     }
 
-    /** @test */
-    public function confirm_正常系()
-    {
-        $user = $this->userDao->find(1);
-        $this->assertNotNull($user);
+    // /** @test */
+    // public function confirm_正常系()
+    // {
+    //     $user = $this->userDao->find(1);
+    //     $this->assertNotNull($user);
 
-        // jwtを使って確認
-        $token = JWTAuth::fromUser($user);
-        $this->assertTrue($token !== '');
+    //     // jwtを使って確認
+    //     $token = JWTAuth::fromUser($user);
+    //     $this->assertTrue($token !== '');
 
-        JWTAuth::setToken($token);
-        $headers = ['Accept' => 'application/json'];
-        $headers['Authorization'] = 'Bearer '.$token;
+    //     JWTAuth::setToken($token);
+    //     $headers = ['Accept' => 'application/json'];
+    //     $headers['Authorization'] = 'Bearer '.$token;
 
-        $confirmResponse = $this->json('POST', route('confirm'),
-            [],
-            $headers
-        );
-        $confirmResponse
-            ->assertStatus(200);
-        $confirmResult = json_decode($confirmResponse->getContent());
-        $this->assertTrue($confirmResult->auth);
-    }
+    //     $confirmResponse = $this->json('POST', route('confirm'),
+    //         [],
+    //         $headers
+    //     );
+    //     $confirmResponse
+    //         ->assertStatus(200);
+    //     $confirmResult = json_decode($confirmResponse->getContent());
+    //     $this->assertTrue($confirmResult->auth);
+    // }
 
-    /** @test */
-    public function confirm_異常系()
-    {
-        $user = $this->userDao->find(1);
-        $this->assertNotNull($user);
+    // /** @test */
+    // public function confirm_異常系()
+    // {
+    //     $user = $this->userDao->find(1);
+    //     $this->assertNotNull($user);
 
-        // jwtを使って確認
-        $token = JWTAuth::fromUser($user);
-        JWTAuth::setToken($token);
-        $headers = ['Accept' => 'application/json'];
+    //     // jwtを使って確認
+    //     $token = JWTAuth::fromUser($user);
+    //     JWTAuth::setToken($token);
+    //     $headers = ['Accept' => 'application/json'];
 
-        // tokenを改造
-        $headers['Authorization'] = 'Bearer '.$token.'aiueo';
+    //     // tokenを改造
+    //     $headers['Authorization'] = 'Bearer '.$token.'aiueo';
 
-        $confirmResponse = $this->json('POST', route('confirm'),
-            [],
-            $headers
-        );
-        $confirmResponse
-            ->assertStatus(200);
-        $confirmResult = json_decode($confirmResponse->getContent());
-        $this->assertFalse($confirmResult->auth);
-    }
+    //     $confirmResponse = $this->json('POST', route('confirm'),
+    //         [],
+    //         $headers
+    //     );
+    //     $confirmResponse
+    //         ->assertStatus(200);
+    //     $confirmResult = json_decode($confirmResponse->getContent());
+    //     $this->assertFalse($confirmResult->auth);
+    // }
 }

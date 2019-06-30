@@ -11,19 +11,19 @@
 </template>
 
 <script>
-import Calendar from "../components/calendar/Calendar";
-import Logout from "../components/Logout";
+import Calendar from '../components/calendar/Calendar';
+import Logout from '../components/Logout';
 
 export default {
   methods: {
     toHome() {
-      this.$router.push({ name: "home" });
-    }
+      this.$router.push({name: 'home'});
+    },
   },
   components: {
     Calendar,
-    Logout
-  }
+    Logout,
+  },
 };
 </script>
 
@@ -32,4 +32,3 @@ export default {
   width: 100vw;
 }
 </style>
-

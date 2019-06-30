@@ -13,43 +13,43 @@
 
       <input type="submit" value="Login" />
     </form>
-    <div class="message-text" v-if="isShownMessage">{{message}}</div>
+    <div class="message-text" v-if="isShownMessage">{{ message }}</div>
     <router-link :to="{name: 'register'}">Register</router-link>
   </div>
 </template>
 
 <script>
-import axios from "../../Util/axios/axios";
+import axios from '../../Util/axios/axios';
 
 export default {
   data() {
     return {
-      email: "",
-      password: "",
-      message: ""
+      email: '',
+      password: '',
+      message: '',
     };
   },
   computed: {
     isShownMessage() {
-      return this.message !== "";
-    }
+      return this.message !== '';
+    },
   },
   methods: {
     async login(e) {
       e.preventDefault();
 
       // login
-      const result = await axios.post("api/auth/authenticate", {
+      const result = await axios.post('api/auth/authenticate', {
         email: this.email,
-        password: this.password
+        password: this.password,
       });
 
       if (result.status === 200) {
         // 成功
         console.log('login done');
-        this.$store.commit("setLoggedIn", {
+        this.$store.commit('setLoggedIn', {
           loggedIn: true,
-          token: result.data.token
+          token: result.data.token,
         });
 
         this.$router.replace({
@@ -59,16 +59,16 @@ export default {
         console.log('login error');
         this.message = 'login error';
       }
-    }
+    },
   },
-  mounted() {
+  async mounted() {
     if (this.$store.getters.loggedIn === true) {
-      const result = axios.auth();
+      const result = await axios.auth();
       if (result === true) {
-        this.$route.replace({ name: "home" });
+        this.$router.replace({name: 'home'});
       }
     }
-  }
+  },
 };
 </script>
 

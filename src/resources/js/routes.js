@@ -9,11 +9,21 @@ import axios from './Util/axios/axios';
 import store from './store';
 
 const routes = [
-  { path: '/', component: Login, name: 'top' },
-  { path: '/home', component: Home, name: 'home', meta: {requiresAuth: true} },
-  { path: '/login', component: Login, name: 'login' },
-  { path: '/register', component: Register, name: 'register' },
-  { path: '*', redirect: '/' },
+  {path: '/', component: Login, name: 'top'},
+  {
+    path: '/home',
+    component: Home,
+    name: 'home',
+    meta: {requiresAuth: true},
+  },
+  {path: '/login', component: Login, name: 'login'},
+  {
+    path: '/register',
+    component: Register,
+    name: 'register',
+    meta: {requiresAuth: true},
+  },
+  {path: '*', redirect: '/'},
 ];
 
 const router = new VueRouter({
@@ -41,6 +51,6 @@ router.beforeEach(async (to, from, next) => {
   } else {
     next();
   }
-})
+});
 
 export default router;

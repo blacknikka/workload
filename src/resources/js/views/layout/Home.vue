@@ -1,5 +1,6 @@
 <template>
   <div class="home-container">
+    <header-bar></header-bar>
     <div>
       <router-link :to="{name: 'top'}">Go to Top</router-link>
     </div>
@@ -17,10 +18,12 @@
 <script>
 import axios from '../../Util/axios/axios';
 import WorkloadItem from '../components/WorkloadItem';
+import HeaderBar from '../components/headerBar';
 
 export default {
   components: {
     WorkloadItem,
+    HeaderBar,
   },
   async mounted() {
     const result = await axios.get('api/workload/get/user_id/1');

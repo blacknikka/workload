@@ -61,11 +61,11 @@ export default {
       }
     },
   },
-  mounted() {
+  async mounted() {
     if (this.$store.getters.loggedIn === true) {
-      const result = axios.auth();
+      const result = await axios.auth();
       if (result === true) {
-        this.$route.replace({name: 'home'});
+        this.$router.replace({name: 'home'});
       }
     }
   },

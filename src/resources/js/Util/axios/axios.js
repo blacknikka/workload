@@ -17,11 +17,7 @@ class myAxios {
 
     let result;
     if (token !== '') {
-      result = await axios.post(
-        'api/auth/confirm',
-        {},
-        { headers: { "Authorization": `Bearer ${token}` } }
-      );
+      result = await axios.post('api/auth/confirm', {}, {headers: {Authorization: `Bearer ${token}`}});
     } else {
       return false;
     }

@@ -10,7 +10,7 @@ import store from './store';
 
 const routes = [
   { path: '/', component: Login, name: 'top' },
-  { path: '/home', component: Home, name: 'home' },
+  { path: '/home', component: Home, name: 'home', meta: {requiresAuth: true} },
   { path: '/login', component: Login, name: 'login' },
   { path: '/register', component: Register, name: 'register' },
   { path: '*', redirect: '/' },
@@ -22,7 +22,7 @@ const router = new VueRouter({
   mode: 'history',
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // このルートはログインされているかどうか認証が必要です。
     // もしされていないならば、ログインページにリダイレクトします。
@@ -31,7 +31,7 @@ router.beforeEach((to, from, next) => {
       next({path: '/login'});
     } else {
       // authを通す
-      const result = axios.auth();
+      const result = await axios.auth();
       if (result === true) {
         next();
       } else {

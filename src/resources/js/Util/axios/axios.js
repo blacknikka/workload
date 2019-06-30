@@ -22,9 +22,11 @@ class myAxios {
         {},
         { headers: { "Authorization": `Bearer ${token}` } }
       );
+    } else {
+      return false;
     }
 
-    if (result.auth === true) {
+    if (result.data.auth === true) {
       store.commit('setLoggedIn', {loggedIn: true});
       return true;
     } else {

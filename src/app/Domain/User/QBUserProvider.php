@@ -9,7 +9,7 @@ use Illuminate\Auth\GenericUser;
 use App\Infrastructure\Db\UserDao;
 use App\Domain\User\User;
 
-class DtoUserProvider extends DatabaseUserProvider implements UserProvider
+class QBUserProvider extends DatabaseUserProvider implements UserProvider
 {
     /** @var UserDao */
     private $userDao;

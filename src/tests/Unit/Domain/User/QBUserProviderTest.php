@@ -6,14 +6,14 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
-use App\Domain\User\DtoUserProvider;
+use App\Domain\User\QBUserProvider;
 use App\Infrastructure\Db\UserDao;
 
-class DtoUserProviderTest extends TestCase
+class QBUserProviderTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @var DtoUserProvider */
+    /** @var QBUserProvider */
     private $sut;
 
     /** @var Mockery\MockInterface */
@@ -26,7 +26,7 @@ class DtoUserProviderTest extends TestCase
         // 依存をモックする
         $this->userDaoMock = Mockery::mock(UserDao::class);
 
-        $this->sut = new DtoUserProvider(
+        $this->sut = new QBUserProvider(
             $this->userDaoMock
         );
 

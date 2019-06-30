@@ -24,7 +24,7 @@ jobs:
           command: tar --mtime="2000-01-01 00:00Z" -cvf laradock.tar laradock
       - restore_cache:
           keys:
-            - laradock-v1-{{ checksum "./laradock.tar" }}
+            - laradock-v2-{{ checksum "./laradock.tar" }}
           paths:
             - ~/caches/images.tar
       - run:
@@ -83,7 +83,7 @@ jobs:
       - run: cp ./src/composer.lock ./src/composer.lock.bak
       - restore_cache:
           keys:
-            - composer-v1-{{ checksum "./src/composer.lock.bak" }}
+            - composer-v2-{{ checksum "./src/composer.lock.bak" }}
           paths:
             - ./src/vendor
       - run:

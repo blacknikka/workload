@@ -27,9 +27,7 @@ export default {
   },
   async mounted() {
     const result = await axios.get('api/workload/get/user_id/1');
-    console.log(result);
 
-    // 日付を表示用に加工する
     const filteredData = Array.from(result.data).map(data => {
       const date = data.date.replace(/T.*/, '');
       return {

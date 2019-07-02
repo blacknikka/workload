@@ -12,9 +12,12 @@ use Mockery;
 use App\Domain\Workload\Workload;
 use Illuminate\Support\Collection;
 use Tests\Unit\Domain\Workload\faker\WorkloadFaker;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 class WorkloadControllerTest extends TestCase
 {
+    use WithoutMiddleware;
+
     /** @var Mockery\MockInterface */
     private $workloadDaoMock;
 

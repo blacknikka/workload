@@ -168,7 +168,7 @@ class AuthControllerTest extends TestCase
             $headers
         );
         $confirmResponse
-            ->assertStatus(500);
+            ->assertStatus(401);
         $confirmResult = json_decode($confirmResponse->getContent());
         $this->assertFalse($confirmResult->auth);
     }
@@ -186,7 +186,7 @@ class AuthControllerTest extends TestCase
         JWTAuth::setToken($token);
         $headers = ['Accept' => 'application/json'];
 
-        // tokenを改造
+        // tokenを設定
         $headers['Authorization'] = 'Bearer ' . $token;
 
         $confirmResponse = $this->json(
@@ -207,5 +207,33 @@ class AuthControllerTest extends TestCase
             $userResult->department->id
         );
         $this->assertSame($user->getEmail(), $userResult->email);
+    }
+
+    /**
+     * @test
+     */
+    public function getMyData_異常系()
+    {
+        $user = $this->userDao->find(1);
+        $this->assertNotNull($user);
+
+        // jwtを使って確認
+        $token = JWTAuth::fromUser($user);
+        JWTAuth::setToken($token);
+        $headers = ['Accept' => 'application/json'];
+
+        // tokenを改造
+        $headers['Authorization'] = 'Bearer ' . $token. 'aiueo';
+
+        $confirmResponse = $this->json(
+            'POST',
+            route('getMyData'),
+            [],
+            $headers
+        );
+        $confirmResponse
+            ->assertStatus(401);
+        $confirmResult = json_decode($confirmResponse->getContent());
+        $this->assertSame($confirmResult->message, 'Auth error.');
     }
 }

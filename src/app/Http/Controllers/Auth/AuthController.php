@@ -125,7 +125,7 @@ class AuthController extends Controller
         try {
             $loginUser = JWTAuth::parseToken()->toUser();
         } catch (JWTException $e) {
-            return response()->json(['auth' => false], 500);
+            return response()->json(['auth' => false], 401);
         }
 
         return response()->json(['auth' => true], 200);
@@ -141,7 +141,7 @@ class AuthController extends Controller
         try {
             $loginUser = JWTAuth::parseToken()->toUser();
         } catch (JWTException $e) {
-            return response()->json(['message' => 'Auth error.'], 500);
+            return response()->json(['message' => 'Auth error.'], 401);
         }
 
         return response()->json(['user' => $loginUser->toArray()], 200);

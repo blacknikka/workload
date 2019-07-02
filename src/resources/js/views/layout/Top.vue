@@ -1,28 +1,26 @@
 <template>
-  <div>
-    <div class="top-container">
-      <router-link :to="{name: 'home'}">Go to home</router-link>
-    </div>
-
-    <calendar></calendar>
-
-    <logout></logout>
-  </div>
+  <v-parallax
+    dark
+    src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
+    @click="clicked"
+  >
+    <v-layout
+      align-center
+      column
+      justify-center
+    >
+      <h1 class="display-2 font-weight-thin mb-3">Hello!</h1>
+      <h4 class="subheading">I hope you have a good day!</h4>
+    </v-layout>
+  </v-parallax>
 </template>
 
 <script>
-import Calendar from '../components/calendar/Calendar';
-import Logout from '../components/Logout';
-
 export default {
   methods: {
-    toHome() {
-      this.$router.push({name: 'home'});
+    clicked() {
+      this.$router.replace({ name: 'home' });
     },
-  },
-  components: {
-    Calendar,
-    Logout,
   },
 };
 </script>

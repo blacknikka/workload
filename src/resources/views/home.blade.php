@@ -5,14 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Workload</title>
     <meta name="description" content="">
-    <link href="https://fonts.googleapis.com/css?family=Dancing+Script" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet">
 
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
-
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
-
 
     <link href="{{mix('/css/app.css')}}" rel="stylesheet">
 

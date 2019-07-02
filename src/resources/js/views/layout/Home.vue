@@ -1,5 +1,5 @@
 <template>
-  <div class="home-container">
+  <div>
     <header-bar></header-bar>
     <div>
       <router-link :to="{name: 'top'}">Go to Top</router-link>
@@ -48,7 +48,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.home-container {
-  width: 100vw;
-}
 </style>

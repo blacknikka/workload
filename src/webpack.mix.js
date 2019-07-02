@@ -14,14 +14,30 @@ let mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
   .sass('resources/sass/app.scss', 'public/css');
 
-mix.webpackConfig({
-  devServer: {
-    public: 'localhost:8080',
-    host: '0.0.0.0',
-    port: 8080
-  },
-  watchOptions: {
-    poll: 2000,
-    ignored: /node_modules/
-  }
-});
+if (!mix.inProduction()) {
+  mix.webpackConfig({
+    devtool: 'source-map',
+    devServer: {
+      public: 'localhost:8080',
+      host: '0.0.0.0',
+      port: 8080
+    },
+    watchOptions: {
+      poll: 2000,
+      ignored: /node_modules/
+    }
+  })
+  .sourceMaps()
+} else{
+  mix.webpackConfig({
+    devServer: {
+      public: 'localhost:8080',
+      host: '0.0.0.0',
+      port: 8080
+    },
+    watchOptions: {
+      poll: 2000,
+      ignored: /node_modules/
+    }
+  });
+}

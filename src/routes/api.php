@@ -18,23 +18,35 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 // workload
-Route::group(['prefix' => 'workload'], function () {
-    // get workload
-    Route::get('get/id/{id}', 'WorkloadController@getWorkloadById');
-    Route::get('get/user_id/{id}', 'WorkloadController@getWorkloadByUserId');
+Route::group(
+    [
+        'prefix' => 'workload',
+        'middleware' => ['jwt.auth'],
+    ],
+    function () {
+        // get workload
+        Route::get('get/id/{id}', 'WorkloadController@getWorkloadById');
+        Route::get('get/user_id/{id}', 'WorkloadController@getWorkloadByUserId');
 
-    // set workload to data store.
-    Route::post('set/user_id', 'WorkloadController@setWorkloadByUserId');
-});
+        // set workload to data store.
+        Route::post('set/user_id', 'WorkloadController@setWorkloadByUserId');
+    }
+);
 
 
-Route::group(['prefix' => 'auth'], function () {
-    // register
-    Route::post('/register', 'Auth\AuthController@register')->name('register');
+Route::group(
+    ['prefix' => 'auth'],
+    function () {
+        // register
+        Route::post('/register', 'Auth\AuthController@register')->name('register');
 
-    // authenticate
-    Route::post('/authenticate', 'Auth\AuthController@authenticate')->name('authenticate');
+        // authenticate
+        Route::post('/authenticate', 'Auth\AuthController@authenticate')->name('authenticate');
 
-    // confirm
-    Route::post('/confirm', 'Auth\AuthController@confirm')->name('confirm');
-});
+        // confirm
+        Route::post('/confirm', 'Auth\AuthController@confirm')->name('confirm');
+
+        // me (get my data)
+        Route::post('/me', 'Auth\AuthController@getMyData')->name('getMyData');
+    }
+);

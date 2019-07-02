@@ -79,32 +79,41 @@ export default {
       e.preventDefault();
 
       // login
-      const result = await axios.post('api/auth/authenticate', {
-        email: this.email,
-        password: this.password
-      });
+      const result = await axios
+        .post('api/auth/authenticate', {
+          email: this.email,
+          password: this.password
+        })
+        .then(response => {
+          if (response.status !== 200) {
+            throw new Error(response.status);
+          }
 
-      if (result.status === 200) {
-        // 成功
-        console.log('login done');
-        this.$store.commit('setLoggedIn', {
-          loggedIn: true,
-          token: result.data.token
-        });
+          // 成功
+          console.log('login done');
+          this.$store.commit('setLoggedIn', {
+            loggedIn: true,
+            token: response.data.token
+          });
 
-        this.$router.replace({
-          name: goto
+          this.$router.replace({
+            name: goto
+          });
+        })
+        .catch(error => {
+          // something error
+          console.log(error);
+
+          console.log('login error');
+          this.message = 'login error';
         });
-      } else {
-        console.log('login error');
-        this.message = 'login error';
-      }
     }
   },
   async mounted() {
     if (this.$store.getters.loggedIn === true) {
       const result = await axios.auth();
       if (result === true) {
+        console.log('auth ok.');
         this.$router.replace({ name: goto });
       }
     }

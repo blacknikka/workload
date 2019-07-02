@@ -125,9 +125,25 @@ class AuthController extends Controller
         try {
             $loginUser = JWTAuth::parseToken()->toUser();
         } catch (JWTException $e) {
-            return response()->json(['auth' => false], 200);
+            return response()->json(['auth' => false], 401);
         }
 
         return response()->json(['auth' => true], 200);
+    }
+
+    /**
+     * jwtトークンからユーザーデータを取得する
+     *
+     * @return JsonResponse
+     */
+    public function getMyData() : JsonResponse
+    {
+        try {
+            $loginUser = JWTAuth::parseToken()->toUser();
+        } catch (JWTException $e) {
+            return response()->json(['message' => 'Auth error.'], 401);
+        }
+
+        return response()->json(['user' => $loginUser->toArray()], 200);
     }
 }

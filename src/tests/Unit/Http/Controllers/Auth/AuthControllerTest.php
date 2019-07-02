@@ -133,9 +133,11 @@ class AuthControllerTest extends TestCase
 
         JWTAuth::setToken($token);
         $headers = ['Accept' => 'application/json'];
-        $headers['Authorization'] = 'Bearer '.$token;
+        $headers['Authorization'] = 'Bearer ' . $token;
 
-        $confirmResponse = $this->json('POST', route('confirm'),
+        $confirmResponse = $this->json(
+            'POST',
+            route('confirm'),
             [],
             $headers
         );
@@ -157,15 +159,81 @@ class AuthControllerTest extends TestCase
         $headers = ['Accept' => 'application/json'];
 
         // tokenを改造
-        $headers['Authorization'] = 'Bearer '.$token.'aiueo';
+        $headers['Authorization'] = 'Bearer ' . $token . 'aiueo';
 
-        $confirmResponse = $this->json('POST', route('confirm'),
+        $confirmResponse = $this->json(
+            'POST',
+            route('confirm'),
+            [],
+            $headers
+        );
+        $confirmResponse
+            ->assertStatus(401);
+        $confirmResult = json_decode($confirmResponse->getContent());
+        $this->assertFalse($confirmResult->auth);
+    }
+
+    /**
+     * @test
+     */
+    public function getMyData_正常系()
+    {
+        $user = $this->userDao->find(1);
+        $this->assertNotNull($user);
+
+        // jwtを使って確認
+        $token = JWTAuth::fromUser($user);
+        JWTAuth::setToken($token);
+        $headers = ['Accept' => 'application/json'];
+
+        // tokenを設定
+        $headers['Authorization'] = 'Bearer ' . $token;
+
+        $confirmResponse = $this->json(
+            'POST',
+            route('getMyData'),
             [],
             $headers
         );
         $confirmResponse
             ->assertStatus(200);
         $confirmResult = json_decode($confirmResponse->getContent());
-        $this->assertFalse($confirmResult->auth);
+
+        $userResult = $confirmResult->user;
+        $this->assertSame($user->getId(), $userResult->id);
+        $this->assertSame($user->getName(), $userResult->name);
+        $this->assertSame(
+            $user->getDepartment()->getId(),
+            $userResult->department->id
+        );
+        $this->assertSame($user->getEmail(), $userResult->email);
+    }
+
+    /**
+     * @test
+     */
+    public function getMyData_異常系()
+    {
+        $user = $this->userDao->find(1);
+        $this->assertNotNull($user);
+
+        // jwtを使って確認
+        $token = JWTAuth::fromUser($user);
+        JWTAuth::setToken($token);
+        $headers = ['Accept' => 'application/json'];
+
+        // tokenを改造
+        $headers['Authorization'] = 'Bearer ' . $token. 'aiueo';
+
+        $confirmResponse = $this->json(
+            'POST',
+            route('getMyData'),
+            [],
+            $headers
+        );
+        $confirmResponse
+            ->assertStatus(401);
+        $confirmResult = json_decode($confirmResponse->getContent());
+        $this->assertSame($confirmResult->message, 'Auth error.');
     }
 }

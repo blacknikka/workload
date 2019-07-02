@@ -21,7 +21,7 @@ class DepartmentFaker
         $data = collect()::times($number, function ($number) use ($faker) {
             $now = Carbon::now()->format('Y-m-d H:i:s');
             return new Department(
-                $faker->unique()->randomNumber() + 1,
+                $faker->unique()->numberBetween(2, 1000000),
                 $faker->word(),
                 $faker->word(),
                 $faker->sentence()

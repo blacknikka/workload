@@ -7,6 +7,21 @@ class myAxios {
     return result;
   }
 
+  async getWithJwt(url) {
+    const token = store.getters.loginToken;
+
+    const result = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } })
+      .then((response) => {
+        return response;
+      })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
+
+      return result;
+  }
+
   async post(url, data) {
     const result = await axios.post(url, data);
     return result;
@@ -15,20 +30,34 @@ class myAxios {
   async auth() {
     const token = store.getters.loginToken;
 
-    let result;
-    if (token !== '') {
-      result = await axios.post('api/auth/confirm', {}, {headers: {Authorization: `Bearer ${token}`}});
-    } else {
+    if (token === '') {
       return false;
     }
 
-    if (result.data.auth === true) {
-      store.commit('setLoggedIn', {loggedIn: true});
-      return true;
-    } else {
-      store.commit('setLoggedIn', {loggedIn: false});
-      return false;
-    }
+    let result;
+    await axios.post('api/auth/confirm', {}, { headers: { Authorization: `Bearer ${token}` } })
+      .then((response) => {
+        if (response.status !== 200) {
+          throw new Error(response.status)
+        }
+
+        if (response.data.auth === true) {
+          store.commit('setLoggedIn', { loggedIn: true });
+          result = true;
+        } else {
+          store.commit('setLoggedIn', { loggedIn: false });
+          result = false;
+        }
+      })
+      .catch((error) => {
+        // something error
+        console.log(error);
+
+        store.commit('setLoggedIn', { loggedIn: false });
+        result = false;
+      });
+
+    return result;
   }
 }
 

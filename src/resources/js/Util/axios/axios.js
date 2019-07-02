@@ -16,19 +16,30 @@ class myAxios {
     const token = store.getters.loginToken;
 
     let result;
-    if (token !== '') {
-      result = await axios.post('api/auth/confirm', {}, {headers: {Authorization: `Bearer ${token}`}});
-    } else {
+    if (token === '') {
       return false;
     }
 
-    if (result.data.auth === true) {
-      store.commit('setLoggedIn', {loggedIn: true});
-      return true;
-    } else {
-      store.commit('setLoggedIn', {loggedIn: false});
-      return false;
-    }
+    await axios.post('api/auth/confirm', {}, { headers: { Authorization: `Bearer ${token}` } })
+      .then((response) => {
+        if (response.status !== 200) {
+          throw new Error(response.status)
+        }
+
+        if (result.data.auth === true) {
+          store.commit('setLoggedIn', { loggedIn: true });
+          return true;
+        } else {
+          store.commit('setLoggedIn', { loggedIn: false });
+          return false;
+        }
+      })
+      .catch((error) => {
+        // something error
+        console.log(error);
+
+        store.commit('setLoggedIn', { loggedIn: false });
+      });
   }
 }
 

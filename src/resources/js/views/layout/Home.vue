@@ -26,6 +26,10 @@ export default {
     HeaderBar,
   },
   async mounted() {
+    // user情報を取得する
+    const user = await axios.getWithJwt('api/auth/me');
+    console.log(user);
+
     const result = await axios.getWithJwt('api/workload/get/user_id/1');
 
     const filteredData = Array.from(result.data).map(data => {

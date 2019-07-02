@@ -37,4 +37,7 @@ Route::group(['prefix' => 'auth'], function () {
 
     // confirm
     Route::post('/confirm', 'Auth\AuthController@confirm')->name('confirm');
+
+    // me (get my data)
+    Route::post('/me', 'Auth\AuthController@getMyData')->name('getMyData');
 });

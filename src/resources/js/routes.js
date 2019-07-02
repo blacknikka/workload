@@ -16,6 +16,12 @@ const routes = [
     name: 'home',
     meta: {requiresAuth: true},
   },
+  {
+    path: '/top',
+    component: Top,
+    name: 'splash',
+    meta: {requiresAuth: true},
+  },
   {path: '/login', component: Login, name: 'login'},
   {
     path: '/register',

@@ -93,7 +93,7 @@ export default {
           console.log('login done');
           this.$store.commit('setLoggedIn', {
             loggedIn: true,
-            token: result.data.token
+            token: response.data.token
           });
 
           this.$router.replace({
@@ -113,6 +113,7 @@ export default {
     if (this.$store.getters.loggedIn === true) {
       const result = await axios.auth();
       if (result === true) {
+        console.log('auth ok.');
         this.$router.replace({ name: goto });
       }
     }

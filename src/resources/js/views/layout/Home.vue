@@ -26,7 +26,7 @@ export default {
     HeaderBar,
   },
   async mounted() {
-    const result = await axios.get('api/workload/get/user_id/1');
+    const result = await axios.getWithJwt('api/workload/get/user_id/1');
 
     const filteredData = Array.from(result.data).map(data => {
       const date = data.date.replace(/T.*/, '');

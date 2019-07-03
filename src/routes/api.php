@@ -47,6 +47,6 @@ Route::group(
         Route::post('/confirm', 'Auth\AuthController@confirm')->name('confirm');
 
         // me (get my data)
-        Route::post('/me', 'Auth\AuthController@getMyData')->name('getMyData');
+        Route::get('/me', 'Auth\AuthController@getMyData')->name('getMyData');
     }
 );

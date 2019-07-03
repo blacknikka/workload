@@ -1,18 +1,21 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import User from './model/user';
+
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
     loginToken: '',
     workload: [],
+    userInfo: null,
   },
   mutations: {
     setWorkload(state, workload) {
       state.workload = workload;
     },
-    setLoggedIn(state, {loggedIn, token}) {
+    setLoggedIn(state, { loggedIn, token }) {
       if (loggedIn === true) {
         if (token) {
           state.loginToken = token;
@@ -28,10 +31,17 @@ const store = new Vuex.Store({
 
       localStorage.auth_token = token;
     },
+    setUserInfo(state, user) {
+      state.userInfo = new User(
+        user.name,
+        user.email,
+        user.department
+      );
+    },
   },
   actions: {},
   getters: {
-    workload({workload}) {
+    workload({ workload }) {
       return workload;
     },
     loggedIn(state) {
@@ -43,8 +53,11 @@ const store = new Vuex.Store({
 
       return state.loginToken !== '';
     },
-    loginToken({loginToken}) {
+    loginToken({ loginToken }) {
       return loginToken;
+    },
+    userInfo({ userInfo }) {
+      return userInfo;
     },
   },
   plugins: [],

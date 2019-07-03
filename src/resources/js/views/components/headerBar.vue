@@ -63,9 +63,9 @@ export default {
   computed: {
     getMyName() {
       const user = this.$store.getters.userInfo;
-      return `${user.name}@${user.department.departmentName}`;
-    },
-  },
+      return user !== null ? `${user.name}@${user.department.departmentName}` : '';
+    }
+  }
 };
 </script>
 

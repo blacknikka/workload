@@ -189,10 +189,8 @@ class AuthControllerTest extends TestCase
         // tokenを設定
         $headers['Authorization'] = 'Bearer ' . $token;
 
-        $confirmResponse = $this->json(
-            'POST',
+        $confirmResponse = $this->get(
             route('getMyData'),
-            [],
             $headers
         );
         $confirmResponse
@@ -225,10 +223,8 @@ class AuthControllerTest extends TestCase
         // tokenを改造
         $headers['Authorization'] = 'Bearer ' . $token. 'aiueo';
 
-        $confirmResponse = $this->json(
-            'POST',
+        $confirmResponse = $this->get(
             route('getMyData'),
-            [],
             $headers
         );
         $confirmResponse

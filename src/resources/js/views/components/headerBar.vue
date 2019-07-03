@@ -5,7 +5,7 @@
       color="primary"
     >
       <v-toolbar-side-icon></v-toolbar-side-icon>
-      <v-toolbar-title class="white--text">{{yourname}}</v-toolbar-title>
+      <v-toolbar-title class="white--text">{{getMyName}}</v-toolbar-title>
       <v-spacer></v-spacer>
 
       <v-menu
@@ -59,7 +59,13 @@ export default {
           break;
       }
     }
-  }
+  },
+  computed: {
+    getMyName() {
+      const user = this.$store.getters.userInfo;
+      return `${user.name}@${user.department.departmentName}`;
+    },
+  },
 };
 </script>
 

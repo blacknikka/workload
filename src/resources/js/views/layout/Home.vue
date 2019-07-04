@@ -1,18 +1,59 @@
 <template>
-  <div>
+  <v-app light>
     <v-layout column>
       <header-bar></header-bar>
-
-      <v-sheet height="500">
-        <v-calendar
-          :now="today"
-          :value="today"
-          color="primary"
+      <v-layout wrap>
+        <v-flex
+          sm12
+          lg3
+          class="pa-3 mb-3 feature-pane"
         >
-        </v-calendar>
-      </v-sheet>
+          <v-btn
+            fab
+            outline
+            small
+            absolute
+            left
+            color="primary"
+            @click="$refs.calendar.prev()"
+          >
+            <v-icon dark>
+              keyboard_arrow_left
+            </v-icon>
+          </v-btn>
+          <v-btn
+            fab
+            outline
+            small
+            absolute
+            right
+            color="primary"
+            @click="$refs.calendar.next()"
+          >
+            <v-icon dark>
+              keyboard_arrow_right
+            </v-icon>
+          </v-btn>
+        </v-flex>
+        <v-flex
+          sm12
+          lg9
+          class="pl-3"
+        >
+          <v-sheet height="500">
+            <v-calendar
+              ref="calendar"
+              :now="today"
+              :value="today"
+              color="primary"
+              locale="ja-jp"
+            >
+            </v-calendar>
+          </v-sheet>
+        </v-flex>
+      </v-layout>
     </v-layout>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -24,7 +65,7 @@ import moment from 'moment/moment';
 export default {
   data() {
     return {
-      today: '2019-07-04',
+      today: '2019-07-04'
     };
   },
   components: {
@@ -32,7 +73,7 @@ export default {
     HeaderBar
   },
   async mounted() {
-    this.today = '2019-07-04';
+    this.today = moment().format('YYYY-MM-DD');
 
     // -------------------
     // user情報を取得する

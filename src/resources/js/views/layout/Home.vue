@@ -4,15 +4,46 @@
       <header-bar></header-bar>
       <v-layout wrap>
         <v-flex
-          sm12
-          lg3
+          xs12
+          sm7
+          lg7
+          class="pa-3"
+        >
+          <v-layout column>
+            <v-chip
+              label
+              class="pa-3 ma-3 top-month-display"
+            >{{getTopDisplay}}</v-chip>
+            <v-sheet
+              height="500"
+              width="100%"
+            >
+              <v-calendar
+                ref="calendar"
+                :now="getToday"
+                :value="getToday"
+                start="2019-1-1"
+                end="2019-7-1"
+                color="primary"
+                locale="ja-jp"
+                type="month"
+                v-model="start"
+              >
+              </v-calendar>
+            </v-sheet>
+          </v-layout>
+        </v-flex>
+        <v-flex
+          xs12
+          sm5
+          lg5
           class="pa-3 mb-3 feature-pane"
         >
           <v-btn
             fab
             outline
-            small
             absolute
+            small
             left
             color="primary"
             @click="$refs.calendar.prev()"
@@ -21,11 +52,12 @@
               keyboard_arrow_left
             </v-icon>
           </v-btn>
+
           <v-btn
             fab
             outline
-            small
             absolute
+            small
             right
             color="primary"
             @click="$refs.calendar.next()"
@@ -34,22 +66,7 @@
               keyboard_arrow_right
             </v-icon>
           </v-btn>
-        </v-flex>
-        <v-flex
-          sm12
-          lg9
-          class="pl-3"
-        >
-          <v-sheet height="500">
-            <v-calendar
-              ref="calendar"
-              :now="today"
-              :value="today"
-              color="primary"
-              locale="ja-jp"
-            >
-            </v-calendar>
-          </v-sheet>
+          <br><br><br>
         </v-flex>
       </v-layout>
     </v-layout>
@@ -63,18 +80,19 @@ import HeaderBar from '../components/headerBar';
 import moment from 'moment/moment';
 
 export default {
-  data() {
-    return {
-      today: '2019-07-04'
-    };
-  },
   components: {
     WorkloadItem,
     HeaderBar
   },
+  data() {
+    return {
+      start: '2019-1-1',
+    };
+  },
+  created() {
+    this.start = moment().format('YYYY-MM-DD');
+  },
   async mounted() {
-    this.today = moment().format('YYYY-MM-DD');
-
     // -------------------
     // user情報を取得する
     const { data } = await axios.getWithJwt('api/auth/me');
@@ -109,10 +127,27 @@ export default {
   computed: {
     getWorkload() {
       return this.$store.getters.workload;
-    }
+    },
+    getToday() {
+      return moment().format('YYYY-MM-DD');
+    },
+    getThisMonth() {
+      return moment().format('YYYY-MM');
+    },
+    getTopDisplay() {
+      return moment(this.start).format('YYYY-MM');
+    },
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.feature-pane {
+  position: relative;
+  padding-top: 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+}
+.top-month-display {
+  font-size: 2em;
+}
 </style>

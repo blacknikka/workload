@@ -145,7 +145,7 @@ export default {
 .feature-pane {
   position: relative;
   padding-top: 30px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.4);
 }
 .top-month-display {
   font-size: 2em;

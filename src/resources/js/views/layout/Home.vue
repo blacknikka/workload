@@ -14,23 +14,7 @@
               label
               class="pa-3 ma-3 top-month-display"
             >{{getTopDisplay}}</v-chip>
-            <v-sheet
-              height="500"
-              width="100%"
-            >
-              <v-calendar
-                ref="calendar"
-                :now="getToday"
-                :value="getToday"
-                start="2019-1-1"
-                end="2019-7-1"
-                color="primary"
-                locale="ja-jp"
-                type="month"
-                v-model="start"
-              >
-              </v-calendar>
-            </v-sheet>
+            <calendar ref="calendar" @currentChanged="onCurrentChanged"></calendar>
           </v-layout>
         </v-flex>
         <v-flex
@@ -77,20 +61,19 @@
 import axios from '../../Util/axios/axios';
 import WorkloadItem from '../components/WorkloadItem';
 import HeaderBar from '../components/headerBar';
+import Calendar from '../components/Calendar';
 import moment from 'moment/moment';
 
 export default {
   components: {
     WorkloadItem,
-    HeaderBar
+    HeaderBar,
+    Calendar,
   },
   data() {
     return {
       start: '2019-1-1',
     };
-  },
-  created() {
-    this.start = moment().format('YYYY-MM-DD');
   },
   async mounted() {
     // -------------------
@@ -128,16 +111,15 @@ export default {
     getWorkload() {
       return this.$store.getters.workload;
     },
-    getToday() {
-      return moment().format('YYYY-MM-DD');
-    },
-    getThisMonth() {
-      return moment().format('YYYY-MM');
-    },
     getTopDisplay() {
-      return moment(this.start).format('YYYY-MM');
+      return moment(new Date(this.start)).format('YYYY-MM');
     },
-  }
+  },
+  methods: {
+    onCurrentChanged (start) {
+      this.start = start;
+    },
+  },
 };
 </script>
 

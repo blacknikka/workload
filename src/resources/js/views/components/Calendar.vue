@@ -1,20 +1,21 @@
 <template>
   <v-sheet
-    height="500"
+    height="100%"
     width="100%"
+    class="pa-3"
   >
-    <v-calendar
-      ref="calendar"
-      :now="getToday"
-      :value="getToday"
-      start="2019-1-1"
-      end="2019-7-1"
-      color="primary"
-      locale="ja-jp"
-      type="month"
-      v-model="start"
+    <v-layout
+      row
+      justify-center
     >
-    </v-calendar>
+      <v-date-picker
+        v-model="picker"
+        locale="ja-jp"
+        :day-format="getDateStr"
+        :full-width="true"
+        :show-current="true"
+      ></v-date-picker>
+    </v-layout>
   </v-sheet>
 
 </template>
@@ -26,6 +27,7 @@ export default {
   data() {
     return {
       start: '2019-1-1',
+      picker: ''
     };
   },
   created() {
@@ -43,15 +45,29 @@ export default {
     prev() {
       this.$refs.calendar.prev();
     },
+    isSaturday(day) {
+      return moment(day).day();
+    },
+    getDateStr(date) {
+      return moment(date).date();
+    },
   },
   watch: {
     start(newStart, oldStart) {
-      this.$emit('currentChanged', newStart)
-    },
-  },
+      this.$emit('currentChanged', newStart);
+    }
+  }
 };
 </script>
 
 <style lang="sass" scoped>
+</style>
 
+<style>
+.v-date-picker-table.v-date-picker-table--date > table > tbody tr td:nth-child(7) .v-btn__content {
+    color:blue
+}
+.v-date-picker-table.v-date-picker-table--date > table > tbody tr td:nth-child(1) .v-btn__content {
+    color:red
+}
 </style>

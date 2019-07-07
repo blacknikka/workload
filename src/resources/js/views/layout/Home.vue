@@ -5,22 +5,19 @@
       <v-layout wrap>
         <v-flex
           xs12
-          sm7
-          lg7
+          sm4
+          lg4
           class="pa-3"
         >
-          <v-layout column>
-            <v-chip
-              label
-              class="pa-3 ma-3 top-month-display"
-            >{{getTopDisplay}}</v-chip>
-            <calendar ref="calendar" @currentChanged="onCurrentChanged"></calendar>
-          </v-layout>
+          <calendar
+            ref="calendar"
+            @currentChanged="onCurrentChanged"
+          ></calendar>
         </v-flex>
         <v-flex
           xs12
-          sm5
-          lg5
+          sm8
+          lg8
           class="pa-3 mb-3 feature-pane"
         >
           <v-btn
@@ -62,17 +59,16 @@ import axios from '../../Util/axios/axios';
 import WorkloadItem from '../components/WorkloadItem';
 import HeaderBar from '../components/headerBar';
 import Calendar from '../components/Calendar';
-import moment from 'moment/moment';
 
 export default {
   components: {
     WorkloadItem,
     HeaderBar,
-    Calendar,
+    Calendar
   },
   data() {
     return {
-      start: '2019-1-1',
+      start: '2019-1-1'
     };
   },
   async mounted() {
@@ -110,16 +106,13 @@ export default {
   computed: {
     getWorkload() {
       return this.$store.getters.workload;
-    },
-    getTopDisplay() {
-      return moment(new Date(this.start)).format('YYYY-MM');
-    },
+    }
   },
   methods: {
-    onCurrentChanged (start) {
+    onCurrentChanged(start) {
       this.start = start;
-    },
-  },
+    }
+  }
 };
 </script>
 

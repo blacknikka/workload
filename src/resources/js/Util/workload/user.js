@@ -1,5 +1,4 @@
 import axios from '../axios/axios';
-import store from '../../store';
 
 class user {
   async getUserDataFromServer() {

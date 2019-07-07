@@ -10,6 +10,9 @@ const store = new Vuex.Store({
     loginToken: '',
     workload: [],
     userInfo: null,
+
+    // 現在選択中の日付
+    picked: '',
   },
   mutations: {
     setWorkload(state, workload) {
@@ -39,6 +42,9 @@ const store = new Vuex.Store({
         user.department
       );
     },
+    setPickedDate(state, picked) {
+      state.picked = picked;
+    }
   },
   actions: {},
   getters: {
@@ -60,6 +66,9 @@ const store = new Vuex.Store({
     userInfo({ userInfo }) {
       return userInfo;
     },
+    getPickedDate({picked}) {
+      return picked;
+    }
   },
   plugins: [],
 });

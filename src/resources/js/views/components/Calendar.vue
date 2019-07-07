@@ -13,7 +13,6 @@
         locale="ja-jp"
         :day-format="getDateStr"
         :full-width="true"
-        :show-current="true"
       ></v-date-picker>
     </v-layout>
   </v-sheet>
@@ -26,12 +25,14 @@ import moment from 'moment/moment';
 export default {
   data() {
     return {
-      picker: '',
     };
   },
   model: {
-    prop: 'pickerData',
+    prop: 'picker',
     event: 'input'
+  },
+  props: {
+      picker: String,
   },
   computed: {
     getToday() {
@@ -43,7 +44,7 @@ export default {
         this.picker;
       },
       set(value) {
-        this.$emit('input', value);
+        this.$store.commit('setPickedDate', value);
       },
     },
   },

@@ -9,9 +9,7 @@
           lg4
           class="pa-3"
         >
-          <calendar
-            @pickedChanged="onPickerChanged"
-          ></calendar>
+          <calendar></calendar>
         </v-flex>
         <v-flex
           xs12
@@ -19,32 +17,7 @@
           lg8
           class="pa-3 mb-3 feature-pane"
         >
-          <v-btn
-            fab
-            outline
-            absolute
-            small
-            left
-            color="primary"
-          >
-            <v-icon dark>
-              keyboard_arrow_left
-            </v-icon>
-          </v-btn>
-
-          <v-btn
-            fab
-            outline
-            absolute
-            small
-            right
-            color="primary"
-          >
-            <v-icon dark>
-              keyboard_arrow_right
-            </v-icon>
-          </v-btn>
-          <br><br><br>
+          <workload-items :list="getWorkloadList"></workload-items>
         </v-flex>
       </v-layout>
     </v-layout>
@@ -53,19 +26,22 @@
 
 <script>
 import axios from '../../Util/axios/axios';
-import WorkloadItem from '../components/WorkloadItem';
+import WorkloadItems from '../components/WorkloadItems';
 import HeaderBar from '../components/headerBar';
 import Calendar from '../components/Calendar';
+import moment from 'moment/moment';
+import Workload from '../../model/workload/workload';
 
 export default {
   components: {
-    WorkloadItem,
+    WorkloadItems,
     HeaderBar,
     Calendar
   },
   data() {
     return {
       pickedDate: '',
+      currentMonth: ''
     };
   },
   async mounted() {
@@ -76,6 +52,7 @@ export default {
     // 取得した情報をセットする
     const user = data.user;
     this.$store.commit('setUserInfo', {
+      id: user.id,
       name: user.name,
       email: user.email,
       department: {
@@ -87,28 +64,24 @@ export default {
 
     // -------------------
     // データ取得
-    const result = await axios.getWithJwt('api/workload/get/user_id/1');
+    const month = moment().format('YYYY-MM');
+    const userInf = this.$store.getters.userInfo;
+    const result = await axios.getWithJwt(`api/workload/get/user/id/${userInf.id}/${month}`);
 
     const filteredData = Array.from(result.data).map(data => {
       const date = data.date.replace(/T.*/, '');
-      return {
+      return new Workload(
         date,
-        amount: data.amount,
-        project_id: data.project_id,
-        category_id: data.category_id
-      };
+        data.amount,
+        data.project_id,
+        data.category_id
+      );
     });
     this.$store.commit('setWorkload', filteredData);
   },
   computed: {
-    getWorkload() {
+    getWorkloadList() {
       return this.$store.getters.workload;
-    }
-  },
-  methods: {
-    onPickerChanged(picked) {
-      // pickが変更されたとき
-      this.pickedDate = picked;
     },
   }
 };

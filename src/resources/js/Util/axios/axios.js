@@ -19,11 +19,28 @@ class myAxios {
         return false;
       });
 
-      return result;
+    return result;
   }
 
   async post(url, data) {
     const result = await axios.post(url, data);
+    return result;
+  }
+
+  async postWithJwt(url, data) {
+    const token = store.getters.loginToken;
+
+    const result = await axios.post(url, data, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        return response;
+      })
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
+
     return result;
   }
 

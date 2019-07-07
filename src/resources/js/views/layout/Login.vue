@@ -10,7 +10,7 @@
       <v-flex
         xs12
         sm8
-        md4
+        md8
       >
         <v-card class="login-card-container">
           <v-form

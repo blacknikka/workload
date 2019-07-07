@@ -1,17 +1,20 @@
 <template>
-  <div class="workload-container">
-    <p class="date-container">
-      {{ date }}
-    </p>
-    <p class="amount-container">
-      {{ amount }}
-    </p>
-    <p class="project-id-container">
-      {{ project_id }}
-    </p>
-    <p class="category-id-container">
-      {{ category_id }}
-    </p>
+  <div>
+    <v-list-tile
+      avatar
+      ripple
+    >
+      <v-list-tile-content>
+        <v-list-tile-title>{{ projectId }}</v-list-tile-title>
+        <v-list-tile-sub-title>{{ categoryId }}</v-list-tile-sub-title>
+      </v-list-tile-content>
+
+      <v-list-tile-action>
+        <v-list-tile-action-text>{{ amount }}</v-list-tile-action-text>
+      </v-list-tile-action>
+
+    </v-list-tile>
+    <v-divider></v-divider>
   </div>
 </template>
 
@@ -20,46 +23,24 @@ export default {
   props: {
     date: {
       type: String,
-      required: true,
+      required: true
     },
     amount: {
       type: Number,
       required: true,
-      default: 0,
+      default: 0
     },
-    project_id: {
+    projectId: {
       type: Number,
-      required: true,
+      required: true
     },
-    category_id: {
+    categoryId: {
       type: Number,
-      required: true,
-    },
-  },
+      required: true
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-.workload-container {
-  width: 100%;
-  clear: both;
-  display: block;
-
-  p {
-    float: left;
-  }
-
-  .date-container {
-    width: 30%;
-  }
-  .amount-container {
-    width: 30%;
-  }
-  .project-id-container {
-    width: 20%;
-  }
-  .category-id-container {
-    width: 20%;
-  }
-}
 </style>

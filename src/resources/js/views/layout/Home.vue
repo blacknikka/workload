@@ -4,52 +4,47 @@
       <header-bar></header-bar>
       <v-layout wrap>
         <v-flex
-          sm12
-          lg3
+          xs12
+          sm4
+          lg4
+          class="pa-3"
+        >
+          <calendar
+            @pickedChanged="onPickerChanged"
+          ></calendar>
+        </v-flex>
+        <v-flex
+          xs12
+          sm8
+          lg8
           class="pa-3 mb-3 feature-pane"
         >
           <v-btn
             fab
             outline
-            small
             absolute
+            small
             left
             color="primary"
-            @click="$refs.calendar.prev()"
           >
             <v-icon dark>
               keyboard_arrow_left
             </v-icon>
           </v-btn>
+
           <v-btn
             fab
             outline
-            small
             absolute
+            small
             right
             color="primary"
-            @click="$refs.calendar.next()"
           >
             <v-icon dark>
               keyboard_arrow_right
             </v-icon>
           </v-btn>
-        </v-flex>
-        <v-flex
-          sm12
-          lg9
-          class="pl-3"
-        >
-          <v-sheet height="500">
-            <v-calendar
-              ref="calendar"
-              :now="today"
-              :value="today"
-              color="primary"
-              locale="ja-jp"
-            >
-            </v-calendar>
-          </v-sheet>
+          <br><br><br>
         </v-flex>
       </v-layout>
     </v-layout>
@@ -60,21 +55,20 @@
 import axios from '../../Util/axios/axios';
 import WorkloadItem from '../components/WorkloadItem';
 import HeaderBar from '../components/headerBar';
-import moment from 'moment/moment';
+import Calendar from '../components/Calendar';
 
 export default {
-  data() {
-    return {
-      today: '2019-07-04'
-    };
-  },
   components: {
     WorkloadItem,
-    HeaderBar
+    HeaderBar,
+    Calendar
+  },
+  data() {
+    return {
+      pickedDate: '',
+    };
   },
   async mounted() {
-    this.today = moment().format('YYYY-MM-DD');
-
     // -------------------
     // user情報を取得する
     const { data } = await axios.getWithJwt('api/auth/me');
@@ -110,9 +104,23 @@ export default {
     getWorkload() {
       return this.$store.getters.workload;
     }
+  },
+  methods: {
+    onPickerChanged(picked) {
+      // pickが変更されたとき
+      this.pickedDate = picked;
+    },
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.feature-pane {
+  position: relative;
+  padding-top: 30px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.4);
+}
+.top-month-display {
+  font-size: 2em;
+}
 </style>

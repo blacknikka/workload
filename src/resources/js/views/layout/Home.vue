@@ -68,7 +68,7 @@ export default {
     const userInf = this.$store.getters.userInfo;
     const result = await axios.getWithJwt(`api/workload/get/user/id/${userInf.id}/${month}`);
 
-    const filteredData = Array.from(result.data).map(data => {
+    const filteredData = Array.from(result.data.data).map(data => {
       const date = data.date.replace(/T.*/, '');
       return new Workload(
         date,

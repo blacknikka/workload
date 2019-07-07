@@ -65,6 +65,41 @@ class WorkloadDao
     }
 
     /**
+     * UserId, 日付情報から検索
+     *
+     * @param integer $userId
+     * @param Carbon $month
+     * @return Workload[]
+     */
+    public function findByMonth(int $userId, Carbon $month) : Collection
+    {
+        $queryResult = DB::table(self::WORKLOAD_TABLE_NAME)
+            ->where(self::WORKLOAD_TABLE_NAME . '.user_id', $userId)
+            ->whereYear(self::WORKLOAD_TABLE_NAME . '.date', '=', $month->year)
+            ->whereMonth(self::WORKLOAD_TABLE_NAME . '.date', '=', $month->month)
+            ->select(
+                [
+                    self::WORKLOAD_TABLE_NAME . '.id as workloadId',
+                    self::WORKLOAD_TABLE_NAME . '.user_id as userId',
+                    self::WORKLOAD_TABLE_NAME . '.project_id as projId',
+                    self::WORKLOAD_TABLE_NAME . '.category_id as catId',
+                    'amount',
+                    'date'
+                ]
+            )
+            ->get();
+
+        $results = collect($queryResult)
+            ->map(
+                function ($q) {
+                    return $this->newFromQueryResult($q);
+                }
+            );
+
+        return $results;
+    }
+
+    /**
      * @param Workload $workload
      * @return int ID
      */

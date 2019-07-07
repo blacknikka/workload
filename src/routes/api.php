@@ -24,9 +24,17 @@ Route::group(
         'middleware' => ['jwt.auth'],
     ],
     function () {
-        // get workload
+        // get workload by workload record ID.
         Route::get('get/id/{id}', 'WorkloadController@getWorkloadById');
+
+        // get workload by user ID.
         Route::get('get/user_id/{id}', 'WorkloadController@getWorkloadByUserId');
+
+        // get workload by user Id and month
+        Route::get(
+            'get/user/id/{id}/{month}',
+            'WorkloadController@getWorkloadByMonth'
+        );
 
         // set workload to data store.
         Route::post('set/user_id', 'WorkloadController@setWorkloadByUserId');

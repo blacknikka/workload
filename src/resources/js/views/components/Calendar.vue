@@ -26,12 +26,8 @@ import moment from 'moment/moment';
 export default {
   data() {
     return {
-      start: '2019-1-1',
       picker: ''
     };
-  },
-  created() {
-    this.start = moment().format('YYYY-MM-DD');
   },
   computed: {
     getToday() {
@@ -39,22 +35,13 @@ export default {
     }
   },
   methods: {
-    next() {
-      this.$refs.calendar.next();
-    },
-    prev() {
-      this.$refs.calendar.prev();
-    },
-    isSaturday(day) {
-      return moment(day).day();
-    },
     getDateStr(date) {
       return moment(date).date();
     },
   },
   watch: {
-    start(newStart, oldStart) {
-      this.$emit('currentChanged', newStart);
+    picker(newPicker, oldPicker) {
+      this.$emit('pickedChanged', newPicker);
     }
   }
 };

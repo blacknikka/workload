@@ -10,8 +10,7 @@
           class="pa-3"
         >
           <calendar
-            ref="calendar"
-            @currentChanged="onCurrentChanged"
+            @pickedChanged="onPickerChanged"
           ></calendar>
         </v-flex>
         <v-flex
@@ -27,7 +26,6 @@
             small
             left
             color="primary"
-            @click="$refs.calendar.prev()"
           >
             <v-icon dark>
               keyboard_arrow_left
@@ -41,7 +39,6 @@
             small
             right
             color="primary"
-            @click="$refs.calendar.next()"
           >
             <v-icon dark>
               keyboard_arrow_right
@@ -68,7 +65,7 @@ export default {
   },
   data() {
     return {
-      start: '2019-1-1'
+      pickedDate: '',
     };
   },
   async mounted() {
@@ -109,9 +106,10 @@ export default {
     }
   },
   methods: {
-    onCurrentChanged(start) {
-      this.start = start;
-    }
+    onPickerChanged(picked) {
+      // pickが変更されたとき
+      this.pickedDate = picked;
+    },
   }
 };
 </script>

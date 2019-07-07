@@ -13,6 +13,7 @@ use App\Infrastructure\Db\WorkloadDao;
 use Illuminate\Support\Collection;
 use Tests\Unit\Domain\Workload\faker\WorkloadFaker;
 use Faker\Generator as Faker;
+use Carbon\Carbon;
 
 class WorkloadDaoTest extends TestCase
 {
@@ -154,6 +155,52 @@ class WorkloadDaoTest extends TestCase
 
         // 検証
         $this->assertSame(count($result), 0);
+    }
+
+    /** @test */
+    public function findByMonth_正常系()
+    {
+        $userId = 10;
+
+        // テスト用のデータを作成
+        $base = new Carbon('2019-07-01');
+        $workloads = collect()::times(
+            10,
+            function ($index) use ($userId, $base) {
+                $date = (new Carbon($base))->addDays($index);
+
+                $workload =  WorkloadFaker::createWithNullId(1, $userId, $date)[0];
+                $this->saveToProject($workload->getProjectId());
+                $this->saveToCategory($workload->getCategoryId());
+                return $workload;
+            }
+        );
+
+        // 8月分も作る
+        $base = new Carbon('2019-08-01');
+        $workloads = $workloads->concat(
+            collect()::times(
+                10,
+                function ($index) use ($userId, $base) {
+                    $date = (new Carbon($base))->addDays($index);
+                    $workload = WorkloadFaker::createWithNullId(1, $userId, $date)[0];
+
+                    $this->saveToProject($workload->getProjectId());
+                    $this->saveToCategory($workload->getCategoryId());
+                    return $workload;
+                }
+            )
+        );
+
+        collect($workloads)->each(
+            function ($workload) {
+                $this->assertTrue($this->sut->save($workload) > 0);
+            }
+        );
+
+        $this->assertSame(count($workloads), 20);
+        $collections = $this->sut->findByMonth($userId, new Carbon('2019-07-01'));
+        $this->assertSame(count($collections), 10);
     }
 
     /** @test */

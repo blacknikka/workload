@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use App\Infrastructure\Db\WorkloadDao;
 use App\Http\Requests\Workload\GetWorkloadRequest;
 use App\Http\Requests\Workload\SetWorkloadRequest;
+use App\Http\Requests\Workload\GetWorkloadByMonthRequest;
 use Illuminate\Http\Response;
 use App\Domain\Workload\Workload;
 use Carbon\Carbon;
@@ -77,6 +78,19 @@ class WorkloadController extends Controller
                 JSON_UNESCAPED_UNICODE
             );
         }
+    }
+
+    /**
+     * UserId, 日付情報から工数データを取得する
+     *
+     * @param GetWorkloadByMonthRequest $request
+     * @param integer $userId
+     * @param string $month
+     * @return JsonResponse
+     */
+    public function getWorkloadByMonth(GetWorkloadByMonthRequest $request, int $userId, string $month) : JsonResponse
+    {
+        
     }
 
     /**

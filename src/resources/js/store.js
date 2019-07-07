@@ -33,6 +33,7 @@ const store = new Vuex.Store({
     },
     setUserInfo(state, user) {
       state.userInfo = new User(
+        user.id,
         user.name,
         user.email,
         user.department

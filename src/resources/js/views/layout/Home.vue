@@ -10,7 +10,7 @@
           class="pa-3"
         >
           <calendar
-            @pickedChanged="onPickerChanged"
+            v-model="pickedDate"
           ></calendar>
         </v-flex>
         <v-flex
@@ -56,6 +56,7 @@ import axios from '../../Util/axios/axios';
 import WorkloadItem from '../components/WorkloadItem';
 import HeaderBar from '../components/headerBar';
 import Calendar from '../components/Calendar';
+import moment from 'moment/moment';
 
 export default {
   components: {
@@ -66,6 +67,7 @@ export default {
   data() {
     return {
       pickedDate: '',
+      currentMonth: '',
     };
   },
   async mounted() {
@@ -76,6 +78,7 @@ export default {
     // 取得した情報をセットする
     const user = data.user;
     this.$store.commit('setUserInfo', {
+      id: user.id,
       name: user.name,
       email: user.email,
       department: {
@@ -87,7 +90,9 @@ export default {
 
     // -------------------
     // データ取得
-    const result = await axios.getWithJwt('api/workload/get/user_id/1');
+    const month = moment().format('YYYY-MM');
+    const userInf = this.$store.getters.userInfo
+    const result = await axios.getWithJwt(`api/workload/get/user/id/${userInf.id}/${month}`);
 
     const filteredData = Array.from(result.data).map(data => {
       const date = data.date.replace(/T.*/, '');
@@ -100,17 +105,6 @@ export default {
     });
     this.$store.commit('setWorkload', filteredData);
   },
-  computed: {
-    getWorkload() {
-      return this.$store.getters.workload;
-    }
-  },
-  methods: {
-    onPickerChanged(picked) {
-      // pickが変更されたとき
-      this.pickedDate = picked;
-    },
-  }
 };
 </script>
 

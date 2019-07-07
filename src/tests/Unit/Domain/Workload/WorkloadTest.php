@@ -40,4 +40,24 @@ class WorkloadTest extends TestCase
         $this->assertSame($workload->getAmount(), $amount);
         $this->assertSame($workload->getDate(), $date);
     }
+
+    /** @test */
+    public function Workload_toArray()
+    {
+        /** @var Workload $workload */
+        $workload = WorkloadFaker::create(1)[0];
+        $array = $workload->toArray();
+
+        $this->assertEquals(
+            $array,
+            [
+                'id' => $workload->getId(),
+                'user_id' => $workload->getUserId(),
+                'project_id' => $workload->getProjectId(),
+                'category_id' => $workload->getCategoryId(),
+                'amount' => $workload->getAmount(),
+                'date' => $workload->getdate()->toIso8601String(),
+            ]
+        );
+    }
 }

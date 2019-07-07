@@ -90,7 +90,26 @@ class WorkloadController extends Controller
      */
     public function getWorkloadByMonth(GetWorkloadByMonthRequest $request, int $userId, string $month) : JsonResponse
     {
-        
+        // 日付を取得
+        $date = new Carbon($month);
+
+        $result = $this->workloadDao->findByMonth($userId, $date);
+
+        $array = $result->map(
+            function (Workload $workload) {
+                return $workload->toArray();
+            }
+        );
+
+        return response()->json(
+            [
+                'message' => 'done',
+                'data' => $array,
+            ],
+            Response::HTTP_OK,
+            [],
+            JSON_UNESCAPED_UNICODE
+        );
     }
 
     /**

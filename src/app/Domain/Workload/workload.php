@@ -100,6 +100,7 @@ class Workload
     {
         return [
             'id' => $this->id,
+            'user_id' => $this->user_id,
             'project_id' => $this->project_id,
             'category_id' => $this->category_id,
             'amount' => $this->amount,

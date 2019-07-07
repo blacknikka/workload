@@ -13,6 +13,7 @@ use App\Domain\Workload\Workload;
 use Illuminate\Support\Collection;
 use Tests\Unit\Domain\Workload\faker\WorkloadFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Carbon\Carbon;
 
 class WorkloadControllerTest extends TestCase
 {
@@ -80,6 +81,7 @@ class WorkloadControllerTest extends TestCase
             ->assertStatus(Response::HTTP_OK)
             ->assertExactJson([
                 'id' => $workload->getId(),
+                'user_id' => $workload->getUserId(),
                 'project_id' => $workload->getProjectId(),
                 'category_id' => $workload->getCategoryId(),
                 'amount' => $workload->getAmount(),
@@ -130,6 +132,7 @@ class WorkloadControllerTest extends TestCase
             ->assertExactJson([
                 [
                     'id' => $workload[0]->getId(),
+                    'user_id' => $workload[0]->getuserId(),
                     'project_id' => $workload[0]->getProjectId(),
                     'category_id' => $workload[0]->getCategoryId(),
                     'amount' => $workload[0]->getAmount(),
@@ -189,5 +192,80 @@ class WorkloadControllerTest extends TestCase
                 'result' => 'done',
                 'message' => 'no error',
             ]);
+    }
+
+    /** @test */
+    public function getWorkloadByMonth_データが取れる()
+    {
+        $userId = 10;
+        $base = new Carbon('2019-07-01');
+
+        $workloads = collect()::times(
+            100,
+            function ($index) use ($userId, $base) {
+                $date = (new Carbon($base))->addDays($index);
+
+                $workload =  WorkloadFaker::create(1, $userId, $date)[0];
+                return $workload;
+            }
+        );
+
+        $this->workloadDaoMock
+            ->shouldReceive('findByMonth')
+            ->andReturn($workloads);
+
+            // ->with($userId, $base)
+            // ->withArgs([$userId, $base])         // これでもOKらしい
+
+        $response = $this->getJson(
+            route(
+                'getWorkloadByMonth',
+                [
+                    'id' => $userId,
+                    'month' => '2019-07',
+                ]
+            )
+        );
+
+        $response
+            ->assertStatus(Response::HTTP_OK);
+
+        $contents = json_decode($response->getContent());
+        $this->assertSame($contents->message, 'done');
+
+        collect($contents->data)->each(
+            function ($content, $index) use ($workloads) {
+                $this->assertSame(
+                    $content->id,
+                    $workloads[$index]->getId()
+                );
+
+                $this->assertSame(
+                    $content->user_id,
+                    $workloads[$index]->getUserId()
+                );
+
+                $this->assertSame(
+                    $content->project_id,
+                    $workloads[$index]->getProjectId()
+                );
+
+                $this->assertSame(
+                    $content->category_id,
+                    $workloads[$index]->getCategoryId()
+                );
+
+                // キャストしないと小数点の差でテストが落ちる
+                $this->assertSame(
+                    (float)$content->amount,
+                    $workloads[$index]->getAmount()
+                );
+
+                $this->assertSame(
+                    $content->date,
+                    $workloads[$index]->getDate()->toIso8601String()
+                );
+            }
+        );
     }
 }

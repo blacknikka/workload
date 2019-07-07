@@ -204,6 +204,38 @@ class WorkloadDaoTest extends TestCase
     }
 
     /** @test */
+    public function findByMonth_正常系_データなしの場合()
+    {
+        $userId = 10;
+
+        // テスト用のデータを作成
+        $base = new Carbon('2019-07-01');
+        $workloads = collect()::times(
+            10,
+            function ($index) use ($userId, $base) {
+                $date = (new Carbon($base))->addDays($index);
+
+                $workload =  WorkloadFaker::createWithNullId(1, $userId, $date)[0];
+                $this->saveToProject($workload->getProjectId());
+                $this->saveToCategory($workload->getCategoryId());
+                return $workload;
+            }
+        );
+
+        collect($workloads)->each(
+            function ($workload) {
+                $this->assertTrue($this->sut->save($workload) > 0);
+            }
+        );
+
+        $this->assertSame(count($workloads), 10);
+
+        // 8月から検索（つまり、データなし）
+        $collections = $this->sut->findByMonth($userId, new Carbon('2019-08-01'));
+        $this->assertSame(count($collections), 0);
+    }
+
+    /** @test */
     public function save_正常系_nullID()
     {
         // テスト用のデータを作成

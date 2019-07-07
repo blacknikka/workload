@@ -9,7 +9,7 @@
       justify-center
     >
       <v-date-picker
-        v-model="pickerData"
+        v-model="picker"
         locale="ja-jp"
         :day-format="getDateStr"
         :full-width="true"
@@ -25,34 +25,19 @@ import moment from 'moment/moment';
 export default {
   data() {
     return {
+      picker: ''
     };
-  },
-  model: {
-    prop: 'picker',
-    event: 'input'
-  },
-  props: {
-      picker: String,
-  },
-  computed: {
-    getToday() {
-      return moment().format('YYYY-MM-DD');
-    },
-    pickerData: {
-      // pickしたデータを親コンポーネントと共有する。
-      get() {
-        this.picker;
-      },
-      set(value) {
-        this.$store.commit('setPickedDate', value);
-      },
-    },
   },
   methods: {
     getDateStr(date) {
       return moment(date).date();
     }
   },
+  watch: {
+    picker(newValue, oldValue) {
+      this.$store.commit('setPickedDate', newValue);
+    }
+  }
 };
 </script>
 

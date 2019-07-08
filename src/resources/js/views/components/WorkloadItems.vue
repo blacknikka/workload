@@ -100,27 +100,21 @@
       two-line
       v-else
     >
-      <workload-item
-        v-for="(item, index) in list"
-        :key="index"
-        :date="item.date"
-        :amount="item.amount"
-        :project="item.projectId"
-        :category="item.categoryId"
-      ></workload-item>
+      <workload-table :list="list">
+      </workload-table>
     </v-list>
   </div>
 </template>
 
 <script>
-import WorkloadItem from './WorkloadItem';
+import WorkloadTable from './WorkloadTable';
 import Workload from '../../model/workload/workload';
 import axios from '../../Util/axios/axios';
 import moment from 'moment/moment';
 
 export default {
   components: {
-    WorkloadItem
+    WorkloadTable
   },
   data() {
     return {
@@ -128,7 +122,7 @@ export default {
       categoryId: null,
       amount: null,
       errorState: false,
-      errorMessage: '',
+      errorMessage: ''
     };
   },
   props: {

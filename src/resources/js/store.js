@@ -16,7 +16,9 @@ const store = new Vuex.Store({
   },
   mutations: {
     setWorkload(state, workload) {
-      state.workload = workload;
+      workload.map((data) => {
+        state.workload.push(data);
+      })
     },
     setLoggedIn(state, { loggedIn, token }) {
       if (loggedIn === true) {

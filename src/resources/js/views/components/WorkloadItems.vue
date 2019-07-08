@@ -53,7 +53,7 @@
             <v-btn
               color="info"
               type="submit"
-            >登録</v-btn>
+            >追加</v-btn>
           </v-flex>
 
         </v-layout>
@@ -105,8 +105,8 @@
         :key="index"
         :date="item.date"
         :amount="item.amount"
-        :project-id="item.project_id"
-        :category-id="item.category_id"
+        :project="item.projectId"
+        :category="item.categoryId"
       ></workload-item>
     </v-list>
   </div>
@@ -136,6 +136,9 @@ export default {
       type: Array,
       required: true
     }
+  },
+  mounted() {
+    console.log('list', this.list);
   },
   computed: {
     isNothing() {

@@ -20,6 +20,9 @@ const store = new Vuex.Store({
         state.workload.push(data);
       })
     },
+    addWorklaod(state, workload) {
+      state.workload.push(workload);
+    },
     setLoggedIn(state, { loggedIn, token }) {
       if (loggedIn === true) {
         if (token) {

@@ -146,23 +146,19 @@ export default {
     }
   },
   methods: {
-    getPostData() {
-      const user = this.$store.getters.userInfo;
-      if (Number.isInteger(user.id) === false) {
-        return false;
-      }
-
+    getWorkloadData() {
       if (moment(this.$store.getters.getPickedDate).isValid() === false) {
         return false;
       }
 
-      return {
-        user_id: user.id,
-        project_id: Number(this.projectId),
-        category_id: Number(this.categoryId),
-        amount: Number(this.amount),
-        date: this.$store.getters.getPickedDate
-      };
+      return new Workload(
+        null,
+        this.$store.getters.getPickedDate,
+        Number(this.amount),
+        Number(this.projectId),
+        Number(this.categoryId),
+        true
+      );
     },
     async register() {
       // エラーを解除
@@ -170,31 +166,33 @@ export default {
       this.errorState = false;
 
       // register
-      const post = this.getPostData();
-      console.log(post);
+      const workload = this.getWorkloadData();
+      console.log(workload);
 
-      if (post === false) {
+      if (workload === false) {
         this.errorState = true;
-        this.errorMessage = '入力内容が適切ではありません';
+        this.errorMessage = '登録する日付を選んでください';
         return;
       }
 
-      const result = await axios
-        .postWithJwt('api/workload/set/user_id', post)
-        .then(response => {
-          if (response.status !== 200) {
-            throw new Error(response.status);
-          }
+      this.$store.commit('addWorklaod', workload);
 
-          // 成功
-          console.log('registration done');
-        })
-        .catch(error => {
-          // something error
-          console.log(error);
+      // const result = await axios
+      //   .postWithJwt('api/workload/set/user_id', post)
+      //   .then(response => {
+      //     if (response.status !== 200) {
+      //       throw new Error(response.status);
+      //     }
 
-          console.log('registration error');
-        });
+      //     // 成功
+      //     console.log('registration done');
+      //   })
+      //   .catch(error => {
+      //     // something error
+      //     console.log(error);
+
+      //     console.log('registration error');
+      //   });
     }
   }
 };

@@ -70,11 +70,15 @@ export default {
 
     const filteredData = Array.from(result.data.data).map(data => {
       const dateString = data.date.replace(/T.*/, '');
+
+      // Workloadオブジェクトを作成。
       return new Workload(
+        data.id,
         dateString,
         data.amount,
         data.project_id,
-        data.category_id
+        data.category_id,
+        true
       );
     });
     this.$store.commit('setWorkload', filteredData);

@@ -101,7 +101,6 @@
         sm2
         md2
       >
-        <v-btn color="warning">選択を削除</v-btn>
       </v-flex>
     </v-list>
   </div>
@@ -124,7 +123,7 @@ export default {
       amount: null,
       errorState: false,
       errorMessage: '',
-      list: null,
+      list: null
     };
   },
   computed: {
@@ -139,7 +138,7 @@ export default {
     },
     getWorkloadList() {
       return this.$store.getters.workload;
-    },
+    }
   },
   methods: {
     getWorkloadData() {
@@ -189,7 +188,7 @@ export default {
 
       //     console.log('registration error');
       //   });
-    }
+    },
   }
 };
 </script>

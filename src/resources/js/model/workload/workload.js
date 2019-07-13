@@ -16,6 +16,7 @@ export default class Workload {
     this._projectId = projectId;
     this._categoryId = categoryId;
     this._isUpdated = isUpdated;
+    this._isDeleted = false;
   }
 
   get id() {
@@ -44,5 +45,9 @@ export default class Workload {
   
   setThisHasBeenOld() {
     this._isUpdated = false;
+  }
+
+  setThisHasDeleted() {
+    this._isDeleted = true;
   }
 }

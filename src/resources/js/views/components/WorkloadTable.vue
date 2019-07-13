@@ -2,7 +2,7 @@
   <v-data-table
     v-model="selected"
     :headers="headers"
-    :items="items"
+    :items="getWorkloadList"
     :pagination.sync="pagination"
     select-all
     item-key="name"
@@ -20,8 +20,8 @@
           ></v-checkbox>
         </th>
         <th
-          v-for="(header, index) in props.headers"
-          :key="index"
+          v-for="header in props.headers"
+          :key="header.text"
           :class="['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']"
           @click="changeSort(header.value)"
         >
@@ -33,7 +33,7 @@
     <template v-slot:items="props">
       <tr
         :active="props.selected"
-        @click="props.selected = !props.selected"
+        @click="itemClicked(props)"
       >
         <td>
           <v-checkbox
@@ -66,32 +66,24 @@ export default {
         { text: 'Category', value: 'category' },
         { text: 'Amount', value: 'amount' }
       ],
-      items: [],
       pagination: {
         sortBy: 'name'
       }
     };
   },
   props: {
-    list: {
+    workloads: {
       type: Array,
       required: true
     }
   },
-  mounted() {
-    this.list.forEach(item => {
-      this.items.push({
-        date: item.date,
-        name: item.projectId,
-        category: item.categoryId,
-        amount: item.amount
-      });
-    });
-  },
   methods: {
     toggleAll() {
-      if (this.selected.length) this.selected = [];
-      else this.selected = this.desserts.slice();
+      if (this.selected.length) {
+        this.selected = [];
+      } else {
+        this.selected = this.workloads.slice();
+      }
     },
     changeSort(column) {
       if (this.pagination.sortBy === column) {
@@ -100,6 +92,25 @@ export default {
         this.pagination.sortBy = column;
         this.pagination.descending = false;
       }
+    },
+    itemClicked(props) {
+      if (props.selected === true) {
+        this.selected.push(this.workloads[props.index]);
+      } else {
+        this.selected.splice(props.index);
+      }
+    }
+  },
+  computed: {
+    getWorkloadList() {
+      return this.workloads.map(item => {
+        return {
+          date: item.date,
+          name: item.projectId,
+          category: item.categoryId,
+          amount: item.amount
+        };
+      });
     }
   }
 };

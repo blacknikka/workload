@@ -17,7 +17,7 @@
           lg8
           class="pa-3 mb-3 feature-pane"
         >
-          <workload-items :list="getWorkloadList"></workload-items>
+          <workload-items></workload-items>
         </v-flex>
       </v-layout>
     </v-layout>
@@ -83,11 +83,6 @@ export default {
     });
     this.$store.commit('setWorkload', filteredData);
   },
-  computed: {
-    getWorkloadList() {
-      return this.$store.getters.workload;
-    },
-  }
 };
 </script>
 

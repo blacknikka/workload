@@ -1,83 +1,77 @@
 <template>
   <div>
-    <v-form
-      method="post"
-      @submit.prevent="register"
-    >
-      <v-container>
-        <v-layout
-          row
-          wrap
+    <v-container>
+      <v-layout
+        row
+        wrap
+      >
+        <v-flex
+          xs3
+          sm3
+          md3
         >
-          <v-flex
-            xs3
-            sm3
-            md3
-          >
-            <v-text-field
-              label="プロジェクトID"
-              v-model="projectId"
-              type="number"
-            ></v-text-field>
-          </v-flex>
+          <v-text-field
+            label="プロジェクトID"
+            v-model="projectId"
+            type="number"
+          ></v-text-field>
+        </v-flex>
 
-          <v-flex
-            xs3
-            sm3
-            md3
-          >
-            <v-text-field
-              label="作業ID"
-              v-model="categoryId"
-              type="number"
-            ></v-text-field>
-          </v-flex>
-
-          <v-flex
-            xs4
-            sm4
-            md4
-          >
-            <v-text-field
-              label="工数"
-              v-model="amount"
-              type="number"
-            ></v-text-field>
-          </v-flex>
-
-          <v-flex
-            xs2
-            sm2
-            md2
-          >
-            <v-btn
-              color="info"
-              type="submit"
-            >追加</v-btn>
-          </v-flex>
-
-        </v-layout>
-        <v-layout
-          row
-          wrap
-          v-if="isError"
+        <v-flex
+          xs3
+          sm3
+          md3
         >
-          <v-flex
-            xs12
-            sm12
-            md12
-          >
+          <v-text-field
+            label="作業ID"
+            v-model="categoryId"
+            type="number"
+          ></v-text-field>
+        </v-flex>
 
-            <v-chip
-              color="red"
-              text-color="white"
-              style="width: 100%"
-            >{{getErrorMessage}}</v-chip>
-          </v-flex>
-        </v-layout>
+        <v-flex
+          xs4
+          sm4
+          md4
+        >
+          <v-text-field
+            label="工数"
+            v-model="amount"
+            type="number"
+          ></v-text-field>
+        </v-flex>
 
-      </v-container>
-    </v-form>
+        <v-flex
+          xs2
+          sm2
+          md2
+        >
+          <v-btn
+            color="info"
+            @click="register"
+          >追加</v-btn>
+        </v-flex>
+
+      </v-layout>
+      <v-layout
+        row
+        wrap
+        v-if="isError"
+      >
+        <v-flex
+          xs12
+          sm12
+          md12
+        >
+
+          <v-chip
+            color="red"
+            text-color="white"
+            style="width: 100%"
+          >{{getErrorMessage}}</v-chip>
+        </v-flex>
+      </v-layout>
+    </v-container>
     <div v-if="isNothing">
       <v-container>
         <v-layout>
@@ -100,8 +94,15 @@
       two-line
       v-else
     >
-      <workload-table :list="list">
+      <workload-table :workloads="getWorkloadList">
       </workload-table>
+      <v-flex
+        xs2
+        sm2
+        md2
+      >
+        <v-btn color="warning">選択を削除</v-btn>
+      </v-flex>
     </v-list>
   </div>
 </template>
@@ -122,28 +123,23 @@ export default {
       categoryId: null,
       amount: null,
       errorState: false,
-      errorMessage: ''
+      errorMessage: '',
+      list: null,
     };
-  },
-  props: {
-    list: {
-      type: Array,
-      required: true
-    }
-  },
-  mounted() {
-    console.log('list', this.list);
   },
   computed: {
     isNothing() {
-      return this.list.length === 0;
+      return this.getWorkloadList.length === 0;
     },
     isError() {
       return this.errorState === true;
     },
     getErrorMessage() {
       return this.errorMessage;
-    }
+    },
+    getWorkloadList() {
+      return this.$store.getters.workload;
+    },
   },
   methods: {
     getWorkloadData() {
@@ -160,7 +156,7 @@ export default {
         true
       );
     },
-    async register() {
+    register() {
       // エラーを解除
       this.errorMessage = '';
       this.errorState = false;

@@ -12,6 +12,8 @@ use App\Domain\Workload\Project;
 use App\Infrastructure\Db\WorkloadDao;
 use Illuminate\Support\Collection;
 use Tests\Unit\Domain\Workload\faker\WorkloadFaker;
+use Tests\Unit\Domain\Workload\faker\CategoryFaker;
+use Tests\Unit\Domain\Workload\faker\ProjectFaker;
 use Faker\Generator as Faker;
 use Carbon\Carbon;
 
@@ -183,8 +185,8 @@ class WorkloadDaoTest extends TestCase
                 10,
                 function ($index) use ($userId, $base) {
                     $date = (new Carbon($base))->addDays($index);
-                    $workload = WorkloadFaker::createWithNullId(1, $userId, $date)[0];
 
+                    $workload = WorkloadFaker::createWithNullId(1, $userId, $date)[0];
                     $this->saveToProject($workload->getProjectId());
                     $this->saveToCategory($workload->getCategoryId());
                     return $workload;
@@ -192,9 +194,13 @@ class WorkloadDaoTest extends TestCase
             )
         );
 
-        collect($workloads)->each(
-            function ($workload) {
-                $this->assertTrue($this->sut->save($workload) > 0);
+        $results = collect($workloads)->map(
+            function (Workload $workload) {
+                $id = $this->sut->save($workload);
+                
+                $this->assertTrue($id > 0);
+
+                return $id;
             }
         );
 
@@ -222,9 +228,12 @@ class WorkloadDaoTest extends TestCase
             }
         );
 
-        collect($workloads)->each(
-            function ($workload) {
-                $this->assertTrue($this->sut->save($workload) > 0);
+        $results = collect($workloads)->map(
+            function (Workload $workload) {
+                $id = $this->sut->save($workload);
+                $this->assertTrue($id > 0);
+
+                return $id;
             }
         );
 
@@ -291,5 +300,76 @@ class WorkloadDaoTest extends TestCase
         $sutResult = $this->sut->save($data);
 
         $this->assertSame($sutResult, -1);
+    }
+
+    /** @test */
+    public function updateSeveralData_正常系()
+    {
+        $nullCollection = WorkloadFaker::createWithNullId(10);
+        $workloads = collect($nullCollection)->map(
+            function (Workload $workload) {
+                $id = $this->insertWorkloadData($workload);
+                return new Workload(
+                    $id,
+                    $workload->getUserId(),
+                    $workload->getProjectId(),
+                    $workload->getCategoryId(),
+                    $workload->getAmount(),
+                    $workload->getdate()
+                );
+            }
+        );
+
+        // update後のデータを作成する
+        $date = Carbon::now();
+
+        // category,projectを作る
+        $this->saveToProject(100);
+        $this->saveToCategory(200);
+
+        $updated = $workloads->map(
+            function (Workload $workload) use ($date) {
+                return new Workload(
+                    $workload->getId(),
+                    $workload->getUserId(),
+                    100,
+                    200,
+                    5,
+                    $date
+                );
+            }
+        );
+
+        // update処理
+        $result = $this->sut->updateSeveralData($updated);
+        $this->assertTrue($result['result']);
+        $this->assertSame(count($result['saveResult']), 10);
+        $result['saveResult']->each(
+            function ($item) {
+                $this->assertTrue($item > 0);
+            }
+        );
+
+        // test
+        $updated->each(
+            function (Workload $item) {
+                // データを取得
+                $workload = $this->sut->find($item->getId());
+
+                $this->assertNotNull($workload);
+
+                $this->assertSame($workload->getUserId(), $item->getUserId());
+                $this->assertSame($workload->getProjectId(), $item->getProjectId());
+                $this->assertSame($workload->getCategoryId(), $item->getCategoryId());
+                $this->assertSame($workload->getAmount(), $item->getAmount());
+
+                $this->assertEquals(
+                    $workload->getdate(),
+                    new Carbon(
+                        $item->getdate()->format('Y-m-d')
+                    )
+                );
+            }
+        );
     }
 }

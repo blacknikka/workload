@@ -39,6 +39,10 @@ Route::group(
 
         // set workload to data store.
         Route::post('set/user_id', 'WorkloadController@setWorkloadByUserId');
+
+        // update workload
+        Route::post('update/user_id', 'WorkloadController@updateWorkloadByUserId')
+        ->name('updateWorkloadByUserId');
     }
 );
 

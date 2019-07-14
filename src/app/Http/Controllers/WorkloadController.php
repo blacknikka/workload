@@ -178,10 +178,10 @@ class WorkloadController extends Controller
         );
 
         $workloads = collect($input['workloads'])->map(
-            function ($item) {
+            function ($item) use ($input) {
                 return new Workload(
                     $item['id'],
-                    $item['user_id'],
+                    $input['user_id'],
                     $item['project_id'],
                     $item['category_id'],
                     $item['amount'],
@@ -191,12 +191,12 @@ class WorkloadController extends Controller
         );
 
         // update
-        $this->workloadDao->updateSeveralData($workloads);
+        $result = $this->workloadDao->updateSeveralData($workloads);
 
         return response()->json(
             [
-                'result' => 'done',
-                'message' => 'no error',
+                'result' => $result['result'],
+                'id' => $result['saveResult'],
             ],
             Response::HTTP_OK,
             [],

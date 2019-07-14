@@ -268,4 +268,36 @@ class WorkloadControllerTest extends TestCase
             }
         );
     }
+
+    /** @test */
+    public function update_WorkloadDaoのfindByUserIdが呼ばれている()
+    {
+        $this->workloadDaoMock
+            ->shouldReceive('updateSeveralData')
+            ->andReturn(
+                [
+                    'result' => true,
+                    'saveResult' => [1]
+                ]
+            );
+
+        $response = $this->postJson(
+            route('updateWorkloadByUserId'),
+            [
+                'user_id' => 1,
+                'workloads' => [
+                    [
+                        'id' => 2,
+                        'project_id' => 3,
+                        'category_id' => 4,
+                        'amount' => 5,
+                        'date' => '2019-7-14',
+                    ]
+                ],
+            ]
+        );
+        $response->assertStatus(Response::HTTP_OK);
+        $this->workloadDaoMock->shouldHaveReceived('updateSeveralData')
+            ->once();
+    }
 }

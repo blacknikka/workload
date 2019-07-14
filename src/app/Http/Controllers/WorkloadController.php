@@ -8,6 +8,7 @@ use App\Infrastructure\Db\WorkloadDao;
 use App\Http\Requests\Workload\GetWorkloadRequest;
 use App\Http\Requests\Workload\SetWorkloadRequest;
 use App\Http\Requests\Workload\GetWorkloadByMonthRequest;
+use App\Http\Requests\Workload\UpdateWorkloadRequest;
 use Illuminate\Http\Response;
 use App\Domain\Workload\Workload;
 use Carbon\Carbon;
@@ -28,7 +29,7 @@ class WorkloadController extends Controller
      * @param GetWorkloadRequest $request
      * @return JsonResponse
      */
-    public function getWorkloadById(GetWorkloadRequest $request, int $id) : JsonResponse
+    public function getWorkloadById(GetWorkloadRequest $request, int $id): JsonResponse
     {
         $result = $this->workloadDao->find($id);
 
@@ -55,7 +56,7 @@ class WorkloadController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function getWorkloadByUserId(GetWorkloadRequest $request, int $userId) : JsonResponse
+    public function getWorkloadByUserId(GetWorkloadRequest $request, int $userId): JsonResponse
     {
         $result = $this->workloadDao->findByUserId($userId);
 
@@ -88,7 +89,7 @@ class WorkloadController extends Controller
      * @param string $month
      * @return JsonResponse
      */
-    public function getWorkloadByMonth(GetWorkloadByMonthRequest $request, int $userId, string $month) : JsonResponse
+    public function getWorkloadByMonth(GetWorkloadByMonthRequest $request, int $userId, string $month): JsonResponse
     {
         // 日付を取得
         $date = new Carbon($month);
@@ -118,7 +119,7 @@ class WorkloadController extends Controller
      * @param SetWorkloadRequest $request
      * @return JsonResponse
      */
-    public function setWorkloadByUserId(SetWorkloadRequest $request) : JsonResponse
+    public function setWorkloadByUserId(SetWorkloadRequest $request): JsonResponse
     {
         $input = $request->only([
             'user_id',
@@ -159,5 +160,47 @@ class WorkloadController extends Controller
                 JSON_UNESCAPED_UNICODE
             );
         }
+    }
+
+    /**
+     * Update処理（複数のデータの更新処理）
+     *
+     * @param UpdateWorkloadRequest $request
+     * @return JsonResponse
+     */
+    public function updateWorkloadByUserId(UpdateWorkloadRequest $request): JsonResponse
+    {
+        $input = $request->only(
+            [
+                'user_id',
+                'workloads',
+            ]
+        );
+
+        $workloads = collect($input['workloads'])->map(
+            function ($item) use ($input) {
+                return new Workload(
+                    $item['id'],
+                    $input['user_id'],
+                    $item['project_id'],
+                    $item['category_id'],
+                    $item['amount'],
+                    new Carbon($item['date'])
+                );
+            }
+        );
+
+        // update
+        $result = $this->workloadDao->updateSeveralData($workloads);
+
+        return response()->json(
+            [
+                'result' => $result['result'],
+                'id' => $result['saveResult'],
+            ],
+            Response::HTTP_OK,
+            [],
+            JSON_UNESCAPED_UNICODE
+        );
     }
 }

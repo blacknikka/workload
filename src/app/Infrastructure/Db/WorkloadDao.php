@@ -118,10 +118,12 @@ class WorkloadDao
 
         // 登録の確認
         $project = DB::table(self::PROJECT_TABLE_NAME)
-            ->exists('id', $workload->getProjectId());
+            ->where('id', $workload->getProjectId())
+            ->exists();
 
         $category = DB::table(self::CATEGORY_TABLE_NAME)
-            ->exists('id', $workload->getCategoryId());
+            ->where('id', $workload->getCategoryId())
+            ->exists();
 
         $id = -1;
         if ($project === true && $category === true) {
@@ -138,6 +140,32 @@ class WorkloadDao
         }
 
         return $id;
+    }
+
+    /**
+     * 複数のデータを更新する処理
+     *
+     * @param Workload[] $workloads
+     * @return array
+     */
+    public function updateSeveralData(Collection $workloads) : array
+    {
+        $result = DB::transaction(
+            function () use ($workloads) {
+                $saveResult = $workloads->map(
+                    function ($workload) {
+                        return $this->save($workload);
+                    }
+                );
+
+                return [
+                    'result' => true,
+                    'saveResult' => $saveResult,
+                ];
+            }
+        );
+
+        return $result;
     }
 
     /**

@@ -17,7 +17,7 @@
           lg8
           class="pa-3 mb-3 feature-pane"
         >
-          <workload-items :list="getWorkloadList"></workload-items>
+          <workload-items></workload-items>
         </v-flex>
       </v-layout>
     </v-layout>
@@ -70,20 +70,19 @@ export default {
 
     const filteredData = Array.from(result.data.data).map(data => {
       const dateString = data.date.replace(/T.*/, '');
+
+      // Workloadオブジェクトを作成。
       return new Workload(
+        data.id,
         dateString,
         data.amount,
         data.project_id,
-        data.category_id
+        data.category_id,
+        true
       );
     });
     this.$store.commit('setWorkload', filteredData);
   },
-  computed: {
-    getWorkloadList() {
-      return this.$store.getters.workload;
-    },
-  }
 };
 </script>
 

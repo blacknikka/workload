@@ -29,8 +29,8 @@ class WorkloadFaker
                 return new Workload(
                     $faker->unique()->randomNumber() + 1,
                     $userId === null ? $faker->unique()->randomNumber() + 1 : $userId,
-                    $faker->unique()->randomNumber(),
-                    $faker->unique()->randomNumber(),
+                    $faker->unique()->numberBetween(1),
+                    $faker->unique()->numberBetween(1),
                     $faker->randomFloat(2, 0, 24),
                     $date
                 );
@@ -62,8 +62,8 @@ class WorkloadFaker
                 return new Workload(
                     null,
                     $userId === null ? $faker->unique()->randomNumber() + 1 : $userId,
-                    $faker->unique()->randomNumber(),
-                    $faker->unique()->randomNumber(),
+                    $faker->unique()->numberBetween(1),
+                    $faker->unique()->numberBetween(1),
                     $faker->randomFloat(2, 0, 24),
                     $date
                 );

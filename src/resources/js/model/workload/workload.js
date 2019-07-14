@@ -1,10 +1,26 @@
 
 export default class Workload {
-  constructor(date, amount, projectId, categoryId) {
+  /**
+   * 
+   * @param {Number|null} id id or null.
+   * @param {Date} date 日付
+   * @param {Number} amount 工数
+   * @param {Number} projectId Project ID
+   * @param {Number} categoryId Category ID
+   * @param {Boolean} isUpdated Update済みかどうか（POSTする必要があるかどうか）
+   */
+  constructor(id, date, amount, projectId, categoryId, isUpdated = false) {
+    this._id = id;
     this._date = date;
     this._amount = amount;
     this._projectId = projectId;
     this._categoryId = categoryId;
+    this._isUpdated = isUpdated;
+    this._isDeleted = false;
+  }
+
+  get id() {
+    return this._id;
   }
 
   get date() {
@@ -21,5 +37,17 @@ export default class Workload {
 
   get categoryId() {
     return this._categoryId;
+  }
+
+  get isUpdated() {
+    return this._isUpdated;
+  }
+  
+  setThisHasBeenOld() {
+    this._isUpdated = false;
+  }
+
+  setThisHasDeleted() {
+    this._isDeleted = true;
   }
 }

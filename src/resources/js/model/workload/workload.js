@@ -23,6 +23,10 @@ export default class Workload {
     return this._id;
   }
 
+  set id(value) {
+    this._id = value;
+  }
+
   get date() {
     return this._date;
   }

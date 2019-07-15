@@ -94,6 +94,12 @@
       two-line
       v-else
     >
+      <v-btn
+        color="success"
+        @click="registerToDB"
+      >
+        DB登録
+      </v-btn>
       <workload-table :workloads="getWorkloadList">
       </workload-table>
       <v-flex
@@ -162,8 +168,6 @@ export default {
 
       // register
       const workload = this.getWorkloadData();
-      console.log(workload);
-
       if (workload === false) {
         this.errorState = true;
         this.errorMessage = '登録する日付を選んでください';
@@ -171,24 +175,55 @@ export default {
       }
 
       this.$store.commit('addWorklaod', workload);
-
-      // const result = await axios
-      //   .postWithJwt('api/workload/set/user_id', post)
-      //   .then(response => {
-      //     if (response.status !== 200) {
-      //       throw new Error(response.status);
-      //     }
-
-      //     // 成功
-      //     console.log('registration done');
-      //   })
-      //   .catch(error => {
-      //     // something error
-      //     console.log(error);
-
-      //     console.log('registration error');
-      //   });
     },
+    async registerToDB() {
+      const workload = this.$store.getters.workload;
+      const updated = Array.from(workload).map((data, index) => {
+        return {
+          index,
+          data,
+        }
+      }).filter((item) => {
+        // updateされているものを抽出
+        return item.data.isUpdated === true;
+      });
+
+      if (updated.length > 0) {
+        const post = {
+          user_id: this.$store.getters.userInfo.id,
+          workloads: updated.map((item) => {
+            return {
+              id: item.data.id,
+              project_id: item.data.projectId,
+              category_id: item.data.categoryId,
+              amount: item.data.amount,
+              date: item.data.date,
+            };
+          }),
+        };
+
+        // updated
+        const updatedResult = await axios
+          .postWithJwt('api/workload/update/user_id', post)
+
+        console.log(updatedResult);
+
+        if (updatedResult !== false && updatedResult.data.result === true) {
+          Array.from(updatedResult.data.id).filter((item) => {
+            // idが取れたものを取得する
+            return item > 0;
+          }).forEach((item, index) => {
+            const workloadIndex = updated[index].index;
+            this.$store.commit(
+              'setWorkloadToBeUploaded',
+              {
+                index: workloadIndex,
+                id: item,
+              });
+          });
+        }
+      }
+    }
   }
 };
 </script>

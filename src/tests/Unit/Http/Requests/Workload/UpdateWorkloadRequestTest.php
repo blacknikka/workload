@@ -110,7 +110,7 @@ class UpdateWorkloadRequestTest extends TestCase
             'id null'
             => [
                 [
-                    'user_id' => null,
+                    'user_id' => 1,
                     'workloads' => [
                         [
                             'id' => null,
@@ -121,12 +121,12 @@ class UpdateWorkloadRequestTest extends TestCase
                         ]
                     ],
                 ],
-                false,
+                true,
             ],
             'id string'
             => [
                 [
-                    'user_id' => 'string',
+                    'user_id' => 1,
                     'workloads' => [
                         [
                             'id' => 'string',
@@ -142,6 +142,7 @@ class UpdateWorkloadRequestTest extends TestCase
             'id none'
             => [
                 [
+                    'user_id' => 1,
                     'workloads' => [
                         [
                             'project_id' => 1,

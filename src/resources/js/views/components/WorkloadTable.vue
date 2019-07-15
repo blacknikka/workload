@@ -8,6 +8,7 @@
       :pagination.sync="pagination"
       item-key="name"
       class="elevation-1"
+      :rows-per-page-items="[-1]"
     >
       <template v-slot:headers="props">
         <tr>

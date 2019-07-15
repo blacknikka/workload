@@ -86,8 +86,8 @@ export default {
       return this.workloads.map(item => {
         return {
           date: item.date,
-          name: item.projectId,
-          category: item.categoryId,
+          name: item.project.name,
+          category: item.category.name,
           amount: item.amount
         };
       });

@@ -63,6 +63,15 @@ export default {
     });
 
     // -------------------
+    // ProjectとCateogoryの取得
+    const projectResult = await axios.getWithJwt('api/project/get');
+
+    if (projectResult !== false) {
+      this.$store.commit('setProjectData', projectResult.data.project);
+      this.$store.commit('setCategoryData', projectResult.data.category);
+    }
+
+    // -------------------
     // データ取得
     const month = moment().format('YYYY-MM');
     const userInf = this.$store.getters.userInfo;
@@ -76,8 +85,8 @@ export default {
         data.id,
         dateString,
         data.amount,
-        data.project_id,
-        data.category_id,
+        this.$store.getters.getProjectFromId(data.project_id),
+        this.$store.getters.getCategoryFromId(data.category_id),
         false
       );
     });

@@ -10,11 +10,12 @@
           sm3
           md3
         >
-          <v-text-field
-            label="プロジェクトID"
-            v-model="projectId"
-            type="number"
-          ></v-text-field>
+          <v-overflow-btn
+            :items="getProjectList"
+            v-model="project"
+            label="プロジェクト"
+          >
+          </v-overflow-btn>
         </v-flex>
 
         <v-flex
@@ -22,11 +23,12 @@
           sm3
           md3
         >
-          <v-text-field
-            label="作業ID"
-            v-model="categoryId"
-            type="number"
-          ></v-text-field>
+          <v-overflow-btn
+            :items="getCategoryList"
+            v-model="category"
+            label="作業"
+          >
+          </v-overflow-btn>
         </v-flex>
 
         <v-flex
@@ -124,12 +126,13 @@ export default {
   },
   data() {
     return {
-      projectId: null,
-      categoryId: null,
+      project: null,
+      category: null,
       amount: null,
       errorState: false,
       errorMessage: '',
-      list: null
+      list: null,
+
     };
   },
   computed: {
@@ -144,6 +147,18 @@ export default {
     },
     getWorkloadList() {
       return this.$store.getters.workload;
+    },
+    getProjectList() {
+      const project = this.$store.state.project;
+      return Array.from(project).map(item => {
+        return item.name;
+      });
+    },
+    getCategoryList() {
+      const category = this.$store.state.category;
+      return Array.from(category).map(item => {
+        return item.name;
+      });
     }
   },
   methods: {
@@ -152,12 +167,20 @@ export default {
         return false;
       }
 
+      const project = this.$store.state.project.find((item) => {
+        return this.project === item.name;
+      });
+
+      const category = this.$store.state.category.find((item) => {
+        return this.category === item.name;
+      }); 
+
       return new Workload(
         null,
         this.$store.getters.getPickedDate,
         Number(this.amount),
-        Number(this.projectId),
-        Number(this.categoryId),
+        project,
+        category,
         true
       );
     },
@@ -178,49 +201,52 @@ export default {
     },
     async registerToDB() {
       const workload = this.$store.getters.workload;
-      const updated = Array.from(workload).map((data, index) => {
-        return {
-          index,
-          data,
-        }
-      }).filter((item) => {
-        // updateされているものを抽出
-        return item.data.isUpdated === true;
-      });
+
+      // 更新されているもの（サーバにPOSTするもの）を取得
+      const updated = Array.from(workload)
+        .map((data, index) => {
+          return {
+            index,
+            data
+          };
+        })
+        .filter(item => {
+          // updateされているものを抽出
+          return item.data.isUpdated === true;
+        });
 
       if (updated.length > 0) {
         const post = {
           user_id: this.$store.getters.userInfo.id,
-          workloads: updated.map((item) => {
+          workloads: updated.map(item => {
             return {
               id: item.data.id,
-              project_id: item.data.projectId,
-              category_id: item.data.categoryId,
+              project_id: item.data.project.id,
+              category_id: item.data.category.id,
               amount: item.data.amount,
-              date: item.data.date,
+              date: item.data.date
             };
-          }),
+          })
         };
 
         // updated
-        const updatedResult = await axios
-          .postWithJwt('api/workload/update/user_id', post)
+        const updatedResult = await axios.postWithJwt('api/workload/update/user_id', post);
 
         console.log(updatedResult);
 
         if (updatedResult !== false && updatedResult.data.result === true) {
-          Array.from(updatedResult.data.id).filter((item) => {
-            // idが取れたものを取得する
-            return item > 0;
-          }).forEach((item, index) => {
-            const workloadIndex = updated[index].index;
-            this.$store.commit(
-              'setWorkloadToBeUploaded',
-              {
+          Array.from(updatedResult.data.id)
+            .filter(item => {
+              // idが取れたものを取得する
+              return item > 0;
+            })
+            .forEach((item, index) => {
+              const workloadIndex = updated[index].index;
+              this.$store.commit('setWorkloadToBeUploaded', {
                 index: workloadIndex,
-                id: item,
+                id: item
               });
-          });
+            });
         }
       }
     }

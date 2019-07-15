@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import User from './model/user';
+import Category from './model/project/category';
+import Project from './model/project/project';
 
 Vue.use(Vuex);
 
@@ -10,6 +12,8 @@ const store = new Vuex.Store({
     loginToken: '',
     workload: [],
     userInfo: null,
+    project: [],
+    category: [],
 
     // 現在選択中の日付
     picked: '',
@@ -53,6 +57,16 @@ const store = new Vuex.Store({
     },
     setPickedDate(state, picked) {
       state.picked = picked;
+    },
+    setProjectData(state, project) {
+      project.forEach((item) => {
+        state.project.push(item);
+      });
+    },
+    setCategoryData(state, category) {
+      category.forEach((item) => {
+        state.category.push(item);
+      });
     }
   },
   actions: {},
@@ -77,7 +91,17 @@ const store = new Vuex.Store({
     },
     getPickedDate({picked}) {
       return picked;
-    }
+    },
+    getProjectFromId: (state) => (id) => {
+      return state.project.find((item) => {
+        return id === item.id;
+      });
+    },
+    getCategoryFromId: (state) => (id) => {
+      return state.category.find((item) => {
+        return id === item.id;
+      });
+    },
   },
   plugins: [],
 });

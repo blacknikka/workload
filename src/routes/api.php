@@ -13,10 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 // workload
 Route::group(
     [
@@ -46,6 +42,17 @@ Route::group(
     }
 );
 
+// project
+Route::group(
+    [
+        'prefix' => 'project',
+        'middleware' => ['jwt.auth'],
+    ],
+    function () {
+        Route::get('/get', 'ProjectController@getProjectAndCategoryList')
+        ->name('getProjectAndCategory');
+    }
+);
 
 Route::group(
     ['prefix' => 'auth'],

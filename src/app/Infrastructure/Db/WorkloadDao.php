@@ -169,6 +169,54 @@ class WorkloadDao
     }
 
     /**
+     * Projectのリストを取得
+     *
+     * @return Project[]
+     */
+    public function getProjectList() : Collection
+    {
+        $projectList = DB::table(self::PROJECT_TABLE_NAME)
+            ->select(
+                [
+                    'id',
+                    'name',
+                    'comment',
+                ]
+            )
+            ->get();
+
+        return collect($projectList)->map(
+            function ($project) {
+                return $this->newProjectFromQueryResult($project);
+            }
+        );
+    }
+
+    /**
+     * Categoryのリストを取得
+     *
+     * @return Collection
+     */
+    public function getCategoryList() : Collection
+    {
+        $categoryList = DB::table(self::CATEGORY_TABLE_NAME)
+            ->select(
+                [
+                    'id',
+                    'name',
+                    'comment',
+                ]
+            )
+            ->get();
+
+        return collect($categoryList)->map(
+            function ($category) {
+                return $this->newCategoryFromQueryResult($category);
+            }
+        );
+    }
+
+    /**
      * @param \stdClass $queryResult
      * @return Workload
      */
@@ -181,6 +229,36 @@ class WorkloadDao
             $queryResult->catId,
             (float)$queryResult->amount,
             new Carbon($queryResult->date)
+        );
+    }
+
+    /**
+     * Projectを取得する
+     *
+     * @param \stdClass $queryResult
+     * @return Project
+     */
+    private function newProjectFromQueryResult(\stdClass $queryResult) : Project
+    {
+        return new Project(
+            $queryResult->id,
+            $queryResult->name,
+            $queryResult->comment
+        );
+    }
+
+    /**
+     * Categoryを取得する
+     *
+     * @param \stdClass $queryResult
+     * @return Category
+     */
+    private function newCategoryFromQueryResult(\stdClass $queryResult) : Category
+    {
+        return new Category(
+            $queryResult->id,
+            $queryResult->name,
+            $queryResult->comment
         );
     }
 }

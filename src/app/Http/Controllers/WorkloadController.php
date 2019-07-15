@@ -36,7 +36,7 @@ class WorkloadController extends Controller
         if (is_null($result)) {
             return response()->json(
                 [],
-                Response::HTTP_NOT_FOUND,
+                Response::HTTP_BAD_REQUEST,
                 [],
                 JSON_UNESCAPED_UNICODE
             );
@@ -63,7 +63,7 @@ class WorkloadController extends Controller
         if (is_null($result)) {
             return response()->json(
                 [],
-                Response::HTTP_NOT_FOUND,
+                Response::HTTP_BAD_REQUEST,
                 [],
                 JSON_UNESCAPED_UNICODE
             );

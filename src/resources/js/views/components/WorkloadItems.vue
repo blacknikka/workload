@@ -103,6 +103,12 @@
       >
       </v-flex>
     </v-list>
+    <v-btn
+      color="success"
+      @click="registerToDB"
+    >
+      DB登録
+    </v-btn>
   </div>
 </template>
 
@@ -162,8 +168,6 @@ export default {
 
       // register
       const workload = this.getWorkloadData();
-      console.log(workload);
-
       if (workload === false) {
         this.errorState = true;
         this.errorMessage = '登録する日付を選んでください';
@@ -171,24 +175,37 @@ export default {
       }
 
       this.$store.commit('addWorklaod', workload);
-
-      // const result = await axios
-      //   .postWithJwt('api/workload/set/user_id', post)
-      //   .then(response => {
-      //     if (response.status !== 200) {
-      //       throw new Error(response.status);
-      //     }
-
-      //     // 成功
-      //     console.log('registration done');
-      //   })
-      //   .catch(error => {
-      //     // something error
-      //     console.log(error);
-
-      //     console.log('registration error');
-      //   });
     },
+    async registerToDB() {
+      const workload = this.$store.getters.workload;
+      const updated = Array.from(workload).filter((data) => {
+        // updateされているものを抽出
+        return data.isUpdated === true;
+      });
+
+      const post = {
+        user_id: this.$store.getters.userInfo.id,
+        workloads: updated.map((data) => {
+          return {
+            id: data.id,
+            project_id: data.projectId,
+            category_id: data.categoryId,
+            amount: data.amount,
+            date: data.date,
+          };
+        }),
+      };
+
+      console.log(post);
+
+      if (updated.length > 0) {
+        // updated
+        const updatedResult = await axios
+          .postWithJwt('api/workload/update/user_id', post)
+
+        console.log(updatedResult);
+      }
+    }
   }
 };
 </script>

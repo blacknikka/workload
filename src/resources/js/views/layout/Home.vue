@@ -78,7 +78,7 @@ export default {
         data.amount,
         data.project_id,
         data.category_id,
-        true
+        false
       );
     });
     this.$store.commit('setWorkload', filteredData);

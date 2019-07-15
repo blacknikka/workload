@@ -32,10 +32,14 @@ class UpdateWorkloadRequest extends FormRequest
                 'required',
                 'array',
             ],
+
+            // 必ず存在する必要があるがnullはOK
             'workloads.*.id' => [
-                'required',
+                'present',
+                'nullable',
                 'integer',
             ],
+
             'workloads.*.project_id' => [
                 'required',
                 'integer',

@@ -49,7 +49,7 @@ class WorkloadControllerTest extends TestCase
             ->andReturn(null);
 
         $response = $this->getJson('api/workload/get/id/1');
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
 
         $this->workloadDaoMock->shouldHaveReceived('find', [1]);
     }
@@ -63,7 +63,7 @@ class WorkloadControllerTest extends TestCase
 
         $response = $this->getJson('api/workload/get/id/1');
         $response
-            ->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertStatus(Response::HTTP_BAD_REQUEST)
             ->assertExactJson([]);
     }
 

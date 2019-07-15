@@ -372,4 +372,38 @@ class WorkloadDaoTest extends TestCase
             }
         );
     }
+
+    /** @test */
+    public function getProjectList_Listを取得する()
+    {
+        $this->saveToProject(100);
+
+        $project = DB::table(self::PROJECT_TABLE_NAME)
+            ->where('id', 100)
+            ->first();
+
+        $projectList = $this->sut->getProjectList();
+        $this->assertTrue(count($projectList) > 0);
+
+        $this->assertSame($project->id, $projectList[0]->getId());
+        $this->assertSame($project->name, $projectList[0]->getName());
+        $this->assertSame($project->comment, $projectList[0]->getComment());
+    }
+
+    /** @test */
+    public function getCategoryList_Listを取得する()
+    {
+        $this->saveToCategory(100);
+
+        $category = DB::table(self::CATEGORY_TABLE_NAME)
+            ->where('id', 100)
+            ->first();
+
+        $cateogryList = $this->sut->getCategoryList();
+        $this->assertTrue(count($cateogryList) > 0);
+
+        $this->assertSame($category->id, $cateogryList[0]->getId());
+        $this->assertSame($category->name, $cateogryList[0]->getName());
+        $this->assertSame($category->comment, $cateogryList[0]->getComment());
+    }
 }

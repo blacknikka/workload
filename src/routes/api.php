@@ -28,10 +28,17 @@ Route::group(
 
         // get workload by user Id and month
         Route::get(
-            'get/user/id/{id}/{month}',
+            'get/user/id/{id}/month/{month}',
             'WorkloadController@getWorkloadByMonth'
         )
         ->name('getWorkloadByMonth');
+
+        // get workload by user Id and weeks
+        Route::get(
+            'get/user/id/{id}/week/{week}',
+            'WorkloadController@getWorkloadByWeeks'
+        )
+        ->name('getWorkloadByWeek');
 
         // set workload to data store.
         Route::post('set/user_id', 'WorkloadController@setWorkloadByUserId');

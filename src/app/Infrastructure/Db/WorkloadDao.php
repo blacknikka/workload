@@ -100,6 +100,18 @@ class WorkloadDao
     }
 
     /**
+     * 基準日から７日間のWorkloadを取得する
+     *
+     * @param integer $userId
+     * @param Carbon $weekDay
+     * @return Collection
+     */
+    public function findByWeekDay(int $userId, Carbon $weekDay) : Collection
+    {
+
+    }
+
+    /**
      * @param Workload $workload
      * @return int ID
      */

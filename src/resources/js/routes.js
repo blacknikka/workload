@@ -2,6 +2,7 @@ import VueRouter from 'vue-router';
 
 import Top from './views/layout/Top';
 import Home from './views/layout/Home';
+import Report from './views/layout/Report';
 import Login from './views/layout/Login';
 import Register from './views/layout/Register';
 
@@ -14,6 +15,12 @@ const routes = [
     path: '/home',
     component: Home,
     name: 'home',
+    meta: {requiresAuth: true},
+  },
+  {
+    path: '/report',
+    component: Report,
+    name: 'report',
     meta: {requiresAuth: true},
   },
   {

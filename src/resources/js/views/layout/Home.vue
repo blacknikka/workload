@@ -75,7 +75,7 @@ export default {
     // データ取得
     const month = moment().format('YYYY-MM');
     const userInf = this.$store.getters.userInfo;
-    const result = await axios.getWithJwt(`api/workload/get/user/id/${userInf.id}/${month}`);
+    const result = await axios.getWithJwt(`api/workload/get/user/id/month/${userInf.id}/${month}`);
 
     const filteredData = Array.from(result.data.data).map(data => {
       const dateString = data.date.replace(/T.*/, '');

@@ -108,7 +108,36 @@ class WorkloadDao
      */
     public function findByWeekDay(int $userId, Carbon $weekDay) : Collection
     {
+        $startOfDate = $weekDay;
+        $endOfDate = (new Carbon($weekDay))->addDays(7);
 
+        // 基準日から７日間の間の情報を取得したい。
+        // 8日後の直前までが対象。
+        // 日曜日基準の場合、次の日曜日の寸前まで（つまり、土曜の終わりまでの時間）
+        $queryResult = DB::table(self::WORKLOAD_TABLE_NAME)
+            ->where(self::WORKLOAD_TABLE_NAME . '.user_id', $userId)
+            ->whereDate(self::WORKLOAD_TABLE_NAME . '.date', '>=', $startOfDate)
+            ->whereDate(self::WORKLOAD_TABLE_NAME . '.date', '<', $endOfDate)
+            ->select(
+                [
+                    self::WORKLOAD_TABLE_NAME . '.id as workloadId',
+                    self::WORKLOAD_TABLE_NAME . '.user_id as userId',
+                    self::WORKLOAD_TABLE_NAME . '.project_id as projId',
+                    self::WORKLOAD_TABLE_NAME . '.category_id as catId',
+                    'amount',
+                    'date'
+                ]
+            )
+            ->get();
+
+        $results = collect($queryResult)
+            ->map(
+                function ($q) {
+                    return $this->newFromQueryResult($q);
+                }
+            );
+
+        return $results;
     }
 
     /**

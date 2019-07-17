@@ -142,6 +142,32 @@ class WorkloadControllerTest extends TestCase
     }
 
     /** @test */
+    public function getWorkloadByWeeks_findByWeekDayが呼ばれている()
+    {
+        $workload = WorkloadFaker::create(1);
+        $this->workloadDaoMock
+            ->shouldReceive('findByWeekDay')
+            ->andReturn(collect($workload));
+
+        $response = $this->getJson(
+            route(
+                'getWorkloadByWeek',
+                [
+                    'id' => 1,
+                    'week' => '2019-07-08',
+                ]
+            )
+        );
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $this->workloadDaoMock->shouldHaveReceived(
+            'findByWeekDay',
+            [1, Carbon::class]
+        );
+    }
+
+    /** @test */
     public function setWorkloadByUserId_WorkloadDaoのsaveがNGのケース()
     {
         $this->workloadDaoMock
@@ -299,5 +325,23 @@ class WorkloadControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $this->workloadDaoMock->shouldHaveReceived('updateSeveralData')
             ->once();
+    }
+
+    // -------------------------
+    // 追加（コントローラーとは関係ないが、Carbonの動作を確認する為のテスト
+
+    /** @test */
+    public function CarbonのstartOfWeekの確認()
+    {
+        Carbon::setWeekStartsAt(Carbon::SUNDAY);
+        Carbon::setWeekEndsAt(Carbon::SATURDAY);
+        $date = (new Carbon('2019-7-7'))->startOfWeek();
+        $this->assertEquals($date, new Carbon('2019-7-7'));
+
+        $date = (new Carbon('2019-7-8'))->startOfWeek();
+        $this->assertEquals($date, new Carbon('2019-7-7'));
+
+        $date = (new Carbon('2019-7-13'))->startOfWeek();
+        $this->assertEquals($date, new Carbon('2019-7-7'));
     }
 }

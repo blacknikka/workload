@@ -210,6 +210,54 @@ class WorkloadDaoTest extends TestCase
     }
 
     /** @test */
+    public function findByWeekDay_正常系()
+    {
+        $userId = 10;
+
+        // テスト用のデータを作成
+        $base = new Carbon('2019-07-05');
+        $workloads = collect()::times(
+            10,
+            function ($index) use ($userId, $base) {
+                $date = (new Carbon($base))->addDays($index);
+
+                $workload =  WorkloadFaker::createWithNullId(1, $userId, $date)[0];
+                $this->saveToProject($workload->getProjectId());
+                $this->saveToCategory($workload->getCategoryId());
+                return $workload;
+            }
+        );
+
+        $idsOfResults = collect($workloads)->map(
+            function (Workload $workload) {
+                $id = $this->sut->save($workload);
+                
+                $this->assertTrue($id > 0);
+
+                return $id;
+            }
+        );
+
+        $this->assertSame(count($workloads), 10);
+
+        // 2019-07-07〜2019-07-13までのデータをとる
+        $collections = $this->sut->findByWeekDay($userId, new Carbon('2019-07-07'));
+        $this->assertSame(count($collections), 7);
+
+        $collections->each(
+            function (Workload $workload) {
+                $date = $workload->getDate();
+                $this->assertTrue(
+                    $date->between(
+                        new Carbon('2019-07-07'),
+                        new Carbon('2019-07-14')
+                    )
+                );
+            }
+        );
+    }
+
+    /** @test */
     public function findByMonth_正常系_データなしの場合()
     {
         $userId = 10;

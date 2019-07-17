@@ -8,6 +8,7 @@ use App\Infrastructure\Db\WorkloadDao;
 use App\Http\Requests\Workload\GetWorkloadRequest;
 use App\Http\Requests\Workload\SetWorkloadRequest;
 use App\Http\Requests\Workload\GetWorkloadByMonthRequest;
+use App\Http\Requests\Workload\GetWorkloadByWeeksRequest;
 use App\Http\Requests\Workload\UpdateWorkloadRequest;
 use Illuminate\Http\Response;
 use App\Domain\Workload\Workload;
@@ -95,6 +96,43 @@ class WorkloadController extends Controller
         $date = new Carbon($month);
 
         $result = $this->workloadDao->findByMonth($userId, $date);
+
+        $array = $result->map(
+            function (Workload $workload) {
+                return $workload->toArray();
+            }
+        );
+
+        return response()->json(
+            [
+                'message' => 'done',
+                'data' => $array,
+            ],
+            Response::HTTP_OK,
+            [],
+            JSON_UNESCAPED_UNICODE
+        );
+    }
+
+    /**
+     * UserId, 週の情報から工数データを取得する
+     *
+     * @param GetWorkloadByWeeksRequest $request
+     * @param integer $userId
+     * @param string|null $week
+     * @return JsonResponse
+     */
+    public function getWorkloadByWeeks(GetWorkloadByWeeksRequest $request, int $userId, ?string $week): JsonResponse
+    {
+        // 週の最初を日曜日に設定する
+        Carbon::setWeekStartsAt(Carbon::SUNDAY);
+        Carbon::setWeekEndsAt(Carbon::SATURDAY);
+
+        // 日付を取得
+        // $weekは日付
+        $date = (new Carbon($week))->startOfWeek();
+
+        $result = $this->workloadDao->findByWeekDay($userId, $date);
 
         $array = $result->map(
             function (Workload $workload) {

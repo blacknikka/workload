@@ -8,12 +8,7 @@
       sm3
       md3
     >
-      <v-overflow-btn
-        :items="getProjectList"
-        v-model="project"
-        label="プロジェクト"
-      >
-      </v-overflow-btn>
+      <v-chip label>{{project}}</v-chip>
     </v-flex>
 
     <v-flex
@@ -21,12 +16,7 @@
       sm3
       md3
     >
-      <v-overflow-btn
-        :items="getCategoryList"
-        v-model="category"
-        label="作業"
-      >
-      </v-overflow-btn>
+      <v-chip label>{{category}}</v-chip>
     </v-flex>
 
     <v-flex
@@ -34,11 +24,7 @@
       sm2
       md2
     >
-      <v-text-field
-        label="工数"
-        v-model="amount"
-        type="number"
-      ></v-text-field>
+      <v-chip label>{{amount}}</v-chip>
     </v-flex>
 
     <v-flex
@@ -61,9 +47,6 @@
 export default {
   data() {
     return {
-      project: null,
-      category: null,
-      amount: null,
       detail: null
     };
   },
@@ -73,30 +56,17 @@ export default {
       required: true
     }
   },
-  mounted() {
-    // projectをpropsのworkloadから取得する
-    const projectId = this.workload.project_id;
-    this.project = this.$store.getters.getProjectFromId(projectId);
-
-    // categoryをpropsのworkloadから取得する
-    const categoryId = this.workload.category_id;
-    this.category = this.$store.getters.getCategoryFromId(projectId);
-
-    // amountをpropsのworkloadから取得する
-    this.amount = this.workload.amount;
-  },
   computed: {
-    getProjectList() {
-      const project = this.$store.state.project;
-      return Array.from(project).map(item => {
-        return item.name;
-      });
+    project() {
+      const projectId = this.workload.projectId;
+      return this.$store.getters.getProjectFromId(projectId);
     },
-    getCategoryList() {
-      const category = this.$store.state.category;
-      return Array.from(category).map(item => {
-        return item.name;
-      });
+    category() {
+      const categoryId = this.workload.categoryId;
+      return this.$store.getters.getCategoryFromId(categoryId);
+    },
+    amount() {
+      return this.workload.amount;
     },
   }
 };

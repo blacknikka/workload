@@ -1,16 +1,18 @@
 <template>
-  <div>
+  <v-app light>
+    <header-bar class="report-header"></header-bar>
     <each-day-item
       v-for="(item, index) in eachDayData"
       :key="index"
       :workloads="item.workloads"
     >
     </each-day-item>
-  </div>
+  </v-app>
 </template>
 
 <script>
 import EachDayItem from '../components/Report/EachDayItem';
+import HeaderBar from '../components/headerBar';
 
 import axios from '../../Util/axios/axios';
 import moment from 'moment/moment';
@@ -19,6 +21,7 @@ import Workload from '../../model/workload/workload';
 export default {
   components: {
     EachDayItem,
+    HeaderBar,
   },
   data() {
     return {
@@ -26,7 +29,7 @@ export default {
       eachDayData: [...Array(7)].map(item => {
         return {
           date: null,
-          workloads: [],
+          workloads: []
         };
       })
     };
@@ -78,3 +81,8 @@ export default {
 };
 </script>
 
+<style lang="scss" scoped>
+.report-header {
+  z-index: 10;
+}
+</style>

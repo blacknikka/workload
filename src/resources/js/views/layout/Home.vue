@@ -75,23 +75,25 @@ export default {
     // データ取得
     const month = moment().format('YYYY-MM');
     const userInf = this.$store.getters.userInfo;
-    const result = await axios.getWithJwt(`api/workload/get/user/id/month/${userInf.id}/${month}`);
+    const workloadResult = await axios.getWithJwt(`api/workload/get/user/id/${userInf.id}/month/${month}`);
 
-    const filteredData = Array.from(result.data.data).map(data => {
-      const dateString = data.date.replace(/T.*/, '');
+    if (workloadResult !== false) {
+      const filteredData = Array.from(workloadResult.data.data).map(data => {
+        const dateString = data.date.replace(/T.*/, '');
 
-      // Workloadオブジェクトを作成。
-      return new Workload(
-        data.id,
-        dateString,
-        data.amount,
-        this.$store.getters.getProjectFromId(data.project_id),
-        this.$store.getters.getCategoryFromId(data.category_id),
-        false
-      );
-    });
-    this.$store.commit('setWorkload', filteredData);
-  },
+        // Workloadオブジェクトを作成。
+        return new Workload(
+          data.id,
+          dateString,
+          data.amount,
+          this.$store.getters.getProjectFromId(data.project_id),
+          this.$store.getters.getCategoryFromId(data.category_id),
+          false
+        );
+      });
+      this.$store.commit('setWorkload', filteredData);
+    }
+  }
 };
 </script>
 

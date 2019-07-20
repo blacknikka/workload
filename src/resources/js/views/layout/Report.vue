@@ -2,9 +2,10 @@
   <v-app light>
     <header-bar class="report-header"></header-bar>
     <each-day-item
-      v-for="(item, index) in eachDayData"
+      v-for="(item, index) in workloads"
       :key="index"
-      :workloads="item.workloads"
+      :workloads="item"
+      :day="days[index]"
     >
     </each-day-item>
   </v-app>
@@ -25,13 +26,10 @@ export default {
   },
   data() {
     return {
-      // 一週間分のデータ（各日付ごとの工数情報）
-      eachDayData: [...Array(7)].map(item => {
-        return {
-          date: null,
-          workloads: []
-        };
-      })
+      days: [],
+      workloads: [...Array(7)].map(item => {
+        return [];
+      }),
     };
   },
   async mounted() {
@@ -39,10 +37,7 @@ export default {
     const baseDay = moment().startOf('week');
     [...Array(7)].forEach((_, index) => {
       const addedDate = new moment(baseDay).add(index, 'days');
-      this.eachDayData[index] = {
-        date: addedDate,
-        workloads: []
-      };
+      this.days.push(addedDate);
     });
 
     const userInf = this.$store.getters.userInfo;
@@ -67,14 +62,16 @@ export default {
       });
 
       // 日付ごとに工数データを抽出する
-      this.eachDayData.forEach(eachDay => {
+      this.days.forEach((eachDay, index) => {
         // 各日付にマッチする工数を探す
         const filteredWorklaods = workloadsOfWeek.filter(workload => {
-          return moment(workload.date).isSame(eachDay.date);
+          return moment(workload.date).isSame(eachDay);
         });
 
-        eachDay.workloads = filteredWorklaods;
+        filteredWorklaods.forEach(workload => this.workloads[index].push(workload));
       });
+
+      console.log(this.workloads);
     }
   },
   computed: {}

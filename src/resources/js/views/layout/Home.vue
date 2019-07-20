@@ -45,6 +45,8 @@ export default {
     };
   },
   async mounted() {
+    this.$store.commit('clearWorkload');
+
     // -------------------
     // user情報を取得する
     const { data } = await axios.getWithJwt('api/auth/me');

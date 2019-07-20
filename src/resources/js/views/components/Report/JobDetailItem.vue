@@ -58,12 +58,10 @@ export default {
   },
   computed: {
     project() {
-      const projectId = this.workload.projectId;
-      return this.$store.getters.getProjectFromId(projectId);
+      return this.workload.project.name;
     },
     category() {
-      const categoryId = this.workload.categoryId;
-      return this.$store.getters.getCategoryFromId(categoryId);
+      return this.workload.category.name;
     },
     amount() {
       return this.workload.amount;

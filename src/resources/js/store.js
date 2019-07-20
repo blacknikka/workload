@@ -24,6 +24,9 @@ const store = new Vuex.Store({
         state.workload.push(data);
       })
     },
+    clearWorkload(state) {
+      state.workload.length = 0;
+    },
     setWorkloadToBeUploaded(state, {index, id}) {
       state.workload[index].setThisHasBeenOld();
       state.workload[index].id = id;

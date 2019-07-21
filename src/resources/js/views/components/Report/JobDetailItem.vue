@@ -1,36 +1,50 @@
 <template>
   <v-layout
-    row
     wrap
   >
     <v-flex
       xs3
       sm3
-      md3
+      md2
+      class="px-auto py-3"
     >
-      <v-chip label>{{project}}</v-chip>
+      <v-chip
+        label
+        outline
+        color="gray"
+      >{{project}}</v-chip>
     </v-flex>
 
     <v-flex
       xs3
       sm3
-      md3
-    >
-      <v-chip label>{{category}}</v-chip>
-    </v-flex>
-
-    <v-flex
-      xs2
-      sm2
       md2
+      class="px-auto py-3"
     >
-      <v-chip label>{{amount}}</v-chip>
+      <v-chip
+        label
+        outline
+        color="gray"
+      >{{category}}</v-chip>
     </v-flex>
 
     <v-flex
-      xs4
-      sm4
-      md4
+      xs3
+      sm3
+      md2
+      class="px-auto py-3"
+    >
+      <v-chip
+        label
+        outline
+        color="gray"
+      >{{amount}}</v-chip>
+    </v-flex>
+
+    <v-flex
+      xs3
+      sm3
+      md6
     >
       <v-text-field
         label="内容"
@@ -65,7 +79,14 @@ export default {
     },
     amount() {
       return this.workload.amount;
-    },
+    }
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.job-item-style-common {
+  width: 100%;
+}
+</style>
+

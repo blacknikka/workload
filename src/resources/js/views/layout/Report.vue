@@ -1,13 +1,36 @@
 <template>
   <v-app light>
     <header-bar class="report-header"></header-bar>
-    <each-day-item
-      v-for="(item, index) in workloads"
-      :key="index"
-      :workloads="item"
-      :day="days[index]"
+    <v-layout
+      column
     >
-    </each-day-item>
+      <v-flex
+        xs12
+        sm12
+        md12
+      >
+        <each-day-item
+          v-for="(item, index) in workloads"
+          :key="index"
+          :workloads="item"
+          :day="days[index]"
+        >
+        </each-day-item>
+      </v-flex>
+      <v-flex
+        xs12
+        sm12
+        md12
+      >
+        <v-card>
+          <v-chip
+            label
+            outline
+            color="red"
+          >sample</v-chip>
+        </v-card>
+      </v-flex>
+    </v-layout>
   </v-app>
 </template>
 
@@ -22,14 +45,14 @@ import Workload from '../../model/workload/workload';
 export default {
   components: {
     EachDayItem,
-    HeaderBar,
+    HeaderBar
   },
   data() {
     return {
       days: [],
       workloads: [...Array(7)].map(item => {
         return [];
-      }),
+      })
     };
   },
   async mounted() {

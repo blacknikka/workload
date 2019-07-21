@@ -55,8 +55,6 @@ export default {
       return moment.isMoment(this.day) === true ? this.day.format('MM/DD') : '';
     }
   },
-  mounted() {
-    console.log(this.workloads);
-  }
+  mounted() {}
 };
 </script>

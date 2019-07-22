@@ -16,8 +16,6 @@ class DepartmentTest extends TestCase
      */
     public function Departmentインスタンス()
     {
-        $faker = app()->make(Faker::class);
-
         $users = DepartmentFaker::create(1);
 
         $id = $users[0]->getId();

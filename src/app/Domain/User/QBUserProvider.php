@@ -7,7 +7,6 @@ use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Auth\DatabaseUserProvider;
 use Illuminate\Auth\GenericUser;
 use App\Infrastructure\Db\UserDao;
-use App\Domain\User\User;
 
 class QBUserProvider extends DatabaseUserProvider implements UserProvider
 {

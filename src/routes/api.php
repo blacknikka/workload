@@ -61,6 +61,18 @@ Route::group(
     }
 );
 
+// report comment
+Route::group(
+    [
+        'prefix' => 'report_comment',
+        'middleware' => ['jwt.auth'],
+    ],
+    function () {
+        Route::get('/get/{id}', 'ReportCommentController@getReportCommentById')
+        ->name('getReportCommentById');
+    }
+);
+
 Route::group(
     ['prefix' => 'auth'],
     function () {

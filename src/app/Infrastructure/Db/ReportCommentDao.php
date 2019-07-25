@@ -84,6 +84,37 @@ class ReportCommentDao
     }
 
     /**
+     * Reportを更新する
+     *
+     * @param ReportComment $reportComment
+     * @return boolean
+     */
+    public function update(ReportComment $reportComment) : bool
+    {
+        if (is_null($reportComment->getId())) {
+            // nullなら更新できない
+            return false;
+        }
+
+        $queryResult = DB::table(self::REPORT_TABLE_NAME)
+            ->where('id', $reportComment->getId())
+            ->update(
+                [
+                    'id' => $reportComment->getId(),
+                    'user_id' => $reportComment->getUser()->getId(),
+                    'report_comment' => $reportComment->getReportComment(),
+                    'report_opinion' => $reportComment->getReportOpinion(),
+                ]
+            );
+
+        if ($queryResult > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * @param \stdClass $queryResult
      * @param User $user
      * @return ReportComment

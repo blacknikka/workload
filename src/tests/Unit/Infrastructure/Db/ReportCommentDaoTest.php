@@ -97,7 +97,7 @@ class ReportCommentDaoTest extends TestCase
 
         $savedId = $this->sut->save($reportComment);
         $this->assertDatabaseHas(
-            self::REPORT_TABLE_NAME, 
+            self::REPORT_TABLE_NAME,
             [
                 'id' => $savedId,
                 'user_id' => $reportComment->getUser()->getId(),
@@ -105,6 +105,72 @@ class ReportCommentDaoTest extends TestCase
                 'report_opinion' => $reportComment->getReportOpinion(),
             ]
         );
+    }
+
+    /** @test */
+    public function update_id_null()
+    {
+        /**
+         * @var ReportComment $reportComment
+         */
+        $reportComment = ReportCommentFaker::createWithNullId(1)[0];
+
+        $updateResult = $this->sut->update($reportComment);
+        $this->assertFalse($updateResult);
+    }
+
+    /** @test */
+    public function update_正常系()
+    {
+        /**
+         * @var ReportComment $reportComment
+         */
+        $reportComment = ReportCommentFaker::createWithNullId(1)[0];
+
+        $savedId = $this->sut->save($reportComment);
+        $this->assertDatabaseHas(
+            self::REPORT_TABLE_NAME,
+            [
+                'id' => $savedId,
+                'user_id' => $reportComment->getUser()->getId(),
+                'report_comment' => $reportComment->getReportComment(),
+                'report_opinion' => $reportComment->getReportOpinion(),
+            ]
+        );
+
+        // updateする対象を作る
+        $updateTarget = new ReportComment(
+            $savedId,
+            $reportComment->getUser(),
+            'sample string',
+            'my opinion'
+        );
+
+        // update
+        $updateResult = $this->sut->update($updateTarget);
+        $this->assertTrue($updateResult);
+        $this->assertDatabaseHas(
+            self::REPORT_TABLE_NAME,
+            [
+                'id' => $savedId,
+                'user_id' => $updateTarget->getUser()->getId(),
+                'report_comment' => $updateTarget->getReportComment(),
+                'report_opinion' => $updateTarget->getReportOpinion(),
+            ]
+        );
+    }
+
+    /** @test */
+    public function update_失敗_IDなし()
+    {
+        /**
+         * @var ReportComment $reportComment
+         */
+        $reportComment = ReportCommentFaker::create(1)[0];
+
+        // saveする前にupdate
+        $updateResult = $this->sut->update($reportComment);
+        $this->assertFalse($updateResult);
     }
 
 }

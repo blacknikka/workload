@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Requests\GetReportComment;
+namespace Tests\Unit\Http\Requests\ReportComment;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;

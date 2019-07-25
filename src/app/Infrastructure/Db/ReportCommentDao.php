@@ -71,14 +71,30 @@ class ReportCommentDao
      */
     public function save(ReportComment $reportComment) : ?int
     {
-        $now = Carbon::now();
+        if (is_null($reportComment->getId())) {
+            // insert
+            return $this->insert($reportComment);
+        } else {
+            // update
+            return $this->update($reportComment);
+        }
+    }
+
+    /**
+     * insert
+     *
+     * @param ReportComment $reportComment
+     * @return integer|null
+     */
+    private function insert(ReportComment $reportComment) : ?int
+    {
         $queryResult = DB::table(self::REPORT_TABLE_NAME)
-            ->insertGetId([
-                'id' => null,
-                'user_id' => $reportComment->getUser()->getId(),
-                'report_comment' => $reportComment->getReportComment(),
-                'report_opinion' => $reportComment->getReportOpinion(),
-            ]);
+        ->insertGetId([
+            'id' => null,
+            'user_id' => $reportComment->getUser()->getId(),
+            'report_comment' => $reportComment->getReportComment(),
+            'report_opinion' => $reportComment->getReportOpinion(),
+        ]);
 
         return $queryResult;
     }
@@ -87,13 +103,13 @@ class ReportCommentDao
      * Reportを更新する
      *
      * @param ReportComment $reportComment
-     * @return boolean
+     * @return integer|null
      */
-    public function update(ReportComment $reportComment) : bool
+    private function update(ReportComment $reportComment) : ?int
     {
         if (is_null($reportComment->getId())) {
             // nullなら更新できない
-            return false;
+            return null;
         }
 
         $queryResult = DB::table(self::REPORT_TABLE_NAME)
@@ -108,9 +124,9 @@ class ReportCommentDao
             );
 
         if ($queryResult > 0) {
-            return true;
+            return $queryResult;
         } else {
-            return false;
+            return null;
         }
     }
 

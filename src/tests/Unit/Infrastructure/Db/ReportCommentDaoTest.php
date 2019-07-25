@@ -88,7 +88,7 @@ class ReportCommentDaoTest extends TestCase
     }
 
     /** @test */
-    public function save_正常系()
+    public function save_isnert_正常系()
     {
         /**
          * @var ReportComment $reportComment
@@ -108,25 +108,14 @@ class ReportCommentDaoTest extends TestCase
     }
 
     /** @test */
-    public function update_id_null()
+    public function save_update_正常系()
     {
         /**
          * @var ReportComment $reportComment
          */
         $reportComment = ReportCommentFaker::createWithNullId(1)[0];
 
-        $updateResult = $this->sut->update($reportComment);
-        $this->assertFalse($updateResult);
-    }
-
-    /** @test */
-    public function update_正常系()
-    {
-        /**
-         * @var ReportComment $reportComment
-         */
-        $reportComment = ReportCommentFaker::createWithNullId(1)[0];
-
+        $this->assertNull($reportComment->getId());
         $savedId = $this->sut->save($reportComment);
         $this->assertDatabaseHas(
             self::REPORT_TABLE_NAME,
@@ -147,8 +136,8 @@ class ReportCommentDaoTest extends TestCase
         );
 
         // update
-        $updateResult = $this->sut->update($updateTarget);
-        $this->assertTrue($updateResult);
+        $updateResult = $this->sut->save($updateTarget);
+        $this->assertTrue($updateResult > 0);
         $this->assertDatabaseHas(
             self::REPORT_TABLE_NAME,
             [
@@ -161,7 +150,7 @@ class ReportCommentDaoTest extends TestCase
     }
 
     /** @test */
-    public function update_失敗_IDなし()
+    public function save_update_失敗_IDなし()
     {
         /**
          * @var ReportComment $reportComment
@@ -169,8 +158,8 @@ class ReportCommentDaoTest extends TestCase
         $reportComment = ReportCommentFaker::create(1)[0];
 
         // saveする前にupdate
-        $updateResult = $this->sut->update($reportComment);
-        $this->assertFalse($updateResult);
+        $updateResult = $this->sut->save($reportComment);
+        $this->assertNull($updateResult);
     }
 
 }

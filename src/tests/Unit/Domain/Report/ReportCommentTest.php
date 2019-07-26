@@ -19,17 +19,20 @@ class ReportCommentTest extends TestCase
         $user = $report->getUser();
         $reportComment = $report->getReportComment();
         $reportOpinion = $report->getReportOpinion();
+        $date = $report->getDate();
 
         $createdReport = new ReportComment(
             $id,
             $user,
             $reportComment,
-            $reportOpinion
+            $reportOpinion,
+            $date
         );
 
         $this->assertSame($createdReport->getId(), $id);
         $this->assertSame($createdReport->getUser(), $user);
         $this->assertSame($createdReport->getReportComment(), $reportComment);
         $this->assertSame($createdReport->getReportOpinion(), $reportOpinion);
+        $this->assertEquals($createdReport->getDate(), $date);
     }
 }

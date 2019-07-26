@@ -10,6 +10,7 @@ use App\Http\Requests\ReportComment\GetReportCommentByIdRequest;
 use App\Http\Requests\ReportComment\CreateOrUpdateReportComment;
 use Illuminate\Http\Response;
 use App\Domain\Report\ReportComment;
+use Carbon\Carbon;
 
 class ReportCommentController extends Controller
 {
@@ -25,6 +26,13 @@ class ReportCommentController extends Controller
         $this->userDao = $userDao;
     }
 
+    /**
+     * ReportCommentのIDからReportCommentのデータを検索する
+     *
+     * @param GetReportCommentByIdRequest $request
+     * @param integer $id
+     * @return JsonResponse
+     */
     public function getReportCommentById(
         GetReportCommentByIdRequest $request, int $id) : JsonResponse
     {
@@ -66,6 +74,7 @@ class ReportCommentController extends Controller
         $userId = $request->get('user_id');
         $reportComment = $request->get('report_comment');
         $reportOpinion = $request->get('report_opinion');
+        $reportDate = $request->get('date');
 
         $user = $this->userDao->find($userId);
 
@@ -87,7 +96,8 @@ class ReportCommentController extends Controller
                 $id,
                 $user,
                 $reportComment,
-                $reportOpinion
+                $reportOpinion,
+                new Carbon($reportDate)
             )
         );
 

@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Infrastructure\Db\ReportCommentDao;
 use App\Infrastructure\Db\UserDao;
 use Mockery;
-use App\Domain\Report\ReportComment;
 use Illuminate\Support\Collection;
 use Tests\Unit\Domain\Report\faker\ReportCommentFaker;
 use Tests\Unit\Domain\User\faker\UserFaker;
@@ -117,6 +116,7 @@ class ReportCommentControllerTest extends TestCase
                 'user_id' => 1000,
                 'report_comment' => 'str',
                 'report_opinion' => 'str',
+                'date' => (Carbon::now())->format('Y-m-d'),
             ]
         );
 
@@ -148,9 +148,10 @@ class ReportCommentControllerTest extends TestCase
             route('saveReportComment'),
             [
                 'id' => 1,
-                'user_id' => $user->getid(),
+                'user_id' => $user->getId(),
                 'report_comment' => 'str',
                 'report_opinion' => 'str',
+                'date' => (Carbon::now())->format('Y-m-d'),
             ]
         );
 
@@ -186,6 +187,7 @@ class ReportCommentControllerTest extends TestCase
                 'user_id' => $user->getid(),
                 'report_comment' => 'str',
                 'report_opinion' => 'str',
+                'date' => (Carbon::now())->format('Y-m-d'),
             ]
         );
 

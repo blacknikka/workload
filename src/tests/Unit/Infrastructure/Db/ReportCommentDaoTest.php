@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 use Tests\Unit\Domain\Report\faker\ReportCommentFaker;
 use Tests\Unit\Domain\User\faker\UserFaker;
 use Mockery;
-use DB;
+use Carbon\Carbon;
 
 
 class ReportCommentDaoTest extends TestCase
@@ -73,7 +73,8 @@ class ReportCommentDaoTest extends TestCase
             $savedId,
             $reportComment->getUser(),
             $reportComment->getReportComment(),
-            $reportComment->getReportOpinion()
+            $reportComment->getReportOpinion(),
+            $reportComment->getDate()
         );
 
         // UserDaoのアクセスにはmockを使う
@@ -103,6 +104,7 @@ class ReportCommentDaoTest extends TestCase
                 'user_id' => $reportComment->getUser()->getId(),
                 'report_comment' => $reportComment->getReportComment(),
                 'report_opinion' => $reportComment->getReportOpinion(),
+                'date' => $reportComment->getDate(),
             ]
         );
     }
@@ -124,6 +126,7 @@ class ReportCommentDaoTest extends TestCase
                 'user_id' => $reportComment->getUser()->getId(),
                 'report_comment' => $reportComment->getReportComment(),
                 'report_opinion' => $reportComment->getReportOpinion(),
+                'date' => $reportComment->getDate(),
             ]
         );
 
@@ -132,7 +135,8 @@ class ReportCommentDaoTest extends TestCase
             $savedId,
             $reportComment->getUser(),
             'sample string',
-            'my opinion'
+            'my opinion',
+            Carbon::now()
         );
 
         // update
@@ -145,6 +149,7 @@ class ReportCommentDaoTest extends TestCase
                 'user_id' => $updateTarget->getUser()->getId(),
                 'report_comment' => $updateTarget->getReportComment(),
                 'report_opinion' => $updateTarget->getReportOpinion(),
+                'date' => $updateTarget->getDate()->format('Y-m-d'),
             ]
         );
     }

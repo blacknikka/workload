@@ -41,6 +41,10 @@ class CreateOrUpdateReportComment extends FormRequest
                 'required',
                 'string',
             ],
+            'date' => [
+                'required',
+                'date_format:Y-m-d',
+            ],
         ];
     }
 }

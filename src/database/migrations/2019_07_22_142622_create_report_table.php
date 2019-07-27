@@ -18,6 +18,7 @@ class CreateReportTable extends Migration
             $table->unsignedInteger('user_id');
             $table->string('report_comment');
             $table->string('report_opinion');
+            $table->date('date');
             $table->timestamps();
         });
     }

@@ -4,6 +4,18 @@
     <v-container grid-list-xl>
       <v-layout column>
         <v-flex
+          xs2
+          sm2
+          md2
+        >
+          <v-btn
+            color="success"
+            @click="registerToDB"
+          >
+            DB登録
+          </v-btn>
+        </v-flex>
+        <v-flex
           xs12
           sm12
           md12
@@ -36,8 +48,10 @@
           md12
         >
           <v-card>
-            <input-text description="雑感"
-            v-model="myThoughts">
+            <input-text
+              description="雑感"
+              v-model="myThoughts"
+            >
             </input-text>
           </v-card>
         </v-flex>
@@ -68,7 +82,7 @@ export default {
         return [];
       }),
       reportDetail: '',
-      myThoughts: '',
+      myThoughts: ''
     };
   },
   async mounted() {
@@ -111,7 +125,21 @@ export default {
       });
     }
   },
-  computed: {},
+  methods: {
+    async registerToDB() {
+      const reportComment = {
+        id: null,
+        user_id: this.$store.getters.userInfo.id,
+        report_comment: this.reportDetail,
+        report_opinion: this.myThoughts,
+      }
+      const registeredResult = await axios.postWithJwt(
+        `api/report_comment/save`,
+        reportComment
+      );
+    }
+  },
+  computed: {}
 };
 </script>
 

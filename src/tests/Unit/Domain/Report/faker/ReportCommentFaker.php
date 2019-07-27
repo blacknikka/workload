@@ -24,7 +24,8 @@ class ReportCommentFaker
                 $faker->unique()->numberBetween(1, 1000000),
                 UserFaker::create(1)[0],
                 $faker->sentence(),
-                $faker->sentence()
+                $faker->sentence(),
+                new Carbon($faker->dateTimeThisYear()->format('Y-m-d'))
             );
         });
         return $data->all();
@@ -46,7 +47,8 @@ class ReportCommentFaker
                 null,
                 UserFaker::create(1)[0],
                 $faker->sentence(),
-                $faker->sentence()
+                $faker->sentence(),
+                new Carbon($faker->dateTimeThisYear()->format('Y-m-d'))
             );
         });
         return $data->all();

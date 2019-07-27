@@ -71,6 +71,9 @@ Route::group(
         Route::get('/get/{id}', 'ReportCommentController@getReportCommentById')
         ->name('getReportCommentById');
 
+        Route::get('/get/user/{id}/week/{week}', 'ReportCommentController@getReportCommentByUserId')
+        ->name('getReportCommentByUserId');
+
         Route::post('/save', 'ReportCommentController@createOrUpdateReportComment')
         ->name('saveReportComment');
     }

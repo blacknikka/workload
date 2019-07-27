@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 use Tests\Unit\Domain\Report\faker\ReportCommentFaker;
 use Tests\Unit\Domain\User\faker\UserFaker;
 use Mockery;
-use DB;
+use Carbon\Carbon;
 
 
 class ReportCommentDaoTest extends TestCase
@@ -73,7 +73,8 @@ class ReportCommentDaoTest extends TestCase
             $savedId,
             $reportComment->getUser(),
             $reportComment->getReportComment(),
-            $reportComment->getReportOpinion()
+            $reportComment->getReportOpinion(),
+            $reportComment->getDate()
         );
 
         // UserDaoのアクセスにはmockを使う
@@ -85,6 +86,80 @@ class ReportCommentDaoTest extends TestCase
         $this->userDaoMock->shouldHaveReceived('find');
         $this->assertNotNull($foundResult);
         $this->assertEquals($savedReportComment, $foundResult);
+    }
+
+    /** @test */
+    public function findByWeekDay_正常系()
+    {
+        $reportComment = ReportCommentFaker::createWithNullId(1)[0];
+
+        $savedId = $this->sut->save($reportComment);
+        $this->assertNotNull($savedId > 0);
+
+        $savedReportComment = new ReportComment(
+            $savedId,
+            $reportComment->getUser(),
+            $reportComment->getReportComment(),
+            $reportComment->getReportOpinion(),
+            $reportComment->getDate()
+        );
+
+        // UserDaoのアクセスにはmockを使う
+        $this->userDaoMock
+            ->shouldReceive('find')
+            ->andReturn($savedReportComment->getUser());
+
+        $foundResult = $this->sut->findByWeekDay(
+            $savedReportComment->getUser()->getId(),
+            $reportComment->getDate()
+        );
+        $this->userDaoMock->shouldHaveReceived('find');
+        $this->assertNotNull($foundResult);
+        $this->assertEquals(
+            $savedReportComment,
+            $foundResult
+        );
+    }
+
+    /** @test */
+    public function findByWeekDay_ReportCommentが見つからない()
+    {
+        $foundResult = $this->sut->findByWeekDay(
+            1000,
+            Carbon::now()
+        );
+
+        $this->assertNull($foundResult);
+    }
+
+    /** @test */
+    public function findByWeekDay_Userが見つからない()
+    {
+        $reportComment = ReportCommentFaker::createWithNullId(1)[0];
+
+        $savedId = $this->sut->save($reportComment);
+        $this->assertNotNull($savedId > 0);
+
+        $savedReportComment = new ReportComment(
+            $savedId,
+            $reportComment->getUser(),
+            $reportComment->getReportComment(),
+            $reportComment->getReportOpinion(),
+            $reportComment->getDate()
+        );
+
+        // UserDaoのアクセスにはmockを使う
+        // UserDaoがnullを返してくる
+        $this->userDaoMock
+            ->shouldReceive('find')
+            ->andReturn(null);
+
+        $foundResult = $this->sut->findByWeekDay(
+            $savedReportComment->getUser()->getId(),
+            $reportComment->getDate()
+        );
+        $this->userDaoMock->shouldHaveReceived('find');
+        $this->assertNull($foundResult);
     }
 
     /** @test */
@@ -103,6 +178,7 @@ class ReportCommentDaoTest extends TestCase
                 'user_id' => $reportComment->getUser()->getId(),
                 'report_comment' => $reportComment->getReportComment(),
                 'report_opinion' => $reportComment->getReportOpinion(),
+                'date' => $reportComment->getDate(),
             ]
         );
     }
@@ -124,6 +200,7 @@ class ReportCommentDaoTest extends TestCase
                 'user_id' => $reportComment->getUser()->getId(),
                 'report_comment' => $reportComment->getReportComment(),
                 'report_opinion' => $reportComment->getReportOpinion(),
+                'date' => $reportComment->getDate(),
             ]
         );
 
@@ -132,7 +209,8 @@ class ReportCommentDaoTest extends TestCase
             $savedId,
             $reportComment->getUser(),
             'sample string',
-            'my opinion'
+            'my opinion',
+            Carbon::now()
         );
 
         // update
@@ -145,6 +223,7 @@ class ReportCommentDaoTest extends TestCase
                 'user_id' => $updateTarget->getUser()->getId(),
                 'report_comment' => $updateTarget->getReportComment(),
                 'report_opinion' => $updateTarget->getReportOpinion(),
+                'date' => $updateTarget->getDate()->format('Y-m-d'),
             ]
         );
     }

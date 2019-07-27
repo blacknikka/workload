@@ -49,6 +49,7 @@ class ReportCommentDao
                 'user_id',
                 'report_comment',
                 'report_opinion',
+                'date',
             ])
             ->first();
 
@@ -94,6 +95,7 @@ class ReportCommentDao
             'user_id' => $reportComment->getUser()->getId(),
             'report_comment' => $reportComment->getReportComment(),
             'report_opinion' => $reportComment->getReportOpinion(),
+            'date' => $reportComment->getDate(),
         ]);
 
         return $queryResult;
@@ -120,6 +122,7 @@ class ReportCommentDao
                     'user_id' => $reportComment->getUser()->getId(),
                     'report_comment' => $reportComment->getReportComment(),
                     'report_opinion' => $reportComment->getReportOpinion(),
+                    'date' => $reportComment->getDate(),
                 ]
             );
 
@@ -127,6 +130,45 @@ class ReportCommentDao
             return $queryResult;
         } else {
             return null;
+        }
+    }
+
+    /**
+     * 日付からReport情報を取得する
+     *
+     * @param integer $userId
+     * @param Carbon $weekDay
+     * @return ReportComment|null
+     */
+    public function findByWeekDay(int $userId, Carbon $weekDay) : ?ReportComment
+    {
+        // 指定された日付のReportCommentを取得する
+        $queryResult = DB::table(self::REPORT_TABLE_NAME)
+            ->where('user_id', $userId)
+            ->whereDate('date', '=', $weekDay)
+            ->select(
+                [
+                    'id',
+                    'user_id',
+                    'report_comment',
+                    'report_opinion',
+                    'date',
+                ]
+            )
+            ->first();
+
+        if (is_null($queryResult)) {
+            // ない場合にはnull
+            return null;
+        } else {
+            $user = $this->userDao->find($queryResult->user_id);
+            if (is_null($user)) {
+                // null
+                return null;
+            } else {
+                // not null
+                return $this->newFromQueryResult($queryResult, $user);
+            }
         }
     }
 
@@ -144,7 +186,8 @@ class ReportCommentDao
             $queryResult->id,
             $user,
             $queryResult->report_comment,
-            $queryResult->report_opinion
+            $queryResult->report_opinion,
+            new Carbon($queryResult->date)
         );
     }
 }

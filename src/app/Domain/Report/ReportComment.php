@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Domain\Report;
 
 use App\Domain\User\User;
+use Carbon\Carbon;
 
 /**
  * Class Report
@@ -15,6 +16,7 @@ class ReportComment
     private $user;
     private $reportComment;
     private $reportOpinion;
+    private $date;
 
     /**
      * ReportComment constructor.
@@ -22,17 +24,20 @@ class ReportComment
      * @param User $user
      * @param string $reportComment
      * @param string $reportOpinion
+     * @param Carbon $date
      */
     public function __construct(
         ?int $id,
         User $user,
         string $reportComment,
-        string $reportOpinion
+        string $reportOpinion,
+        Carbon $date
     ) {
         $this->id = $id;
         $this->user = $user;
         $this->reportComment = $reportComment;
         $this->reportOpinion = $reportOpinion;
+        $this->date = $date;
     }
 
     /**
@@ -68,6 +73,16 @@ class ReportComment
     }
 
     /**
+     * 日付の取得
+     *
+     * @return Carbon
+     */
+    public function getDate(): Carbon
+    {
+        return $this->date;
+    }
+
+    /**
      * @return array
      */
     public function toArray() : array
@@ -77,6 +92,7 @@ class ReportComment
             'user' => $this->user->toArray(),
             'report_comment' => $this->reportComment,
             'report_opinion' => $this->reportOpinion,
+            'date' => $this->date->format('Y-m-d'),
         ];
     }
 }

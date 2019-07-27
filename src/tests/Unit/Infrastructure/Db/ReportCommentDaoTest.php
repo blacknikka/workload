@@ -89,6 +89,80 @@ class ReportCommentDaoTest extends TestCase
     }
 
     /** @test */
+    public function findByWeekDay_正常系()
+    {
+        $reportComment = ReportCommentFaker::createWithNullId(1)[0];
+
+        $savedId = $this->sut->save($reportComment);
+        $this->assertNotNull($savedId > 0);
+
+        $savedReportComment = new ReportComment(
+            $savedId,
+            $reportComment->getUser(),
+            $reportComment->getReportComment(),
+            $reportComment->getReportOpinion(),
+            $reportComment->getDate()
+        );
+
+        // UserDaoのアクセスにはmockを使う
+        $this->userDaoMock
+            ->shouldReceive('find')
+            ->andReturn($savedReportComment->getUser());
+
+        $foundResult = $this->sut->findByWeekDay(
+            $savedReportComment->getUser()->getId(),
+            $reportComment->getDate()
+        );
+        $this->userDaoMock->shouldHaveReceived('find');
+        $this->assertNotNull($foundResult);
+        $this->assertEquals(
+            $savedReportComment,
+            $foundResult
+        );
+    }
+
+    /** @test */
+    public function findByWeekDay_ReportCommentが見つからない()
+    {
+        $foundResult = $this->sut->findByWeekDay(
+            1000,
+            Carbon::now()
+        );
+
+        $this->assertNull($foundResult);
+    }
+
+    /** @test */
+    public function findByWeekDay_Userが見つからない()
+    {
+        $reportComment = ReportCommentFaker::createWithNullId(1)[0];
+
+        $savedId = $this->sut->save($reportComment);
+        $this->assertNotNull($savedId > 0);
+
+        $savedReportComment = new ReportComment(
+            $savedId,
+            $reportComment->getUser(),
+            $reportComment->getReportComment(),
+            $reportComment->getReportOpinion(),
+            $reportComment->getDate()
+        );
+
+        // UserDaoのアクセスにはmockを使う
+        // UserDaoがnullを返してくる
+        $this->userDaoMock
+            ->shouldReceive('find')
+            ->andReturn(null);
+
+        $foundResult = $this->sut->findByWeekDay(
+            $savedReportComment->getUser()->getId(),
+            $reportComment->getDate()
+        );
+        $this->userDaoMock->shouldHaveReceived('find');
+        $this->assertNull($foundResult);
+    }
+
+    /** @test */
     public function save_isnert_正常系()
     {
         /**

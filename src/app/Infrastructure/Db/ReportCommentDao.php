@@ -142,36 +142,33 @@ class ReportCommentDao
      */
     public function findByWeekDay(int $userId, Carbon $weekDay) : ?ReportComment
     {
-        // 基準日から７日間の間の情報を取得したい。
-        // 8日後の直前までが対象。
-        // 日曜日基準の場合、次の日曜日の寸前まで（つまり、土曜の終わりまでの時間）
+        // 指定された日付のReportCommentを取得する
         $queryResult = DB::table(self::REPORT_TABLE_NAME)
-            ->where(self::REPORT_TABLE_NAME . '.user_id', $userId)
-            ->whereDate(self::REPORT_TABLE_NAME . '.date', '=', $weekDay)
+            ->where('user_id', $userId)
+            ->whereDate('date', '=', $weekDay)
             ->select(
                 [
-                    self::REPORT_TABLE_NAME . 'id',
-                    self::REPORT_TABLE_NAME . 'user_id',
-                    self::REPORT_TABLE_NAME . 'report_comment',
-                    self::REPORT_TABLE_NAME . 'report_opinion',
-                    self::REPORT_TABLE_NAME . 'date',
+                    'id',
+                    'user_id',
+                    'report_comment',
+                    'report_opinion',
+                    'date',
                 ]
             )
             ->first();
 
-        $user = $this->userDao->find($queryResult->user_id);
-        if (is_null($user)) {
-            // null
+        if (is_null($queryResult)) {
+            // ない場合にはnull
             return null;
         } else {
-            $results = collect($queryResult)
-            ->map(
-                function ($q) use ($user) {
-                    return $this->newFromQueryResult($q, $user);
-                }
-            );
-
-            return $results;
+            $user = $this->userDao->find($queryResult->user_id);
+            if (is_null($user)) {
+                // null
+                return null;
+            } else {
+                // not null
+                return $this->newFromQueryResult($queryResult, $user);
+            }
         }
     }
 

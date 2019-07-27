@@ -15,6 +15,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 use App\Domain\User\User;
+use App\Domain\Report\ReportComment;
 
 class ReportCommentControllerTest extends TestCase
 {
@@ -177,7 +178,9 @@ class ReportCommentControllerTest extends TestCase
 
         // saveが正常な値を返す
         $this->reportCommentDaoMock
-            ->shouldReceive('save')
+            ->shouldReceive(
+                'save'
+            )
             ->andReturn(2);
 
         $response = $this->postJson(
@@ -187,7 +190,7 @@ class ReportCommentControllerTest extends TestCase
                 'user_id' => $user->getid(),
                 'report_comment' => 'str',
                 'report_opinion' => 'str',
-                'date' => (Carbon::now())->format('Y-m-d'),
+                'date' => '2019-07-08',
             ]
         );
 
@@ -199,6 +202,97 @@ class ReportCommentControllerTest extends TestCase
             ]
         );
         $this->userDaoMock->shouldHaveReceived('find', [$user->getId()]);
-        $this->reportCommentDaoMock->shouldHaveReceived('save');
+        $this->reportCommentDaoMock->shouldHaveReceived(
+            'save'
+        )->with(
+            \Hamcrest\Matchers::equalTo(
+                new ReportComment(
+                    1,
+                    $user,
+                    'str',
+                    'str',
+                    new Carbon('2019-7-7')      // 2019-7-8の週初めで処理される
+                )
+            )
+        );
+    }
+
+    /** @test */
+    public function getReportCommentByUserId_findByWeekDayがnullを返す()
+    {
+        $this->reportCommentDaoMock
+            ->shouldReceive('findByWeekDay')
+            ->andReturn(null);
+
+        $response = $this->getJson(
+            route(
+                'getReportCommentByUserId',
+                [
+                    'id' => 1,
+                    'week' => '2019-07-08',
+                ]
+            )
+        );
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response->assertExactJson(
+            [
+                'result' => false,
+                'message' => 'Record not found',
+            ]
+        );
+    }
+
+    /** @test */
+    public function getReportCommentByUserId_正常系_日付補正()
+    {
+        /** @var User $user */
+        $user = UserFaker::create(1)[0];
+
+        $this->reportCommentDaoMock
+            ->shouldReceive('findByWeekDay')
+            ->andReturn(
+                new ReportComment(
+                    1,
+                    $user,
+                    'str aaa',
+                    'str bbb',
+                    new Carbon('2019-07-07')
+                )
+            );
+
+        $response = $this->getJson(
+            route(
+                'getReportCommentByUserId',
+                [
+                    'id' => 1,
+
+                    // 7/8を指定しているが、結果として週初めは
+                    // 7/7なので、7/7で帰ってくることを期待している
+                    'week' => '2019-07-08',
+                ]
+            )
+        );
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertExactJson(
+            [
+                'result' => true,
+                'data' => [
+                    'id' => 1,
+                    'report_comment' => 'str aaa',
+                    'report_opinion' => 'str bbb',
+                    'date' => '2019-07-07',
+                ]
+            ]
+        );
+
+        $this->reportCommentDaoMock->shouldHaveReceived('findByWeekDay')
+            ->with(
+                1,
+                \Hamcrest\Matchers::equalTo(
+                    new Carbon('2019-07-07')
+                )
+            );
     }
 }

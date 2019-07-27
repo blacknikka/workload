@@ -116,6 +116,7 @@ class WorkloadController extends Controller
 
     /**
      * UserId, 週の情報から工数データを取得する
+     * 受け取った$weekから週の初めの日を計算して取得する
      *
      * @param GetWorkloadByWeeksRequest $request
      * @param integer $userId

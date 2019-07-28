@@ -72,12 +72,12 @@ class ReportCommentDao
      */
     public function save(ReportComment $reportComment) : ?int
     {
-        if (is_null($reportComment->getId())) {
-            // insert
-            return $this->insert($reportComment);
-        } else {
+        if ($this->isReportCommentExist($reportComment)) {
             // update
             return $this->update($reportComment);
+        } else {
+            // insert
+            return $this->insert($reportComment);
         }
     }
 
@@ -109,16 +109,11 @@ class ReportCommentDao
      */
     private function update(ReportComment $reportComment) : ?int
     {
-        if (is_null($reportComment->getId())) {
-            // nullなら更新できない
-            return null;
-        }
-
+        $date = $reportComment->getDate()->format('Y-m-d');
         $queryResult = DB::table(self::REPORT_TABLE_NAME)
-            ->where('id', $reportComment->getId())
+            ->whereDate('date', $date)
             ->update(
                 [
-                    'id' => $reportComment->getId(),
                     'user_id' => $reportComment->getUser()->getId(),
                     'report_comment' => $reportComment->getReportComment(),
                     'report_opinion' => $reportComment->getReportOpinion(),
@@ -126,11 +121,26 @@ class ReportCommentDao
                 ]
             );
 
+        var_dump($queryResult);
         if ($queryResult > 0) {
             return $queryResult;
         } else {
             return null;
         }
+    }
+
+    /**
+     * 日付情報があるかどうか
+     *
+     * @param ReportComment $reportComment
+     * @return boolean
+     */
+    private function isReportCommentExist(ReportComment $reportComment) : bool
+    {
+        return DB::table(self::REPORT_TABLE_NAME)
+            ->where('user_id', $reportComment->getUser()->getId())
+            ->whereDate('date', $reportComment->getDate())
+            ->exists();
     }
 
     /**

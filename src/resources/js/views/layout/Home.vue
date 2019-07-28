@@ -49,20 +49,26 @@ export default {
 
     // -------------------
     // user情報を取得する
-    const { data } = await axios.getWithJwt('api/auth/me');
+    const authResult = await axios.getWithJwt('api/auth/me');
 
-    // 取得した情報をセットする
-    const user = data.user;
-    this.$store.commit('setUserInfo', {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      department: {
-        departmentName: user.department.name,
-        sectionName: user.department.sectionName,
-        comment: user.department.comment
-      }
-    });
+    if (authResult === false) {
+      return;
+    } else {
+      const data = authResult.data;
+
+      // 取得した情報をセットする
+      const user = data.user;
+      this.$store.commit('setUserInfo', {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        department: {
+          departmentName: user.department.name,
+          sectionName: user.department.sectionName,
+          comment: user.department.comment
+        }
+      });
+    }
 
     // -------------------
     // ProjectとCateogoryの取得

@@ -70,7 +70,7 @@ const store = new Vuex.Store({
       category.forEach((item) => {
         state.category.push(item);
       });
-    }
+    },
   },
   actions: {},
   getters: {

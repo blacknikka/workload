@@ -34,11 +34,13 @@
           md12
         >
           <v-card>
-            <input-text
-              description="報告内容"
-              v-model="reportDetail"
+            <v-textarea
+              box
+              label="報告内容"
+              @change="deitalChanged"
+              :value="getDetailStr"
             >
-            </input-text>
+            </v-textarea>
           </v-card>
         </v-flex>
 
@@ -48,11 +50,13 @@
           md12
         >
           <v-card>
-            <input-text
-              description="雑感"
-              v-model="myThoughts"
+            <v-textarea
+              box
+              label="雑感"
+              @change="thoughtsChanged"
+              :value="getMyThoughts"
             >
-            </input-text>
+            </v-textarea>
           </v-card>
         </v-flex>
       </v-layout>
@@ -81,20 +85,22 @@ export default {
       workloads: [...Array(7)].map(item => {
         return [];
       }),
+      dayOfReport: null,
       reportDetail: '',
-      myThoughts: ''
+      myThoughts: '',
     };
   },
   async mounted() {
+    this.dayOfReport = moment();
+
     // 一週間分の日付データを作る
-    const baseDay = moment().startOf('week');
+    const baseDay = new moment(this.dayOfReport).startOf('week');
     [...Array(7)].forEach((_, index) => {
       const addedDate = new moment(baseDay).add(index, 'days');
       this.days.push(addedDate);
     });
 
     const userInf = this.$store.getters.userInfo;
-    const today = moment();
     const workloadsFromServer = await axios.getWithJwt(
       `api/workload/get/user/id/${userInf.id}/week/${baseDay.format('YYYY-MM-DD')}`
     );
@@ -123,23 +129,50 @@ export default {
 
         filteredWorklaods.forEach(workload => this.workloads[index].push(workload));
       });
+
+      // ReportのCommentを取得する
+      const reportComment = await axios.getWithJwt(
+        `api/report_comment/get/user/${userInf.id}/week/${baseDay.format('YYYY-MM-DD')}`
+      );
+
+      if (reportComment !== false) {
+        // データが存在するかチェック
+        if (reportComment.data.result === true) {
+          const reportCommentOfWeek = reportComment.data.data;
+          this.reportDetail = reportCommentOfWeek.report_comment;
+          this.myThoughts = reportCommentOfWeek.report_opinion;
+        }
+      }
     }
   },
   methods: {
     async registerToDB() {
+      const reportCommentDate = new moment(this.dayOfReport).startOf('week').format('YYYY-MM-DD');
+
       const reportComment = {
         id: null,
         user_id: this.$store.getters.userInfo.id,
         report_comment: this.reportDetail,
         report_opinion: this.myThoughts,
-      }
-      const registeredResult = await axios.postWithJwt(
-        `api/report_comment/save`,
-        reportComment
-      );
-    }
+        date: reportCommentDate
+      };
+      const registeredResult = await axios.postWithJwt(`api/report_comment/save`, reportComment);
+    },
+    deitalChanged(value) {
+      this.reportDetail = value;
+    },
+    thoughtsChanged(value) {
+      this.myThoughts = value;
+    },
   },
-  computed: {}
+  computed: {
+    getDetailStr() {
+      return this.reportDetail;
+    },
+    getMyThoughts() {
+      return this.myThoughts;
+    }
+  }
 };
 </script>
 

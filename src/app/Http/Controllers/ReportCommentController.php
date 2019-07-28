@@ -94,7 +94,7 @@ class ReportCommentController extends Controller
                     'result' => false,
                     'message' => 'Record not found',
                 ],
-                Response::HTTP_BAD_REQUEST,
+                Response::HTTP_OK,
                 [],
                 JSON_UNESCAPED_UNICODE
             );

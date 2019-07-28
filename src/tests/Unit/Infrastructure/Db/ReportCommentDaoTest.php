@@ -14,6 +14,7 @@ use Tests\Unit\Domain\Report\faker\ReportCommentFaker;
 use Tests\Unit\Domain\User\faker\UserFaker;
 use Mockery;
 use Carbon\Carbon;
+use DB;
 
 
 class ReportCommentDaoTest extends TestCase
@@ -27,6 +28,16 @@ class ReportCommentDaoTest extends TestCase
 
     /** @var Mockery\MockInterface */
     private $userDaoMock;
+
+    /**
+     * レコードの数を数える
+     *
+     * @return integer
+     */
+    private function fetchCurrentRecordCount() : int
+    {
+        return DB::table(self::REPORT_TABLE_NAME)->count();
+    }
 
     public function setUp()
     {
@@ -165,6 +176,8 @@ class ReportCommentDaoTest extends TestCase
     /** @test */
     public function save_isnert_正常系()
     {
+        $recordCount = $this->fetchCurrentRecordCount();
+
         /**
          * @var ReportComment $reportComment
          */
@@ -180,6 +193,11 @@ class ReportCommentDaoTest extends TestCase
                 'report_opinion' => $reportComment->getReportOpinion(),
                 'date' => $reportComment->getDate(),
             ]
+        );
+
+        $this->assertSame(
+            $recordCount + 1,
+            $this->fetchCurrentRecordCount()
         );
     }
 
@@ -204,13 +222,15 @@ class ReportCommentDaoTest extends TestCase
             ]
         );
 
+        $recordCntBeforeUpdate = $this->fetchCurrentRecordCount();
+
         // updateする対象を作る
         $updateTarget = new ReportComment(
             $savedId,
             $reportComment->getUser(),
             'sample string',
             'my opinion',
-            Carbon::now()
+            $reportComment->getDate()
         );
 
         // update
@@ -226,19 +246,10 @@ class ReportCommentDaoTest extends TestCase
                 'date' => $updateTarget->getDate()->format('Y-m-d'),
             ]
         );
+
+        $this->assertSame(
+            $recordCntBeforeUpdate,
+            $this->fetchCurrentRecordCount()
+        );
     }
-
-    /** @test */
-    public function save_update_失敗_IDなし()
-    {
-        /**
-         * @var ReportComment $reportComment
-         */
-        $reportComment = ReportCommentFaker::create(1)[0];
-
-        // saveする前にupdate
-        $updateResult = $this->sut->save($reportComment);
-        $this->assertNull($updateResult);
-    }
-
 }

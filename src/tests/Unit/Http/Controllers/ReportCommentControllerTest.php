@@ -145,6 +145,7 @@ class ReportCommentControllerTest extends TestCase
             ->shouldReceive('save')
             ->andReturn(null);
 
+        $savedDate = (new Carbon('2019-07-24'))->format('Y-m-d');
         $response = $this->postJson(
             route('saveReportComment'),
             [
@@ -152,7 +153,7 @@ class ReportCommentControllerTest extends TestCase
                 'user_id' => $user->getId(),
                 'report_comment' => 'str',
                 'report_opinion' => 'str',
-                'date' => (Carbon::now())->format('Y-m-d'),
+                'date' => $savedDate,
             ]
         );
 
@@ -164,7 +165,19 @@ class ReportCommentControllerTest extends TestCase
             ]
         );
         $this->userDaoMock->shouldHaveReceived('find', [$user->getId()]);
-        $this->reportCommentDaoMock->shouldHaveReceived('save');
+        $this->reportCommentDaoMock
+            ->shouldHaveReceived('save')
+            ->with(
+                \Hamcrest\Matchers::equalTo(
+                    new ReportComment(
+                        1,
+                        $user,
+                        'str',
+                        'str',
+                        new Carbon('2019-07-21')
+                    )
+                )
+            );
     }
 
     /** @test */
@@ -234,7 +247,7 @@ class ReportCommentControllerTest extends TestCase
             )
         );
 
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertExactJson(
             [
                 'result' => false,

@@ -1,18 +1,23 @@
 # subomdule
 
+`laradock`をsubmoduleとして構成していますので、まずはその更新を行います。
+
 ```sh
-cd laradock
 git submodule init
 git submodule update
 ```
 
-# init
+# 初期化用のshellを実行
+
+プロジェクトの初期化を行います。  
+プロジェクトのルートディレクトリで実行する必要があります。
+
 
 ```sh
 bash ./etc/init-project.sh
 ```
 
-# usual
+# サービスをUPする
 
 ```sh
 sh dockerup.sh

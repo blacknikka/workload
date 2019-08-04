@@ -5,6 +5,8 @@
 ```sh
 git submodule init
 git submodule update
+cd ./laradock
+git checkout a2c7b46
 ```
 
 # 初期化用のshellを実行

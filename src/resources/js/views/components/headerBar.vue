@@ -48,7 +48,7 @@
           v-for="(item, index) in utilityItems"
           :key="index"
         >
-          <v-list-tile-title @click="menu_clicked(item.action)">{{ item.title }}</v-list-tile-title>
+          <v-list-tile-title @click="utility_clicked(item.action)">{{ item.title }}</v-list-tile-title>
         </v-list-tile>
       </v-list>
     </v-menu>

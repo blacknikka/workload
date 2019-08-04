@@ -14,7 +14,6 @@ git checkout a2c7b46
 プロジェクトの初期化を行います。  
 プロジェクトのルートディレクトリで実行する必要があります。
 
-
 ```sh
 bash ./etc/init-project.sh
 ```
@@ -24,3 +23,12 @@ bash ./etc/init-project.sh
 ```sh
 sh dockerup.sh
 ```
+
+# 利用する
+
+`http://localhost/`で利用可能です。  
+
+ログインにはデフォルトで以下のユーザとパスワードが使えます。
+
+ユーザー名：`test1@example.com`  
+パスワード：`test1`  

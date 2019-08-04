@@ -62,7 +62,7 @@
         "initialize": [
             "@composer run post-create-project-cmd",
             "@php artisan config:cache",
-            "@php artisan migrate"
+            "@php artisan migrate:fresh --seed"
         ],
         "ci": [
             "@composer dump-autoload",
